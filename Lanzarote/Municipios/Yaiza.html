@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Juego de núcleos – Yaiza</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+<style>
+html,body{
+  height:100%;
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+}
+
+#top{
+  padding:8px;
+  background:#0b7;
+  color:#042;
+  display:flex;
+  gap:8px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+
+#map{
+  height:calc(100vh - 64px);
+  width:100%;
+}
+
+button{
+  padding:10px 14px;
+  border-radius:6px;
+  border:1px solid #999;
+  cursor:pointer;
+  font-size:0.9rem;
+}
+
+#nucleo{
+  font-weight:bold;
+  font-size:1rem;
+}
+
+.boton-volver{
+  margin-left:auto;
+  background:#fff;
+  font-weight:bold;
+}
+
+#mensaje,#estadisticas{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  background:rgba(0,0,0,0.75);
+  color:white;
+  padding:20px;
+  border-radius:12px;
+  display:none;
+  z-index:1000;
+  text-align:center;
+}
+
+#mensaje{font-size:2.5rem;}
+
+.leaflet-tooltip{
+  font-size:0.9rem;
+  padding:4px 6px;
+}
+</style>
+</head>
+
+<body>
+
+<div id="top">
+  <button id="start">▶ Iniciar</button>
+  <button id="repaso">📍 Repaso</button>
+  <span id="progreso">—/—</span>
+  <span id="nucleo">—</span>
+  <span id="fallos">Fallos: 0</span>
+  <button class="boton-volver" onclick="volverInicio()">⬅ Volver</button>
+</div>
+
+<div id="mensaje"></div>
+<div id="estadisticas"></div>
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+// =====================
+// NÚCLEOS YAIZA
+// =====================
+const nucleos = [
+  {name:"Yaiza", lat:28.95166, lng:-13.76566, umbral:80},
+  {name:"Playa Blanca", lat:28.86386, lng:-13.82827, umbral:80},
+  {name:"Uga", lat:28.94691, lng:-13.74277, umbral:80},
+  {name:"Las Breñas", lat:28.93436, lng:-13.77389, umbral:80},
+  {name:"Femés", lat:28.92577, lng:-13.75405, umbral:80},
+  {name:"El Golfo", lat:28.97521, lng:-13.82864, umbral:80},
+
+  {name:"Playa Dorada", lat:28.86119, lng:-13.82609, umbral:80},
+  {name:"Playa Flamingo", lat:28.85908, lng:-13.83591, umbral:80},
+  {name:"Playa de Papagayo", lat:28.84734, lng:-13.78890, umbral:80},
+  {name:"Playa del Janubio", lat:28.93789, lng:-13.84214, umbral:80},
+
+  {name:"Polígono Industrial Montaña Roja", lat:28.876970, lng:-13.833294, umbral:80},
+  {name:"Parque de Bomberos de Uga", lat:28.947717, lng:-13.748275, umbral:80},
+
+  {name:"Marina Rubicón", lat:28.85845, lng:-13.81093, umbral:80},
+  {name:"Salinas de Janubio", lat:28.93845, lng:-13.84625, umbral:80},
+  {name:"Parque Nacional de Timanfaya", lat:28.98571, lng:-13.75104, umbral:80}
+];
+
+// =====================
+let map=L.map('map').setView([28.92,-13.80],11.5);
+L.tileLayer(
+  'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png'
+).addTo(map);
+
+setTimeout(()=>map.invalidateSize(),300);
+
+// =====================
+let order=[],index=0,zonas=[];
+let fallosTotales=0,fallosActual=0;
+let aciertoActual=false,juegoTerminado=false,modoRepaso=false;
+
+// =====================
+function shuffle(a){
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function mostrarMensaje(txt){
+  const m=document.getElementById("mensaje");
+  m.textContent=txt;
+  m.style.display="block";
+  setTimeout(()=>{
+    m.style.display="none";
+    index++; 
+    nextRound();
+  },700);
+}
+
+// =====================
+// BOTONES
+// =====================
+document.getElementById("start").onclick=()=>{
+  modoRepaso=false;
+  juegoTerminado=false;
+  document.getElementById("estadisticas").style.display="none";
+
+  nucleos.forEach(n=>delete n.colorAcertado);
+  clearMap();
+
+  order=shuffle([...nucleos]);
+  index=0;
+  fallosTotales=0;
+  document.getElementById("fallos").textContent="Fallos: 0";
+
+  nextRound();
+};
+
+document.getElementById("repaso").onclick=()=>{
+  modoRepaso=true;
+  juegoTerminado=true;
+  clearMap();
+  pintarMapaFinal(true);
+  document.getElementById("nucleo").textContent="Modo repaso";
+  document.getElementById("progreso").textContent="";
+};
+
+// =====================
+function nextRound(){
+  clearMap();
+  aciertoActual=false;
+  fallosActual=0;
+
+  if(index>=order.length){
+    juegoTerminado=true;
+    pintarMapaFinal(false);
+    mostrarEstadisticas();
+    return;
+  }
+
+  document.getElementById("nucleo").textContent=order[index].name;
+  document.getElementById("progreso").textContent=`${index+1}/${order.length}`;
+
+  nucleos.forEach(n=>{
+    const c=L.circle([n.lat,n.lng],{
+      radius:n.umbral,
+      color:n.colorAcertado||"blue",
+      fillOpacity:0.25
+    }).addTo(map);
+
+    c.on("click",()=>{
+      if(juegoTerminado||aciertoActual||modoRepaso) return;
+
+      if(n.name===order[index].name){
+        aciertoActual=true;
+        n.colorAcertado=fallosActual===0?"green":"orange";
+        c.setStyle({color:n.colorAcertado,fillOpacity:0.45});
+        mostrarMensaje("✔");
+      } else {
+        fallosTotales++;
+        fallosActual++;
+        c.setStyle({color:"red"});
+        document.getElementById("fallos").textContent=`Fallos: ${fallosTotales}`;
+      }
+    });
+
+    zonas.push(c);
+  });
+}
+
+// =====================
+function pintarMapaFinal(permanente){
+  nucleos.forEach(n=>{
+    const c=L.circle([n.lat,n.lng],{
+      radius:n.umbral,
+      color:n.colorAcertado||"blue",
+      fillOpacity:n.colorAcertado?0.45:0.25
+    }).addTo(map);
+
+    c.bindTooltip(n.name,{
+      permanent:permanente,
+      direction:"top"
+    });
+
+    zonas.push(c);
+  });
+
+  setTimeout(()=>map.invalidateSize(),300);
+}
+
+// =====================
+function mostrarEstadisticas(){
+  const verdes=nucleos.filter(n=>n.colorAcertado==="green").length;
+  const naranjas=nucleos.filter(n=>n.colorAcertado==="orange").length;
+  const total=nucleos.length;
+  const porcentaje=Math.round((verdes/total)*100);
+
+  const e=document.getElementById("estadisticas");
+  e.innerHTML=`
+    <h2>📊 Resultados</h2>
+    Núcleos: ${total}<br>
+    Fallos totales: ${fallosTotales}<br>
+    Perfectos (verde): ${verdes}<br>
+    Con errores (naranja): ${naranjas}<br><br>
+    🎯 Precisión perfecta: ${porcentaje}%
+  `;
+  e.style.display="block";
+}
+
+// =====================
+function clearMap(){
+  zonas.forEach(z=>map.removeLayer(z));
+  zonas=[];
+}
+
+function volverInicio(){
+  window.location.href="/Territorio/index.html";
+}
+</script>
+
+</body>
+</html>
