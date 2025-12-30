@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Juego de carreteras – Lanzarote</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+<style>
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#top {
+  padding: 10px;
+  background: #0b7;
+  color: #042;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+#map {
+  height: calc(100vh - 80px);
+  width: 100%;
+}
+
+button {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #999;
+  cursor: pointer;
+}
+
+#carretera {
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.filtros {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+#mensaje, #estadisticas {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,0.75);
+  color: white;
+  padding: 25px 35px;
+  border-radius: 12px;
+  display: none;
+  z-index: 1000;
+  text-align: center;
+}
+
+#mensaje {
+  font-size: 3rem;
+}
+</style>
+</head>
+
+<body>
+
+<div id="top">
+  <button id="start">Iniciar</button>
+  <button id="repaso">Modo repaso</button>
+
+  <div class="filtros">
+    <label><input type="checkbox" id="chkPrimarias" checked> Primarias</label>
+    <label><input type="checkbox" id="chkSecundarias" checked> Secundarias</label>
+    <label><input type="checkbox" id="chkTerciarias" checked> Terciarias</label>
+  </div>
+
+  <span id="progreso">—/—</span>
+  <span id="carretera">—</span>
+  <span id="fallos">Fallos: 0</span>
+</div>
+
+<div id="mensaje"></div>
+<div id="estadisticas"></div>
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+/* ================= MAPA ================= */
+const map = L.map("map").setView([28.96, -13.60], 11);
+
+L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png")
+  .addTo(map);
+
+setTimeout(() => map.invalidateSize(), 200);
+
+/* ================= VARIABLES ================= */
+let carreteras = [];
+let order = [];
+let index = 0;
+let fallosTotales = 0;
+let fallosActual = 0;
+let aciertoActual = false;
+let juegoTerminado = false;
+let modoRepaso = false;
+let carreterasFalladas = [];
+
+/* ================= CLASIFICACIÓN ================= */
+function tipoCarretera(ref){
+  const n = parseInt(ref.replace("LZ-", ""), 10);
+  if([1,2,3].includes(n)) return "primaria";
+  if(n >= 10 && n <= 67) return "secundaria";
+  return "terciaria";
+}
+
+/* ================= CARGA GEOJSON ================= */
+fetch("carreteras_lanzarote_fin.geojson")
+  .then(r => r.json())
+  .then(data => {
+    L.geoJSON(data, {
+      style: { color:"blue", weight:5 },
+      onEachFeature: (feature, layer) => {
+        const obj = {
+          ref: feature.properties.ref,
+          tipo: tipoCarretera(feature.properties.ref),
+          layer,
+          colorAcertado: null,
+          activa: true
+        };
+
+        carreteras.push(obj);
+        layer.on("click", () => manejarClick(obj));
+      }
+    }).addTo(map);
+  });
+
+/* ================= INICIAR ================= */
+document.getElementById("start").onclick = () => {
+  const usarPrim = chkPrimarias.checked;
+  const usarSec = chkSecundarias.checked;
+  const usarTer = chkTerciarias.checked;
+
+  if(!usarPrim && !usarSec && !usarTer){
+    alert("Selecciona al menos una categoría");
+    return;
+  }
+
+  modoRepaso = false;
+  juegoTerminado = false;
+  ocultarEstadisticas();
+
+  carreteras.forEach(c => {
+    c.activa =
+      (usarPrim && c.tipo === "primaria") ||
+      (usarSec && c.tipo === "secundaria") ||
+      (usarTer && c.tipo === "terciaria");
+
+    c.colorAcertado = null;
+    c.layer.unbindTooltip();
+
+    if(c.activa){
+      c.layer.setStyle({ color:"blue", weight:5, opacity:1 });
+    } else {
+      c.layer.setStyle({ color:"#999", weight:3, opacity:0.3 });
+    }
+  });
+
+  order = shuffle(carreteras.filter(c => c.activa));
+
+  index = 0;
+  fallosTotales = 0;
+  document.getElementById("fallos").textContent = "Fallos: 0";
+  nextRound();
+};
+
+/* ================= REPASO ================= */
+document.getElementById("repaso").onclick = () => {
+  modoRepaso = true;
+  juegoTerminado = true;
+  carreteras.forEach(c => c.layer.bindTooltip(c.ref,{permanent:true}));
+  document.getElementById("carretera").textContent = "Modo repaso";
+  document.getElementById("progreso").textContent = "";
+};
+
+/* ================= JUEGO ================= */
+function nextRound(){
+  aciertoActual = false;
+  fallosActual = 0;
+  carreterasFalladas = [];
+
+  if(index >= order.length){
+    juegoTerminado = true;
+    mostrarEstadisticas();
+    activarRepasoFinal();
+    return;
+  }
+
+  document.getElementById("carretera").textContent = order[index].ref;
+  document.getElementById("progreso").textContent = `${index+1}/${order.length}`;
+}
+
+function manejarClick(c){
+  if(juegoTerminado || aciertoActual || modoRepaso || !c.activa) return;
+
+  if(c.ref === order[index].ref){
+    aciertoActual = true;
+
+    carreterasFalladas.forEach(f => {
+      if(!f.colorAcertado) f.layer.setStyle({ color:"blue", weight:5 });
+    });
+
+    c.colorAcertado = fallosActual === 0 ? "green" : "orange";
+    c.layer.setStyle({ color:c.colorAcertado, weight:7 });
+    c.layer.bindTooltip(c.ref);
+
+    mostrarMensaje("✔");
+  } else {
+    fallosTotales++;
+    fallosActual++;
+    document.getElementById("fallos").textContent = `Fallos: ${fallosTotales}`;
+    c.layer.setStyle({ color:"red" });
+
+    if(!carreterasFalladas.includes(c)){
+      carreterasFalladas.push(c);
+    }
+  }
+}
+
+/* ================= UI ================= */
+function mostrarMensaje(txt){
+  const m = document.getElementById("mensaje");
+  m.textContent = txt;
+  m.style.display = "block";
+  setTimeout(() => {
+    m.style.display = "none";
+    index++;
+    nextRound();
+  }, 800);
+}
+
+function mostrarEstadisticas(){
+  const verdes = carreteras.filter(c => c.colorAcertado === "green").length;
+  const naranjas = carreteras.filter(c => c.colorAcertado === "orange").length;
+
+  estadisticas.innerHTML = `
+    <h2>📊 Resultados</h2>
+    Fallos totales: ${fallosTotales}<br>
+    Perfectas: ${verdes}<br>
+    Con errores: ${naranjas}
+  `;
+  estadisticas.style.display = "block";
+}
+
+function ocultarEstadisticas(){
+  estadisticas.style.display = "none";
+}
+
+function activarRepasoFinal(){
+  carreteras.forEach(c => c.layer.bindTooltip(c.ref));
+}
+
+/* ================= UTIL ================= */
+function shuffle(a){
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+</script>
+
+</body>
+</html>
