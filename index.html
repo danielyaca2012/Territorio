@@ -13,7 +13,9 @@
     background: linear-gradient(135deg, #0b7, #0a5);
     color: #042;
   }
-
+ .boton-volver {
+  margin-top: 16px;
+}
   .pantalla {
     display: none;
     height: 100%;
@@ -88,22 +90,23 @@
 <div id="pantalla-lanzarote" class="pantalla">
   <h1>🏝️ Lanzarote</h1>
   <div class="menu">
+        <button onclick="location.href='/Territorio/Lanzarote/Municipios/Arrecife/'">
+      🏙️ Apréndete los 7 municipios
+    </button>
     <button onclick="location.href='/Territorio/Lanzarote/Municipios/Municipios.html'">
-      🏘️ Municipios
+      🏘️ Todos los municipios
     </button>
 
     <button onclick="location.href='/Territorio/Lanzarote/Carreteras.html'">
       🛣️ Carreteras
     </button>
 
-    <button onclick="location.href='/Territorio/Lanzarote/Municipios/Arrecife/'">
-      🏙️ Arrecife
-    </button>
+
   </div>
 
-  <button onclick="location.href='/Territorio/index.html'">⬅ Volver</button>
-
-</div>
+  <button class="boton-volver" onclick="location.href='/Territorio/index.html'">
+  ⬅ Volver
+</button>
 
 
 <script>
