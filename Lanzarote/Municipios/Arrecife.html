@@ -29,7 +29,15 @@
     height: calc(100vh - 56px);
     width: 100%;
   }
-
+.boton-volver {
+  margin-left: auto;           /* lo empuja a la derecha */
+  background: #fff;
+  color: #042;
+  font-weight: bold;
+}
+  .boton-volver:hover {
+  background: #e6f7f3;
+}
   button {
     padding: 8px 12px;
     border-radius: 6px;
@@ -74,6 +82,7 @@
   <span id="nucleo">—</span>
   <span id="info"></span>
   <span id="fallos">Fallos: 0</span>
+   <button class="boton-volver" onclick="volverInicio()">⬅ Volver al menú principal</button>
 </div>
 
 <div id="mensaje"></div>
