@@ -28,6 +28,16 @@ html, body {
   height: calc(100vh - 80px);
   width: 100%;
 }
+.boton-volver {
+  margin-left: auto;           /* lo empuja a la derecha */
+  background: #fff;
+  color: #042;
+  font-weight: bold;
+}
+
+.boton-volver:hover {
+  background: #e6f7f3;
+}
 
 button {
   padding: 6px 10px;
@@ -70,6 +80,8 @@ button {
 <body>
 
 <div id="top">
+  <button class="boton-volver" onclick="volverInicio()">⬅ Inicio</button>
+
   <button id="start">Iniciar</button>
   <button id="repaso">Modo repaso</button>
 
@@ -265,6 +277,12 @@ function activarRepasoFinal(){
 }
 
 /* ================= UTIL ================= */
+
+function volverInicio(){
+  window.location.href = "../../index.html";
+}
+
+  
 function shuffle(a){
   for(let i=a.length-1;i>0;i--){
     const j=Math.floor(Math.random()*(i+1));
@@ -276,4 +294,5 @@ function shuffle(a){
 
 </body>
 </html>
+
 
