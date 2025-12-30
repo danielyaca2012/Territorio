@@ -101,12 +101,10 @@
     </button>
   </div>
 
-  <button class="volver" onclick="volverTerritorios()">⬅ Volver</button>
+  <button onclick="location.href='/Territorio/index.html'">⬅ Volver</button>
+
 </div>
 
-<footer>
-  Juegos de Geografía · Funciona en PC y móvil
-</footer>
 
 <script>
 function mostrarLanzarote(){
@@ -114,10 +112,7 @@ function mostrarLanzarote(){
   document.getElementById("pantalla-lanzarote").classList.add("activa");
 }
 
-function volverTerritorios(){
-  document.getElementById("pantalla-lanzarote").classList.remove("activa");
-  document.getElementById("pantalla-territorios").classList.add("activa");
-}
+
 </script>
 
 </body>
