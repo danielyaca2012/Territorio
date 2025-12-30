@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Juego de localización – Haría</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+<style>
+html,body{height:100%;margin:0;font-family:Arial,Helvetica,sans-serif;}
+#top{
+  height:56px;padding:10px;background:#0b7;color:#042;
+  display:flex;gap:12px;align-items:center;flex-wrap:wrap;
+}
+#map{height:calc(100vh - 56px);width:100%;}
+button{padding:8px 12px;border-radius:6px;border:1px solid #999;cursor:pointer;}
+#nucleo{font-weight:bold;font-size:1.2rem;}
+.boton-volver{margin-left:auto;background:#fff;font-weight:bold;}
+#mensaje,#estadisticas{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  background:rgba(0,0,0,0.75);color:white;padding:25px 35px;
+  border-radius:12px;display:none;z-index:1000;text-align:center;
+}
+#mensaje{font-size:3rem;}
+</style>
+</head>
+
+<body>
+
+<div id="top">
+  <button id="start">Iniciar</button>
+  <button id="repaso">Modo repaso</button>
+  <span id="progreso">—/—</span>
+  <span id="nucleo">—</span>
+  <span id="fallos">Fallos: 0</span>
+  <button class="boton-volver" onclick="volverInicio()">⬅ Volver</button>
+</div>
+
+<div id="mensaje"></div>
+<div id="estadisticas"></div>
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+// =====================
+// LUGARES CLAVE HARÍA
+// =====================
+const lugares = [
+  // 🏘️ Núcleos poblacionales
+  {name:"Haría", lat:29.1459, lng:-13.5008, umbral:120},
+  {name:"Punta Mujeres", lat:29.1447, lng:-13.4458, umbral:120},
+  {name:"Arrieta", lat:29.1318, lng:-13.4504, umbral:120},
+  {name:"Máguez", lat:29.1540, lng:-13.5076, umbral:120},
+  {name:"Tabayesco", lat:29.1512, lng:-13.4755, umbral:120},
+  {name:"Guatiza", lat:29.0654, lng:-13.4806, umbral:120},
+
+  // 🚒 Emergencias
+  {name:"Parque de Bomberos de Haría", lat:29.1468, lng:-13.4991, umbral:80},
+
+  // 🏥 Sanidad
+  {name:"Centro de Salud de Haría", lat:29.1453, lng:-13.5016, umbral:80},
+  {name:"Hospital Molina Orosa", lat:28.9739, lng:-13.5663, umbral:120},
+
+  // 🏖️ Playas
+  {name:"Playa de Arrieta (La Garita)", lat:29.1304, lng:-13.4488, umbral:120},
+  {name:"Playa de Punta Mujeres", lat:29.1454, lng:-13.4452, umbral:120},
+  {name:"Playa de La Caleta", lat:29.1606, lng:-13.4702, umbral:120},
+
+  // 🌋 Barrancos y zonas naturales
+  {name:"Valle de Haría", lat:29.1450, lng:-13.4950, umbral:200},
+  {name:"Risco de Famara", lat:29.1880, lng:-13.5290, umbral:200},
+  {name:"Barranco del Palmital", lat:29.1575, lng:-13.4858, umbral:200}
+];
+
+// =====================
+let map=L.map('map').setView([29.145,-13.49],13);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png')
+.addTo(map);
+
+setTimeout(()=>map.invalidateSize(),200);
+
+let order=[],index=0,zonas=[];
+let fallosTotales=0,fallosActual=0;
+let aciertoActual=false,juegoTerminado=false,modoRepaso=false;
+
+// =====================
+function shuffle(a){
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function mostrarMensaje(txt){
+  const m=document.getElementById("mensaje");
+  m.textContent=txt;
+  m.style.display="block";
+  setTimeout(()=>{
+    m.style.display="none";
+    index++; nextRound();
+  },800);
+}
+
+// =====================
+document.getElementById("start").onclick=()=>{
+  modoRepaso=false;juegoTerminado=false;
+  document.getElementById("estadisticas").style.display="none";
+  lugares.forEach(l=>delete l.colorAcertado);
+  clearMap();
+  order=shuffle([...lugares]);
+  index=0;fallosTotales=0;
+  document.getElementById("fallos").textContent="Fallos: 0";
+  nextRound();
+};
+
+document.getElementById("repaso").onclick=()=>{
+  modoRepaso=true;juegoTerminado=true;
+  clearMap();pintarFinal(true);
+  document.getElementById("nucleo").textContent="Modo repaso";
+};
+
+// =====================
+function nextRound(){
+  clearMap();
+  aciertoActual=false;fallosActual=0;
+
+  if(index>=order.length){
+    juegoTerminado=true;
+    pintarFinal(false);
+    mostrarEstadisticas();
+    return;
+  }
+
+  document.getElementById("nucleo").textContent=order[index].name;
+  document.getElementById("progreso").textContent=`${index+1}/${order.length}`;
+
+  lugares.forEach(l=>{
+    const c=L.circle([l.lat,l.lng],{
+      radius:l.umbral,
+      color:l.colorAcertado||"blue",
+      fillOpacity:0.2
+    }).addTo(map);
+
+    c.on("click",()=>{
+      if(juegoTerminado||aciertoActual||modoRepaso) return;
+
+      if(l.name===order[index].name){
+        aciertoActual=true;
+        l.colorAcertado=fallosActual===0?"green":"orange";
+        c.setStyle({color:l.colorAcertado,fillOpacity:0.4});
+        mostrarMensaje("✔");
+      } else {
+        fallosTotales++;fallosActual++;
+        c.setStyle({color:"red"});
+        document.getElementById("fallos").textContent=`Fallos: ${fallosTotales}`;
+      }
+    });
+
+    zonas.push(c);
+  });
+}
+
+// =====================
+function pintarFinal(permanente){
+  lugares.forEach(l=>{
+    const c=L.circle([l.lat,l.lng],{
+      radius:l.umbral,
+      color:l.colorAcertado||"blue",
+      fillOpacity:l.colorAcertado?0.4:0.2
+    }).addTo(map);
+
+    c.bindTooltip(l.name,{permanent});
+    zonas.push(c);
+  });
+}
+
+// =====================
+function mostrarEstadisticas(){
+  const verdes=lugares.filter(l=>l.colorAcertado==="green").length;
+  const naranjas=lugares.filter(l=>l.colorAcertado==="orange").length;
+  const total=lugares.length;
+  const porcentaje=Math.round((verdes/total)*100);
+
+  const e=document.getElementById("estadisticas");
+  e.innerHTML=`
+    <h2>📊 Resultados</h2>
+    Lugares: ${total}<br>
+    Fallos totales: ${fallosTotales}<br>
+    Perfectos (verde): ${verdes}<br>
+    Con errores (naranja): ${naranjas}<br><br>
+    🎯 Precisión perfecta: ${porcentaje}%
+  `;
+  e.style.display="block";
+}
+
+// =====================
+function clearMap(){
+  zonas.forEach(z=>map.removeLayer(z));
+  zonas=[];
+}
+function volverInicio(){
+  window.location.href="/Territorio/index.html";
+}
+</script>
+
+</body>
+</html>
