@@ -4,85 +4,82 @@
 <meta charset="utf-8"/>
 <title>Juego de núcleos – Arrecife</title>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
+
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
 <style>
-  html, body {
-    height: 100%;
-    margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
-  }
-
-  #top {
-    height: 56px;
-    padding: 10px;
-    background: #0b7;
-    color: #042;
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    flex-wrap: wrap;
-    box-sizing: border-box;
-  }
-
-  #map {
-    height: calc(100vh - 56px);
-    width: 100%;
-  }
-.boton-volver {
-  margin-left: auto;           /* lo empuja a la derecha */
-  background: #fff;
-  color: #042;
-  font-weight: bold;
+html,body{
+  height:100%;
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
 }
-  .boton-volver:hover {
-  background: #e6f7f3;
+
+#top{
+  padding:8px;
+  background:#0b7;
+  color:#042;
+  display:flex;
+  gap:8px;
+  align-items:center;
+  flex-wrap:wrap;
 }
-  button {
-    padding: 8px 12px;
-    border-radius: 6px;
-    border: 1px solid #999;
-    cursor: pointer;
-  }
 
-  #nucleo {
-    font-weight: bold;
-    font-size: 1.2rem;
-  }
+#map{
+  height:calc(100vh - 64px);
+  width:100%;
+}
 
-  #mensaje, #estadisticas {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(0,0,0,0.75);
-    color: white;
-    padding: 25px 35px;
-    border-radius: 12px;
-    display: none;
-    z-index: 1000;
-    text-align: center;
-  }
+button{
+  padding:10px 14px;
+  border-radius:6px;
+  border:1px solid #999;
+  cursor:pointer;
+  font-size:0.9rem;
+}
 
-  #mensaje {
-    font-size: 3rem;
-  }
+#nucleo{
+  font-weight:bold;
+  font-size:1rem;
+}
 
-  #estadisticas h2 {
-    margin-top: 0;
-  }
+.boton-volver{
+  margin-left:auto;
+  background:#fff;
+  font-weight:bold;
+}
+
+#mensaje,#estadisticas{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  background:rgba(0,0,0,0.75);
+  color:white;
+  padding:20px;
+  border-radius:12px;
+  display:none;
+  z-index:1000;
+  text-align:center;
+}
+
+#mensaje{font-size:2.5rem;}
+
+.leaflet-tooltip{
+  font-size:0.9rem;
+  padding:4px 6px;
+}
 </style>
 </head>
+
 <body>
 
 <div id="top">
-  <button id="start">Iniciar</button>
-  <button id="repaso">Modo repaso</button>
+  <button id="start">▶ Iniciar</button>
+  <button id="repaso">📍 Repaso</button>
   <span id="progreso">—/—</span>
   <span id="nucleo">—</span>
-  <span id="info"></span>
   <span id="fallos">Fallos: 0</span>
-   <button class="boton-volver" onclick="volverInicio()">⬅ Volver al menú principal</button>
+  <button class="boton-volver" onclick="volverInicio()">⬅ Volver</button>
 </div>
 
 <div id="mensaje"></div>
@@ -92,27 +89,27 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 // =====================
-// Núcleos
+// NÚCLEOS ARRECIFE
 // =====================
 const nucleos = [
-  {name:"Casco de Arrecife", lat:28.959490, lng:-13.548368, umbral:50},
+  {name:"Casco de Arrecife", lat:28.95949, lng:-13.548368, umbral:50},
   {name:"Argana Alta", lat:28.979348, lng:-13.569044, umbral:50},
   {name:"Argana Baja", lat:28.970563, lng:-13.566735, umbral:50},
   {name:"Maneje", lat:28.976457, lng:-13.556657, umbral:50},
-  {name:"Altavista", lat:28.973350, lng:-13.548784, umbral:50},
+  {name:"Altavista", lat:28.97335, lng:-13.548784, umbral:50},
   {name:"Titerroy", lat:28.970694, lng:-13.557025, umbral:50},
   {name:"Valterra", lat:28.965813, lng:-13.546413, umbral:50},
   {name:"El Cable", lat:28.956898, lng:-13.571711, umbral:50},
   {name:"La Concha", lat:28.955777, lng:-13.583071, umbral:50},
-  {name:"San Francisco Javier", lat:28.963540, lng:-13.565440, umbral:50},
+  {name:"San Francisco Javier", lat:28.96354, lng:-13.56544, umbral:50},
   {name:"Tenorio", lat:28.974964, lng:-13.540992, umbral:50},
-  {name:"Los Alonso", lat:28.969547, lng:-13.545010, umbral:50},
+  {name:"Los Alonso", lat:28.969547, lng:-13.54501, umbral:50},
   {name:"Las Salinas", lat:28.960836, lng:-13.559475, umbral:50},
   {name:"La Vega", lat:28.964412, lng:-13.557413, umbral:50},
   {name:"Parque Maneje", lat:28.978453, lng:-13.555087, umbral:50},
-  {name:"Consorcio de Seguridad, Emergencias, Salvamento, Prevención y Extinción de Incendios de Lanzarote", lat:28.977540, lng:-13.563266, umbral:50},
-  {name:"Aeropuerto de Lanzarote", lat:28.952350, lng:-13.607401, umbral:50},
-  {name:"Playa Honda", lat:28.950533, lng:-13.591650, umbral:50},
+  {name:"Consorcio de Seguridad", lat:28.97754, lng:-13.563266, umbral:50},
+  {name:"Aeropuerto de Lanzarote", lat:28.95235, lng:-13.607401, umbral:50},
+  {name:"Playa Honda", lat:28.950533, lng:-13.59165, umbral:50},
   {name:"Charco de San Ginés", lat:28.961327, lng:-13.546891, umbral:50},
   {name:"Playa del Reducto", lat:28.958049, lng:-13.559759, umbral:50},
   {name:"Puerto de Arrecife", lat:28.965512, lng:-13.534364, umbral:50},
@@ -122,21 +119,17 @@ const nucleos = [
 ];
 
 // =====================
-let map = L.map('map').setView([28.961161,-13.546479], 14);
+let map=L.map('map').setView([28.961161,-13.546479],14);
+L.tileLayer(
+  'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png'
+).addTo(map);
 
-L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png')
-  .addTo(map);
+setTimeout(()=>map.invalidateSize(),300);
 
-// 🔧 Forzar cálculo correcto del tamaño
-setTimeout(() => {
-  map.invalidateSize();
-}, 200);
-
-let order=[], index=0, zonas=[];
-let fallosTotales=0, fallosActual=0;
-let aciertoActual=false;
-let juegoTerminado=false;
-let modoRepaso=false;
+// =====================
+let order=[],index=0,zonas=[];
+let fallosTotales=0,fallosActual=0;
+let aciertoActual=false,juegoTerminado=false,modoRepaso=false;
 
 // =====================
 function shuffle(a){
@@ -147,14 +140,14 @@ function shuffle(a){
   return a;
 }
 
-function mostrarMensaje(txt,tipo){
+function mostrarMensaje(txt){
   const m=document.getElementById("mensaje");
   m.textContent=txt;
   m.style.display="block";
   setTimeout(()=>{
     m.style.display="none";
-    if(tipo==="ok"){ index++; nextRound(); }
-  },900);
+    index++; nextRound();
+  },700);
 }
 
 // =====================
@@ -164,12 +157,15 @@ document.getElementById("start").onclick=()=>{
   modoRepaso=false;
   juegoTerminado=false;
   document.getElementById("estadisticas").style.display="none";
+
   nucleos.forEach(n=>delete n.colorAcertado);
   clearMap();
+
   order=shuffle([...nucleos]);
   index=0;
   fallosTotales=0;
   document.getElementById("fallos").textContent="Fallos: 0";
+
   nextRound();
 };
 
@@ -179,7 +175,7 @@ document.getElementById("repaso").onclick=()=>{
   clearMap();
   pintarMapaFinal(true);
   document.getElementById("nucleo").textContent="Modo repaso";
-  document.getElementById("info").textContent="Nombres visibles";
+  document.getElementById("progreso").textContent="";
 };
 
 // =====================
@@ -202,16 +198,17 @@ function nextRound(){
     const c=L.circle([n.lat,n.lng],{
       radius:n.umbral,
       color:n.colorAcertado||"blue",
-      fillOpacity:0.2
+      fillOpacity:0.25
     }).addTo(map);
 
     c.on("click",()=>{
       if(juegoTerminado||aciertoActual||modoRepaso) return;
+
       if(n.name===order[index].name){
         aciertoActual=true;
         n.colorAcertado=fallosActual===0?"green":"orange";
-        c.setStyle({color:n.colorAcertado,fillOpacity:0.4});
-        mostrarMensaje("✔","ok");
+        c.setStyle({color:n.colorAcertado,fillOpacity:0.45});
+        mostrarMensaje("✔");
       } else {
         fallosTotales++;
         fallosActual++;
@@ -219,6 +216,7 @@ function nextRound(){
         document.getElementById("fallos").textContent=`Fallos: ${fallosTotales}`;
       }
     });
+
     zonas.push(c);
   });
 }
@@ -229,12 +227,18 @@ function pintarMapaFinal(permanente){
     const c=L.circle([n.lat,n.lng],{
       radius:n.umbral,
       color:n.colorAcertado||"blue",
-      fillOpacity:n.colorAcertado?0.4:0.2
+      fillOpacity:n.colorAcertado?0.45:0.25
     }).addTo(map);
 
-    c.bindTooltip(n.name,{permanent:permanente});
+    c.bindTooltip(n.name,{
+      permanent:permanente,
+      direction:"top"
+    });
+
     zonas.push(c);
   });
+
+  setTimeout(()=>map.invalidateSize(),300);
 }
 
 // =====================
@@ -257,13 +261,13 @@ function mostrarEstadisticas(){
 }
 
 // =====================
-
-  function volverInicio(){
-  window.location.href = "/Territorio/index.html";
-}
 function clearMap(){
   zonas.forEach(z=>map.removeLayer(z));
   zonas=[];
+}
+
+function volverInicio(){
+  window.location.href="/Territorio/index.html";
 }
 </script>
 
