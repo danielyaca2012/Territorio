@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Municipios – Lanzarote</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+  html, body {
+    margin: 0;
+    height: 100%;
+    font-family: Arial, Helvetica, sans-serif;
+    background: linear-gradient(135deg, #0b7, #0a5);
+    color: #042;
+  }
+
+  .pantalla {
+    height: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  h1 {
+    margin-bottom: 25px;
+    font-size: 2rem;
+    text-align: center;
+  }
+
+  .menu {
+    display: grid;
+    gap: 15px;
+    width: 100%;
+    max-width: 360px;
+  }
+
+  button {
+    padding: 15px;
+    font-size: 1.1rem;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    background: white;
+    color: #042;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+
+  button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+  }
+
+  .volver {
+    margin-top: 25px;
+    background: #eee;
+    font-size: 1rem;
+  }
+
+  footer {
+    margin-top: auto;
+    font-size: 0.8rem;
+    opacity: 0.8;
+  }
+</style>
+</head>
+<body>
+
+<div class="pantalla">
+  <h1>🏘️ Municipios de Lanzarote</h1>
+
+  <div class="menu">
+    <button onclick="location.href='Municipios/Arrecife/'">🏙️ Arrecife</button>
+    <button onclick="location.href='Municipios/Haría/'">🌄 Haría</button>
+    <button onclick="location.href='Municipios/San Bartolomé/'">🏘️ San Bartolomé</button>
+    <button onclick="location.href='Municipios/Teguise/'">🏰 Teguise</button>
+    <button onclick="location.href='Municipios/Tinajo/'">🌋 Tinajo</button>
+    <button onclick="location.href='Municipios/Tías/'">🏖️ Tías</button>
+    <button onclick="location.href='Municipios/Yaiza/'">🌊 Yaiza</button>
+  </div>
+
+  <button class="volver" onclick="location.href='../index.html'">⬅ Volver a Lanzarote</button>
+
+  <footer>
+    Selecciona un municipio para jugar
+  </footer>
+</div>
+
+</body>
+</html>
