@@ -8,29 +8,74 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
 <style>
-html,body{height:100%;margin:0;font-family:Arial,Helvetica,sans-serif;}
+html,body{
+  height:100%;
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+}
+
 #top{
-  height:56px;padding:10px;background:#0b7;color:#042;
-  display:flex;gap:12px;align-items:center;flex-wrap:wrap;
+  padding:8px;
+  background:#0b7;
+  color:#042;
+  display:flex;
+  gap:8px;
+  align-items:center;
+  flex-wrap:wrap;
 }
-#map{height:calc(100vh - 56px);width:100%;}
-button{padding:8px 12px;border-radius:6px;border:1px solid #999;cursor:pointer;}
-#nucleo{font-weight:bold;font-size:1.2rem;}
-.boton-volver{margin-left:auto;background:#fff;font-weight:bold;}
+
+#map{
+  height:calc(100vh - 64px);
+  width:100%;
+}
+
+button{
+  padding:10px 14px;
+  border-radius:6px;
+  border:1px solid #999;
+  cursor:pointer;
+  font-size:0.9rem;
+}
+
+#nucleo{
+  font-weight:bold;
+  font-size:1rem;
+}
+
+.boton-volver{
+  margin-left:auto;
+  background:#fff;
+  font-weight:bold;
+}
+
 #mensaje,#estadisticas{
-  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  background:rgba(0,0,0,0.75);color:white;padding:25px 35px;
-  border-radius:12px;display:none;z-index:1000;text-align:center;
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  background:rgba(0,0,0,0.75);
+  color:white;
+  padding:20px;
+  border-radius:12px;
+  display:none;
+  z-index:1000;
+  text-align:center;
 }
-#mensaje{font-size:3rem;}
+
+#mensaje{font-size:2.5rem;}
+
+.leaflet-tooltip{
+  font-size:0.9rem;
+  padding:4px 6px;
+}
 </style>
 </head>
 
 <body>
 
 <div id="top">
-  <button id="start">Iniciar</button>
-  <button id="repaso">Modo repaso</button>
+  <button id="start">▶ Iniciar</button>
+  <button id="repaso">📍 Repaso</button>
   <span id="progreso">—/—</span>
   <span id="nucleo">—</span>
   <span id="fallos">Fallos: 0</span>
@@ -44,45 +89,39 @@ button{padding:8px 12px;border-radius:6px;border:1px solid #999;cursor:pointer;}
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 // =====================
-// LUGARES CLAVE HARÍA
+// LUGARES HARÍA
 // =====================
 const lugares = [
-  // 🏘️ Núcleos poblacionales
-  {name:"Haría", lat:29.1463805, lng:-13.4990953, umbral:80},
-  {name:"Punta Mujeres", lat:29.1450816, lng:-13.4479355, umbral:80},
-  {name:"Arrieta", lat:29.1315205, lng:-13.4622163, umbral:80},
-  {name:"Máguez", lat:29.1597836, lng:-13.4947883, umbral:80},
-  {name:"Tabayesco", lat:29.1274071, lng:-13.4802622, umbral:80},
-  {name:"Guatiza", lat:29.0722919, lng:-13.4781355, umbral:80},
+  {name:"Haría", lat:29.14638, lng:-13.49909, umbral:80},
+  {name:"Punta Mujeres", lat:29.14508, lng:-13.44793, umbral:80},
+  {name:"Arrieta", lat:29.13152, lng:-13.46221, umbral:80},
+  {name:"Máguez", lat:29.15978, lng:-13.49478, umbral:80},
+  {name:"Tabayesco", lat:29.12740, lng:-13.48026, umbral:80},
+  {name:"Guatiza", lat:29.07229, lng:-13.47813, umbral:80},
 
-  
+  {name:"Centro de Salud de Haría", lat:29.14798, lng:-13.50075, umbral:80},
 
-  // 🏥 Sanidad
-  {name:"Centro de Salud de Haría", lat:29.1479852, lng:-13.5007549, umbral:80},
+  {name:"Playa de Arrieta (La Garita)", lat:29.12728, lng:-13.46465, umbral:80},
+  {name:"Playa del Risco", lat:29.20872, lng:-13.49692, umbral:80},
+  {name:"Caleta de Mojón Blanco", lat:29.20749, lng:-13.42861, umbral:80},
 
-  // 🏖️ Playas
-  {name:"Playa de Arrieta (La Garita)", lat:29.1272850, lng:-13.4646527, umbral:80},
- 
-  {name:"Playa del Risco", lat:29.2087223, lng:-13.4969234, umbral:80},
-
-{name:"Caleta de Mojón Blanco", lat:29.2074920, lng:-13.4286109, umbral:80},
-
-
-  // 🌋 Barrancos y zonas naturales
-  {name:"Valle de Haría", lat:29.1316174, lng:-13.5129717, umbral:80}
-  
+  {name:"Valle de Haría", lat:29.13161, lng:-13.51297, umbral:100}
 ];
 
 // =====================
-let map=L.map('map').setView([29.145,-13.49],13);
-L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png')
-.addTo(map);
+let map = L.map('map').setView([29.145,-13.49],13);
+L.tileLayer(
+  'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png'
+).addTo(map);
 
-setTimeout(()=>map.invalidateSize(),200);
+setTimeout(()=>map.invalidateSize(),300);
 
-let order=[],index=0,zonas=[];
-let fallosTotales=0,fallosActual=0;
-let aciertoActual=false,juegoTerminado=false,modoRepaso=false;
+// =====================
+let order=[], index=0, zonas=[];
+let fallosTotales=0, fallosActual=0;
+let aciertoActual=false;
+let juegoTerminado=false;
+let modoRepaso=false;
 
 // =====================
 function shuffle(a){
@@ -100,31 +139,42 @@ function mostrarMensaje(txt){
   setTimeout(()=>{
     m.style.display="none";
     index++; nextRound();
-  },800);
+  },700);
 }
 
 // =====================
+// BOTONES
+// =====================
 document.getElementById("start").onclick=()=>{
-  modoRepaso=false;juegoTerminado=false;
+  modoRepaso=false;
+  juegoTerminado=false;
   document.getElementById("estadisticas").style.display="none";
+
   lugares.forEach(l=>delete l.colorAcertado);
   clearMap();
+
   order=shuffle([...lugares]);
-  index=0;fallosTotales=0;
+  index=0;
+  fallosTotales=0;
   document.getElementById("fallos").textContent="Fallos: 0";
+
   nextRound();
 };
 
 document.getElementById("repaso").onclick=()=>{
-  modoRepaso=true;juegoTerminado=true;
-  clearMap();pintarFinal(true);
+  modoRepaso=true;
+  juegoTerminado=true;
+  clearMap();
+  pintarFinal(true);
   document.getElementById("nucleo").textContent="Modo repaso";
+  document.getElementById("progreso").textContent="";
 };
 
 // =====================
 function nextRound(){
   clearMap();
-  aciertoActual=false;fallosActual=0;
+  aciertoActual=false;
+  fallosActual=0;
 
   if(index>=order.length){
     juegoTerminado=true;
@@ -140,7 +190,7 @@ function nextRound(){
     const c=L.circle([l.lat,l.lng],{
       radius:l.umbral,
       color:l.colorAcertado||"blue",
-      fillOpacity:0.2
+      fillOpacity:0.25
     }).addTo(map);
 
     c.on("click",()=>{
@@ -149,10 +199,11 @@ function nextRound(){
       if(l.name===order[index].name){
         aciertoActual=true;
         l.colorAcertado=fallosActual===0?"green":"orange";
-        c.setStyle({color:l.colorAcertado,fillOpacity:0.4});
+        c.setStyle({color:l.colorAcertado,fillOpacity:0.45});
         mostrarMensaje("✔");
       } else {
-        fallosTotales++;fallosActual++;
+        fallosTotales++;
+        fallosActual++;
         c.setStyle({color:"red"});
         document.getElementById("fallos").textContent=`Fallos: ${fallosTotales}`;
       }
@@ -168,12 +219,18 @@ function pintarFinal(permanente){
     const c=L.circle([l.lat,l.lng],{
       radius:l.umbral,
       color:l.colorAcertado||"blue",
-      fillOpacity:l.colorAcertado?0.4:0.2
+      fillOpacity:l.colorAcertado?0.45:0.25
     }).addTo(map);
 
-    c.bindTooltip(l.name,{permanent});
+    c.bindTooltip(l.name,{
+      permanent:permanente,
+      direction:"top"
+    });
+
     zonas.push(c);
   });
+
+  setTimeout(()=>map.invalidateSize(),300);
 }
 
 // =====================
@@ -200,6 +257,7 @@ function clearMap(){
   zonas.forEach(z=>map.removeLayer(z));
   zonas=[];
 }
+
 function volverInicio(){
   window.location.href="/Territorio/index.html";
 }
