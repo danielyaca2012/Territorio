@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Juego de municipios – Lanzarote</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<style>
+  body { margin:0; font-family: Arial, Helvetica, sans-serif; }
+  #top { padding:10px; background:#0b7; color:#042; display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+  #map { height:75vh; width:100%; }
+  button { padding:8px 12px; border-radius:6px; border:1px solid #999; cursor:pointer; }
+  #nucleo { font-weight:bold; font-size:1.2rem; }
+  #mensaje {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3rem;
+    font-weight: bold;
+    color: white;
+    background: rgba(0,0,0,0.6);
+    padding: 20px 40px;
+    border-radius: 12px;
+    display: none;
+    z-index: 1000;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<div id="top">
+  <button id="start">Iniciar</button>
+  <span id="progreso">—/—</span>
+  <span id="nucleo">—</span>
+  <span id="fallos">Fallos: 0</span>
+</div>
+
+<div id="mensaje"></div>
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+// =====================
+// Municipios de Lanzarote
+// =====================
+const municipios = [
+  {name:"Arrecife", lat:28.970255, lng:-13.550294, umbral:1000},
+  {name:"Tías", lat:28.949528, lng:-13.657411, umbral:1000},
+  {name:"San Bartolomé", lat:29.003800, lng:-13.612675, umbral:1000},
+  {name:"Teguise", lat:29.065968, lng:-13.562211, umbral:1000},
+  {name:"Haría", lat:29.144766, lng:-13.500181, umbral:1000},
+  {name:"Tinajo", lat:29.071484, lng:-13.676797, umbral:1000},
+  {name:"Yaiza", lat:28.952550, lng:-13.769423, umbral:1000}
+];
+
+// =====================
+// Inicialización del mapa
+// =====================
+let map = L.map('map').setView([28.963,-13.541], 11);
+
+L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png', {
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>',
+  subdomains: 'abcd',
+  maxZoom: 19
+}).addTo(map);
+
+let order = [];
+let index = -1;
+let fallosTotales = 0;
+let fallosActual = 0;
+let zonas = [];
+let aciertoActual = false;
+
+// Mezclar array
+function shuffle(a){
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+// Mostrar mensaje central
+function mostrarMensaje(texto, tipo){
+  const msg = document.getElementById("mensaje");
+  msg.textContent = texto;
+  msg.style.backgroundColor = tipo === "correcto" ? "rgba(0,128,0,0.7)" : "rgba(200,0,0,0.7)";
+  msg.style.display = "block";
+  setTimeout(() => { 
+    msg.style.display = "none"; 
+    if(tipo==="correcto") {
+      index++;          // pasar a siguiente pregunta
+      nextRound();
+    }
+  }, 1500);
+}
+
+// Iniciar juego
+document.getElementById("start").onclick = () => {
+  municipios.forEach(m => delete m.colorAcertado);
+  clearMap();
+  order = shuffle([...municipios]);
+  index = 0;
+  fallosTotales = 0;
+  fallosActual = 0;
+  document.getElementById("fallos").textContent = `Fallos: ${fallosTotales}`;
+  nextRound();
+};
+
+// Preparar siguiente municipio
+function nextRound(){
+  clearMap();
+  aciertoActual = false;
+  fallosActual = 0;
+
+  if(index >= order.length){
+    document.getElementById("nucleo").textContent = "✔ Juego completado";
+    document.getElementById("progreso").textContent = `${order.length}/${order.length}`;
+    return;
+  }
+
+  document.getElementById("nucleo").textContent = order[index].name;
+  document.getElementById("progreso").textContent = `${index+1}/${order.length}`;
+
+  zonas = [];
+  municipios.forEach(municipio => {
+    let colorInicial = municipio.colorAcertado ? municipio.colorAcertado : 'blue';
+    const circle = L.circle([municipio.lat, municipio.lng], {
+      radius: municipio.umbral,
+      color: colorInicial,
+      fillOpacity: 0.2
+    }).addTo(map);
+
+    if(municipio.colorAcertado){
+      circle.bindTooltip(municipio.name, {permanent: false, direction: "top"});
+    }
+
+    circle.on("click", () => {
+      if(aciertoActual) return;
+
+      if(municipio.name === order[index].name){
+        aciertoActual = true;
+        if(fallosActual === 0){
+          municipio.colorAcertado = 'green';
+          circle.setStyle({color:'green', fillOpacity:0.4});
+        } else {
+          municipio.colorAcertado = 'orange';
+          circle.setStyle({color:'orange', fillOpacity:0.4});
+        }
+        circle.bindTooltip(municipio.name, {permanent: false, direction: "top"});
+        mostrarMensaje("Correcto ✅", "correcto");
+
+      } else {
+        fallosTotales++;
+        fallosActual++;
+        document.getElementById("fallos").textContent = `Fallos: ${fallosTotales}`;
+        circle.setStyle({color:'red', fillOpacity:0.3});
+        mostrarMensaje("Incorrecto ❌", "incorrecto");
+      }
+    });
+
+    zonas.push(circle);
+  });
+}
+
+// Limpiar mapa
+function clearMap(){
+  zonas.forEach(c => map.removeLayer(c));
+  zonas = [];
+}
+</script>
+
+</body>
+</html>
