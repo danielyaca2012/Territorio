@@ -9,6 +9,18 @@
   body { margin:0; font-family: Arial, Helvetica, sans-serif; }
   #top { padding:10px; background:#0b7; color:#042; display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
   #map { height:75vh; width:100%; }
+
+.boton-volver {
+  margin-left: auto;           /* lo empuja a la derecha */
+  background: #fff;
+  color: #042;
+  font-weight: bold;
+}
+
+.boton-volver:hover {
+  background: #e6f7f3;
+}
+  
   button { padding:8px 12px; border-radius:6px; border:1px solid #999; cursor:pointer; }
   #nucleo { font-weight:bold; font-size:1.2rem; }
   #mensaje {
@@ -35,6 +47,7 @@
   <span id="progreso">—/—</span>
   <span id="nucleo">—</span>
   <span id="fallos">Fallos: 0</span>
+   <button class="boton-volver" onclick="volverInicio()">⬅ Volver al menú principal</button>
 </div>
 
 <div id="mensaje"></div>
@@ -164,7 +177,9 @@ function nextRound(){
     zonas.push(circle);
   });
 }
-
+function volverInicio(){
+  window.location.href = "/Territorio/index.html";
+}
 // Limpiar mapa
 function clearMap(){
   zonas.forEach(c => map.removeLayer(c));
@@ -174,3 +189,4 @@ function clearMap(){
 
 </body>
 </html>
+
