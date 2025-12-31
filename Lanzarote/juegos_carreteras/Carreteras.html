@@ -229,11 +229,23 @@ document.getElementById("start").onclick = () => {
 document.getElementById("repaso").onclick = () => {
   modoRepaso = true;
   juegoTerminado = true;
+  juegoIniciado = false;
+
+  const usarPrim = chkPrimarias.checked;
+  const usarSec = chkSecundarias.checked;
+  const usarTer = chkTerciarias.checked;
 
   carreteras.forEach(c => {
-    if(c.activa){
-      c.layer.bindTooltip(c.ref,{ permanent:true });
+    const visible =
+      (usarPrim && c.tipo === "primaria") ||
+      (usarSec && c.tipo === "secundaria") ||
+      (usarTer && c.tipo === "terciaria");
+
+    if(visible){
+      c.layer.setStyle({ opacity:1 });
+      c.layer.bindTooltip(c.ref, { permanent:true });
     } else {
+      c.layer.setStyle({ opacity:0 });
       c.layer.unbindTooltip();
     }
   });
@@ -241,6 +253,7 @@ document.getElementById("repaso").onclick = () => {
   document.getElementById("carretera").textContent = "Modo repaso";
   document.getElementById("progreso").textContent = "";
 };
+
 
 
 /* ================= JUEGO ================= */
@@ -320,6 +333,16 @@ function activarRepasoFinal(){
   carreteras.forEach(c => c.layer.bindTooltip(c.ref));
 }
 
+  function actualizarRepasoSiActivo(){
+  if(!modoRepaso) return;
+  document.getElementById("repaso").click();
+}
+
+chkPrimarias.addEventListener("change", actualizarRepasoSiActivo);
+chkSecundarias.addEventListener("change", actualizarRepasoSiActivo);
+chkTerciarias.addEventListener("change", actualizarRepasoSiActivo);
+
+
 /* ================= UTIL ================= */
 function volverInicio(){
   window.location.href = "/Territorio/index.html";
@@ -336,4 +359,5 @@ function shuffle(a){
 
 </body>
 </html>
+
 
