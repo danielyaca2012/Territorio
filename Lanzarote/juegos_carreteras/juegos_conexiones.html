@@ -9,20 +9,16 @@
 
 <style>
 html,body{margin:0;font-family:Arial;background:#0b7}
-#top{
-  padding:10px;background:#0a6;display:flex;gap:10px;flex-wrap:wrap;align-items:center
-}
+#top{padding:10px;background:#0a6;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 #contenedor{max-width:820px;margin:16px auto;padding:10px}
-.caja{
-  background:white;border-radius:12px;padding:14px;margin-bottom:12px;
-  box-shadow:0 4px 10px rgba(0,0,0,.15)
-}
+.caja{background:white;border-radius:12px;padding:14px;margin-bottom:12px;box-shadow:0 4px 10px rgba(0,0,0,.15)}
 .lista{display:flex;flex-wrap:wrap;gap:8px}
 .item{padding:6px 10px;border-radius:8px;background:#e6f7f3;cursor:pointer}
 .item.sel{box-shadow:inset 0 0 0 2px #0b7}
 .item.ok{background:#c8f7c5}
 .item.bad{background:#f7c5c5}
 .item.miss{background:#eee;color:#666}
+.drag{cursor:grab}
 #map{height:320px;border-radius:10px}
 #buscador{display:none}
 .controles{display:flex;gap:10px;justify-content:center}
@@ -47,6 +43,7 @@ button{padding:8px 12px;border-radius:8px;border:none;background:#0b7;color:whit
 </div>
 
 <div id="contenedor">
+
   <div class="caja">
     <strong id="titulo">—</strong>
     <div id="desc"></div>
@@ -55,6 +52,11 @@ button{padding:8px 12px;border-radius:8px;border:none;background:#0b7;color:whit
   <div class="caja">
     <strong>📍 Municipios</strong>
     <div id="municipios" class="lista"></div>
+  </div>
+
+  <div class="caja" id="cajaOrden">
+    <strong>🏘️ Pasa por (ordena)</strong>
+    <div id="pasaPor" class="lista"></div>
   </div>
 
   <div class="caja">
@@ -132,12 +134,40 @@ function renderMunicipios(sel=[]){
   });
 }
 
+function renderPasaPor(arr){
+  pasaPor.innerHTML="";
+  arr.forEach(txt=>{
+    const d=document.createElement("div");
+    d.className="item drag";
+    d.textContent=txt;
+    d.draggable=true;
+    d.ondragstart=e=>e.dataTransfer.setData("t",txt);
+    d.ondragover=e=>e.preventDefault();
+    d.ondrop=e=>{
+      e.preventDefault();
+      const src=e.dataTransfer.getData("t");
+      const a=[...pasaPor.children].map(x=>x.textContent);
+      const i1=a.indexOf(src),i2=a.indexOf(txt);
+      [a[i1],a[i2]]=[a[i2],a[i1]];
+      renderPasaPor(a);
+    };
+    pasaPor.appendChild(d);
+  });
+}
+
 function mostrarFicha(f){
-  titulo.textContent=f.ref;
+  titulo.textContent=`${f.ref} — ${f.nombre||""}`;
   desc.textContent=f.descripcion||"";
   inicio.textContent=f.inicio||"—";
   final.textContent=f.final||"—";
   renderMunicipios(modo==="repaso"?f.municipios:[]);
+  if(modo==="examen"){
+    const arr=[...(f.pasaPor||[])].sort(()=>Math.random()-0.5);
+    renderPasaPor(arr);
+    cajaOrden.style.display="block";
+  }else{
+    cajaOrden.style.display="none";
+  }
   pintarUna(f.ref,"orange");
 }
 
@@ -162,13 +192,19 @@ function corregir(){
   let error=false;
   const f=preguntas[idx];
 
-  document.querySelectorAll(".item").forEach(el=>{
+  document.querySelectorAll("#municipios .item").forEach(el=>{
     el.classList.remove("ok","bad","miss");
     const sel=el.classList.contains("sel");
     const ok=f.municipios.includes(el.textContent);
     if(sel&&ok) el.classList.add("ok");
     else if(sel&&!ok){el.classList.add("bad");error=true;}
     else if(!sel&&ok){el.classList.add("miss");error=true;}
+  });
+
+  document.querySelectorAll("#pasaPor .item").forEach((el,i)=>{
+    el.classList.remove("ok","bad");
+    if(f.pasaPor[i]===el.textContent) el.classList.add("ok");
+    else{el.classList.add("bad");error=true;}
   });
 
   if(error){fallos++;pintarUna(f.ref,"red")}
@@ -179,7 +215,7 @@ function corregir(){
 }
 
 function siguiente(){
-  if(!corregida){alert("Corrige primero");return;}
+  if(!corregida){alert("Debes corregir antes de continuar");return;}
   idx++; corregida=false;
   if(idx>=preguntas.length){alert("Examen terminado");return;}
   mostrarFicha(preguntas[idx]);
@@ -190,9 +226,10 @@ function activarRepaso(){
   modo="repaso";
   buscador.style.display="inline";
   pintarTodas();
-  titulo.textContent="Selecciona una carretera";
+  titulo.textContent="Selecciona una carretera en el mapa";
   desc.textContent="";
   renderMunicipios([]);
+  cajaOrden.style.display="none";
 }
 
 /* ================= FILTROS ================= */
