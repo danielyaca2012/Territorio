@@ -37,6 +37,17 @@ const dataCarreteras = {
     descripcion: "Circunvalación que rodea Arrecife"
   },
 
+    "LZ-10": {
+    nombre: "LZ-10",
+    tipo: "secundaria",
+    municipios: ["Teguise", "Haría"],
+    pasaPor: ["Tahiche", "Nazaret", "Teguise", "Los Valles", "Haría"],
+    conecta: ["LZ-1","LZ-408","LZ-404",  "LZ-207", "LZ-208"],
+    inicio: "Tahiche",
+    final: "Haría",
+    descripcion: "Tahiche-Haría"
+  },
+
   "LZ-20": {
     nombre: "LZ-20",
     tipo: "secundaria",
