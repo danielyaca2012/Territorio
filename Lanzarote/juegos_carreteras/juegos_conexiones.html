@@ -138,7 +138,7 @@ function tipo(ref){
   function aplicarFiltrosRepaso(refInicial = "LZ-1"){
   if(!modoRepaso || !baseLayer) return;
 
-  buscador.value = "";
+  if(buscador.value.trim() !== "") return; // 👈 CLAVE
 
   const usarPrim = chkPrim.checked;
   const usarSec  = chkSec.checked;
@@ -156,27 +156,17 @@ function tipo(ref){
       (usarTer  && t==="terciaria");
 
     if(visible){
-      l.setStyle({
-        color:"#3388ff",
-        weight:4,
-        opacity:1
-      });
-
-      // Guardamos la primera visible por si LZ-1 no entra
+      l.setStyle({ color:"#3388ff", weight:4, opacity:1 });
       if(!primeraVisible) primeraVisible = ref;
     } else {
       l.setStyle({ opacity:0 });
     }
   });
 
-  // Selección automática
-  const refSeleccionar =
-    (usarPrim && refInicial === "LZ-1") ? "LZ-1" : primeraVisible;
-
-  if(refSeleccionar){
-    mostrarFicha(refSeleccionar);
-  }
+  const refSel = primeraVisible;
+  if(refSel) mostrarFicha(refSel);
 }
+
 
 
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}}
@@ -340,13 +330,16 @@ buscador.addEventListener("input", e => {
     return;
   }
 
-  let buscada = q.startsWith("LZ") ? q : "LZ-" + q.replace(/\D/g,"");
+  if(activeLayer){
+    map.removeLayer(activeLayer);
+    activeLayer = null;
+  }
+
+  const buscada = q.startsWith("LZ") ? q : "LZ-" + q.replace(/\D/g,"");
 
   baseLayer.eachLayer(l=>{
     const ref = l.feature.properties.ref.toUpperCase();
-    const coincide = ref === buscada;
-
-    if(coincide){
+    if(ref === buscada){
       l.setStyle({ color:"#ff9800", weight:6, opacity:1 });
       map.fitBounds(l.getBounds(), { padding:[20,20] });
       mostrarFicha(ref);
@@ -355,6 +348,7 @@ buscador.addEventListener("input", e => {
     }
   });
 });
+
   
 /* ================= EVENTS ================= */
 btnIniciar.onclick=iniciar;
