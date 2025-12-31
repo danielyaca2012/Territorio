@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Conexiones de carreteras – Lanzarote</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: Arial, Helvetica, sans-serif;
+  background: linear-gradient(135deg, #0b7, #0a5);
+  color: #042;
+}
+
+#contenedor {
+  max-width: 700px;
+  margin: auto;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+}
+
+.caja {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 15px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.titulo {
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.lista {
+  margin-left: 20px;
+}
+
+button {
+  padding: 10px 15px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background: #0b7;
+  color: white;
+  font-size: 1rem;
+}
+
+button:hover {
+  background: #099;
+}
+
+.controles {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 15px;
+}
+</style>
+</head>
+
+<body>
+
+<div id="contenedor">
+
+  <h1>🛣️ Conoce las carreteras</h1>
+
+  <div class="caja">
+    <div class="titulo" id="nombreCarretera">—</div>
+    <div id="descripcion"></div>
+  </div>
+
+  <div class="caja">
+    <strong>📍 Municipios</strong>
+    <ul class="lista" id="municipios"></ul>
+  </div>
+
+  <div class="caja">
+    <strong>🏘️ Pasa por</strong>
+    <ul class="lista" id="pasaPor"></ul>
+  </div>
+
+  <div class="caja">
+    <strong>🔀 Conecta con</strong>
+    <ul class="lista" id="conecta"></ul>
+  </div>
+
+  <div class="caja">
+    <strong>▶ Inicio:</strong> <span id="inicio"></span><br>
+    <strong>⏹ Final:</strong> <span id="final"></span>
+  </div>
+
+  <div class="controles">
+    <button onclick="anterior()">⬅ Anterior</button>
+    <button onclick="siguiente()">Siguiente ➡</button>
+  </div>
+
+</div>
+
+<script src="data_carreteras.js"></script>
+
+<script>
+// ===============================
+// LÓGICA GENÉRICA (NO TOCAR)
+// ===============================
+
+const claves = Object.keys(dataCarreteras);
+let indice = 0;
+
+function mostrarCarretera() {
+  const c = dataCarreteras[claves[indice]];
+
+  document.getElementById("nombreCarretera").textContent =
+    `${c.nombre} (${c.tipo})`;
+
+  document.getElementById("descripcion").textContent = c.descripcion;
+  document.getElementById("inicio").textContent = c.inicio;
+  document.getElementById("final").textContent = c.final;
+
+  pintarLista("municipios", c.municipios);
+  pintarLista("pasaPor", c.pasaPor);
+  pintarLista("conecta", c.conecta);
+}
+
+function pintarLista(id, array) {
+  const ul = document.getElementById(id);
+  ul.innerHTML = "";
+  array.forEach(e => {
+    const li = document.createElement("li");
+    li.textContent = e;
+    ul.appendChild(li);
+  });
+}
+
+function siguiente() {
+  indice
