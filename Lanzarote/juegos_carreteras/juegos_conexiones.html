@@ -2,40 +2,85 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<title>Juego de conexiones – Lanzarote</title>
+<title>Juego de carreteras – Lanzarote</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
 <style>
-html,body{margin:0;font-family:Arial;background:#0b7;}
-#top{padding:10px;background:#0a6;color:#042;display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
-#contenedor{max-width:820px;margin:16px auto;padding:10px;}
-.caja{background:white;border-radius:12px;padding:14px;margin-bottom:12px;box-shadow:0 4px 10px rgba(0,0,0,.12);}
-.titulo{font-weight:700;font-size:1.1rem;margin-bottom:8px;}
-.lista{display:flex;flex-wrap:wrap;gap:8px;}
-.item{padding:6px 10px;border-radius:8px;background:#e6f7f3;cursor:pointer;}
-.item.sel{box-shadow:inset 0 0 0 2px #0b7;background:#d1f0e6;}
-.item.ok{background:#c8f7c5;}
-.item.bad{background:#f7c5c5;}
-.item.miss{background:#eee;color:#666;}
-.drag{cursor:grab;}
-button{padding:8px 12px;border-radius:8px;border:none;background:#0b7;color:white;cursor:pointer;}
-button:hover{background:#099;}
-#map{height:320px;border-radius:10px;}
-.controles{display:flex;gap:10px;justify-content:center;}
-
+html,body{
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#0b7;
+}
+#top{
+  padding:10px;
+  background:#0a6;
+  color:#042;
+  display:flex;
+  gap:10px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+#contenedor{
+  max-width:820px;
+  margin:16px auto;
+  padding:10px;
+}
+.caja{
+  background:white;
+  border-radius:12px;
+  padding:14px;
+  margin-bottom:12px;
+  box-shadow:0 4px 10px rgba(0,0,0,.15);
+}
+.titulo{
+  font-weight:bold;
+  font-size:1.2rem;
+}
+.lista{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.item{
+  padding:6px 10px;
+  border-radius:8px;
+  background:#e6f7f3;
+  cursor:pointer;
+}
+.item.sel{ box-shadow:inset 0 0 0 2px #0b7 }
+.item.ok{ background:#c8f7c5 }
+.item.bad{ background:#f7c5c5 }
+.item.miss{ background:#eee; color:#666 }
+button{
+  padding:8px 12px;
+  border-radius:8px;
+  border:none;
+  background:#0b7;
+  color:white;
+  cursor:pointer;
+}
+button:hover{ background:#099 }
+#map{ height:320px; border-radius:10px }
+#buscador{ display:none }
+.controles{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+}
 #estadisticas{
-  position:fixed;top:50%;left:50%;
+  display:none;
+  position:fixed;
+  top:50%;
+  left:50%;
   transform:translate(-50%,-50%);
   background:rgba(0,0,0,.8);
-  color:white;padding:30px 40px;
-  border-radius:14px;display:none;z-index:2000;
+  color:white;
+  padding:24px 36px;
+  border-radius:14px;
   text-align:center;
-}
-
-#buscador{
-  display:none;
+  z-index:1000;
 }
 </style>
 </head>
@@ -43,10 +88,8 @@ button:hover{background:#099;}
 <body>
 
 <div id="top">
-  <button id="btnIniciar">📝 Iniciar examen</button>
-  <button id="btnRepaso">📖 Modo repaso</button>
-
-  <input id="buscador" placeholder="Buscar carretera (LZ-2, LZ-30...)">
+  <button onclick="iniciarExamen()">📝 Iniciar examen</button>
+  <button onclick="activarRepaso()">📖 Modo repaso</button>
 
   <label><input type="checkbox" id="chkPrim" checked> Primarias</label>
   <label><input type="checkbox" id="chkSec" checked> Secundarias</label>
@@ -55,13 +98,16 @@ button:hover{background:#099;}
   <strong>Correctas: <span id="correctas">0</span></strong>
   <strong>Fallos: <span id="fallos">0</span></strong>
 
+  <input id="buscador" placeholder="Buscar carretera (LZ-2)">
+
   <button style="margin-left:auto" onclick="volver()">⬅ Volver</button>
 </div>
 
 <div id="contenedor">
+
   <div class="caja">
-    <div id="tituloFicha" class="titulo">—</div>
-    <div id="descFicha"></div>
+    <div id="titulo" class="titulo">—</div>
+    <div id="desc"></div>
   </div>
 
   <div class="caja">
@@ -70,21 +116,19 @@ button:hover{background:#099;}
   </div>
 
   <div class="caja">
-    <strong>🏘️ Pasa por</strong>
-    <div id="pasaPor" class="lista"></div>
-  </div>
-
-  <div class="caja">
     ▶ Inicio: <span id="inicio">—</span><br>
     ⏹ Final: <span id="final">—</span>
   </div>
 
-  <div class="caja"><div id="map"></div></div>
+  <div class="caja">
+    <div id="map"></div>
+  </div>
 
   <div class="controles">
-    <button id="btnCorregir">✔ Corregir</button>
-    <button id="btnSiguiente">Siguiente ➡</button>
+    <button onclick="corregir()">✔ Corregir</button>
+    <button onclick="siguiente()">Siguiente ➡</button>
   </div>
+
 </div>
 
 <div id="estadisticas"></div>
@@ -93,88 +137,133 @@ button:hover{background:#099;}
 <script src="data_carreteras.js"></script>
 
 <script>
-const map=L.map("map").setView([28.96,-13.60],11);
-L.tileLayer("https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png").addTo(map);
+/* ================= MAPA ================= */
+const map = L.map("map").setView([28.96,-13.60],11);
+L.tileLayer(
+  "https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"
+).addTo(map);
 
-let geoData, baseLayer, activeLayer;
-let modoRepaso=true;
-let corregida=false;
-
+let geoData=null, activeLayer=null;
 fetch("carreteras_lanzarote_fin.geojson")
-.then(r=>r.json())
-.then(j=>{
-  geoData=j;
-  baseLayer=L.geoJSON(geoData,{
-    style:{color:"#3388ff",weight:4},
-    onEachFeature:(f,l)=>{
-      l.on("click",()=>{
-        if(modoRepaso) mostrarFicha(f.properties.ref);
-      });
-    }
-  }).addTo(map);
-});
+  .then(r=>r.json()).then(j=>geoData=j);
 
 function highlight(ref,color){
   if(activeLayer) map.removeLayer(activeLayer);
-  activeLayer=L.geoJSON(geoData,{
-    filter:f=>f.properties.ref===ref,
+  if(!geoData) return;
+  activeLayer = L.geoJSON(geoData,{
+    filter:f=>String(f.properties.ref)===String(ref),
     style:{color,weight:6}
   }).addTo(map);
   map.fitBounds(activeLayer.getBounds(),{padding:[20,20]});
 }
 
-function mostrarFicha(ref){
-  const f=dataCarreteras[ref];
-  if(!f)return;
-  tituloFicha.textContent=ref;
-  descFicha.textContent=f.descripcion||"";
-  inicio.textContent=f.inicio||"—";
-  final.textContent=f.final||"—";
-  municipios.innerHTML=f.municipios.map(m=>`<div class="item">${m}</div>`).join("");
-  pasaPor.innerHTML=f.pasaPor.map(p=>`<div class="item">${p}</div>`).join("");
-  highlight(ref,"orange");
+/* ================= ESTADO ================= */
+const TODOS=["Arrecife","Haría","San Bartolomé","Teguise","Tías","Tinajo","Yaiza"];
+let modo="repaso";
+let preguntas=[], idx=0;
+let correctas=0, fallos=0;
+let corregida=false;
+
+/* ================= UI ================= */
+function renderMunicipios(selected=[]){
+  const c=document.getElementById("municipios");
+  c.innerHTML="";
+  TODOS.forEach(m=>{
+    const d=document.createElement("div");
+    d.className="item";
+    d.textContent=m;
+    if(selected.includes(m)) d.classList.add("sel");
+    d.onclick=()=>{ if(modo==="examen") d.classList.toggle("sel"); };
+    c.appendChild(d);
+  });
 }
 
-btnRepaso.onclick=()=>{
-  modoRepaso=true;
-  corregida=false;
-  estadisticas.style.display="none";
-  document.getElementById("buscador").style.display="inline";
-};
+function mostrarFicha(f){
+  document.getElementById("titulo").textContent=f.ref;
+  document.getElementById("desc").textContent=f.descripcion||"";
+  document.getElementById("inicio").textContent=f.inicio||"—";
+  document.getElementById("final").textContent=f.final||"—";
+  renderMunicipios(modo==="repaso"?f.municipios:[]);
+  highlight(f.ref,"orange");
+}
 
-btnIniciar.onclick=()=>{
-  modoRepaso=false;
-  corregida=false;
-  estadisticas.style.display="none";
+/* ================= EXAMEN ================= */
+function iniciarExamen(){
+  modo="examen";
   document.getElementById("buscador").style.display="none";
-  iniciarExamen();
-};
+  document.getElementById("estadisticas").style.display="none";
 
-btnCorregir.onclick=()=>{
-  if(modoRepaso) return;
+  preguntas = Object.entries(dataCarreteras).map(([ref,o])=>{
+    o.ref=ref; return o;
+  });
+
+  preguntas.sort(()=>Math.random()-0.5);
+  idx=0; correctas=0; fallos=0;
+  corregida=false;
+  updateCounters();
+  mostrarFicha(preguntas[idx]);
+}
+
+function corregir(){
+  if(modo!=="examen") return;
+  const f=preguntas[idx];
+  let error=false;
+
+  document.querySelectorAll("#municipios .item").forEach(el=>{
+    el.classList.remove("ok","bad","miss");
+    const sel=el.classList.contains("sel");
+    const ok=f.municipios.includes(el.textContent);
+    if(sel && ok) el.classList.add("ok");
+    else if(sel && !ok){ el.classList.add("bad"); error=true; }
+    else if(!sel && ok){ el.classList.add("miss"); error=true; }
+  });
+
+  if(error){ fallos++; highlight(f.ref,"red"); }
+  else{ correctas++; highlight(f.ref,"green"); }
+
   corregida=true;
-  alert("Corrección aplicada (simulada aquí)");
-};
+  updateCounters();
+}
 
-btnSiguiente.onclick=()=>{
-  if(modoRepaso) return;
-  if(!corregida){
-    alert("Debes corregir la pregunta antes de continuar");
+function siguiente(){
+  if(modo!=="examen") return;
+  if(!corregida){ alert("Debes corregir antes de continuar"); return; }
+
+  idx++; corregida=false;
+  if(idx>=preguntas.length){
+    estadisticas.innerHTML=`
+      <h2>📊 Resultados</h2>
+      Correctas: ${correctas}<br>
+      Fallos: ${fallos}
+    `;
+    estadisticas.style.display="block";
     return;
   }
-  corregida=false;
-  alert("Siguiente pregunta (simulada)");
-};
+  mostrarFicha(preguntas[idx]);
+}
 
+/* ================= REPASO ================= */
+function activarRepaso(){
+  modo="repaso";
+  document.getElementById("buscador").style.display="inline";
+  document.getElementById("estadisticas").style.display="none";
+}
+
+/* buscador */
 document.getElementById("buscador").oninput=e=>{
-  const v=e.target.value.toUpperCase();
-  const ref=Object.keys(dataCarreteras).find(r=>r.includes(v));
-  if(ref) mostrarFicha(ref);
+  const ref=e.target.value.trim().toUpperCase();
+  if(dataCarreteras[ref]) mostrarFicha({...dataCarreteras[ref],ref});
 };
 
-function iniciarExamen(){ /* lógica real ya la tienes */ }
+/* ================= UTIL ================= */
+function updateCounters(){
+  document.getElementById("correctas").textContent=correctas;
+  document.getElementById("fallos").textContent=fallos;
+}
+function volver(){ window.location.href="/Territorio/index.html"; }
 
-function volver(){location.href="/Territorio/index.html";}
+/* inicio */
+activarRepaso();
 </script>
 
 </body>
