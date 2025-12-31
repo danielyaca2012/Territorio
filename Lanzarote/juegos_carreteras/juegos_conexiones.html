@@ -249,10 +249,8 @@ function siguiente(){
 function mostrarResultados(){
   estadisticas.innerHTML=`
   <h2>📊 Resultados</h2>
-  ✔ Correctas: ${correctas}<br>
-  ❌ Fallos: ${fallos}<br><br>
-  🟢 Perfectas: ${perfectas}<br>
-  🟠 Con errores: ${conErrores}`;
+  🟢 Correctas: ${correctas}<br>
+  🟠 Fallos: ${fallos}<br>`;
   estadisticas.style.display="block";
 }
 
@@ -265,7 +263,13 @@ function volver(){location.href="/Territorio/index.html";}
 
 /* ================= EVENTS ================= */
 btnIniciar.onclick=iniciar;
-btnRepaso.onclick=()=>{modoRepaso=true;};
+btnRepaso.onclick = () => {
+  modoRepaso = true;
+
+  // ocultar resultados si estaban visibles
+  estadisticas.style.display = "none";
+};
+
 btnCorregir.onclick=corregir;
 btnSiguiente.onclick=siguiente;
 
