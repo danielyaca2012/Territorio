@@ -10,67 +10,58 @@
 <style>
 html,body{
   margin:0;
-  font-family:Arial;
-  background:linear-gradient(135deg,#0b7,#0a5);
+  font-family:Arial,Helvetica,sans-serif;
+  background:#0b7;
 }
-
 #top{
   padding:10px;
-  background:#0b7;
+  background:#0a6;
+  color:#042;
   display:flex;
   gap:10px;
-  flex-wrap:wrap;
   align-items:center;
+  flex-wrap:wrap;
 }
-
 #contenedor{
-  max-width:760px;
-  margin:auto;
-  padding:15px;
+  max-width:700px;
+  margin:20px auto;
 }
-
 .caja{
   background:white;
+  border-radius:12px;
   padding:15px;
   margin-bottom:12px;
-  border-radius:12px;
-  box-shadow:0 4px 10px rgba(0,0,0,.15);
 }
-
-h2{margin:0}
-
+.titulo{
+  font-weight:bold;
+  font-size:1.2rem;
+}
 .lista{
-  list-style:none;
-  padding:0;
-}
-
-.lista li{
-  background:#eef;
-  margin:5px 0;
-  padding:6px 10px;
-  border-radius:6px;
   display:flex;
-  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:8px;
 }
-
-button{
+.item{
   padding:6px 10px;
-  border:none;
+  background:#e6f7f3;
   border-radius:6px;
+  cursor:grab;
+}
+button{
+  padding:8px 12px;
+  border-radius:6px;
+  border:none;
+  cursor:pointer;
   background:#0b7;
   color:white;
-  cursor:pointer;
 }
-
-button:hover{background:#099}
-
-#map{
-  height:260px;
-  border-radius:12px;
+button:hover{ background:#099; }
+#map{ height:300px; border-radius:12px; }
+.controles{
+  display:flex;
+  gap:10px;
+  justify-content:center;
 }
-
-.correcto{color:green;font-weight:bold}
-.incorrecto{color:red;font-weight:bold}
 </style>
 </head>
 
@@ -83,40 +74,36 @@ button:hover{background:#099}
   <label><input type="checkbox" id="chkSec" checked> Secundarias</label>
   <label><input type="checkbox" id="chkTer" checked> Terciarias</label>
 
-  <span id="estado">—</span>
-  <span id="puntos">Puntos: 0</span>
-  <span id="fallos">Fallos: 0</span>
+  <strong>Puntos: <span id="puntos">0</span></strong>
+  <strong>Fallos: <span id="fallos">0</span></strong>
 
   <button style="margin-left:auto" onclick="volver()">⬅ Volver</button>
 </div>
 
 <div id="contenedor">
 
-  <div class="caja">
-    <h2 id="titulo">—</h2>
-    <p id="descripcion"></p>
-  </div>
+  <div class="caja titulo" id="nombre">—</div>
 
   <div class="caja">
     📍 <strong>Municipios (ordena)</strong>
-    <ul id="municipios" class="lista"></ul>
+    <div class="lista" id="municipios"></div>
   </div>
 
   <div class="caja">
     🏘️ <strong>Pasa por (ordena)</strong>
-    <ul id="pasaPor" class="lista"></ul>
+    <div class="lista" id="pasaPor"></div>
   </div>
 
   <div class="caja">
-    ▶ <strong>Inicio:</strong> <span id="inicio"></span><br>
-    ⏹ <strong>Final:</strong> <span id="final"></span>
+    ▶ Inicio: <span id="inicio"></span><br>
+    ⏹ Final: <span id="final"></span>
   </div>
 
   <div class="caja">
     <div id="map"></div>
   </div>
 
-  <div style="text-align:center">
+  <div class="controles">
     <button onclick="corregir()">✔ Corregir</button>
     <button onclick="siguiente()">Siguiente ➡</button>
   </div>
@@ -128,149 +115,137 @@ button:hover{background:#099}
 
 <script>
 /* ================= MAPA ================= */
-const map=L.map("map").setView([28.96,-13.6],11);
-L.tileLayer(
-  "https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png"
-).addTo(map);
+const map = L.map("map").setView([28.96,-13.60],11);
+L.tileLayer("https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png").addTo(map);
 
-let geoData,capa;
+/* ================= VARIABLES ================= */
+let lista=[], i=0;
+let puntos=0, fallos=0;
+let modo="repaso";
+let corregido=false;
+let capas={};
 
-/* ================= ESTADO ================= */
-let lista=[];
-let i=0,puntos=0,fallos=0;
-
-/* ================= GEOJSON ================= */
+/* ================= CARGA GEOJSON ================= */
 fetch("carreteras_lanzarote_fin.geojson")
 .then(r=>r.json())
-.then(d=>geoData=d);
+.then(g=>{
+  L.geoJSON(g,{
+    style:{ color:"#bbb", weight:4 },
+    onEachFeature:(f,l)=>{
+      if(f.properties.ref){
+        capas[f.properties.ref]=l;
+      }
+    }
+  }).addTo(map);
+});
 
 /* ================= UTIL ================= */
-function tipo(ref){
-  const n=parseInt(ref.replace("LZ-",""));
-  if([1,2,3].includes(n))return"primaria";
-  if(n>=10&&n<=67)return"secundaria";
-  return"terciaria";
-}
-
 function barajar(a){
   for(let i=a.length-1;i>0;i--){
     const j=Math.floor(Math.random()*(i+1));
     [a[i],a[j]]=[a[j],a[i]];
   }
 }
-
-/* ================= INICIO ================= */
-function iniciar(){
-  const usar=[];
-  if(chkPrim.checked)usar.push("primaria");
-  if(chkSec.checked)usar.push("secundaria");
-  if(chkTer.checked)usar.push("terciaria");
-
-  lista=Object.values(dataCarreteras)
-    .filter(c=>usar.includes(c.tipo));
-
-  if(lista.length===0){
-    alert("Selecciona al menos una categoría");
-    return;
-  }
-
-  barajar(lista);
-  i=0;puntos=0;fallos=0;
-  actualizar();
-  mostrar();
+function crearLista(id,arr){
+  const cont=document.getElementById(id);
+  cont.innerHTML="";
+  arr.forEach(t=>{
+    const d=document.createElement("div");
+    d.className="item";
+    d.textContent=t;
+    d.draggable=true;
+    d.ondragstart=e=>e.dataTransfer.setData("txt",t);
+    d.ondragover=e=>e.preventDefault();
+    d.ondrop=e=>{
+      e.preventDefault();
+      const src=e.dataTransfer.getData("txt");
+      const a=[...cont.children].map(x=>x.textContent);
+      const i1=a.indexOf(src), i2=a.indexOf(t);
+      [a[i1],a[i2]]=[a[i2],a[i1]];
+      crearLista(id,a);
+    };
+    cont.appendChild(d);
+  });
 }
 
 /* ================= MOSTRAR ================= */
 function mostrar(){
   const c=lista[i];
-  estado.textContent=`${i+1}/${lista.length}`;
-  titulo.textContent=c.nombre;
-  descripcion.textContent=c.descripcion;
-  inicio.textContent=c.inicio;
-  final.textContent=c.final;
+  document.getElementById("nombre").textContent=c.nombre+" ("+c.ref+")";
+  document.getElementById("inicio").textContent=c.inicio;
+  document.getElementById("final").textContent=c.final;
 
-  pintarLista("municipios",c.municipios);
-  pintarLista("pasaPor",c.pasaPor);
-  dibujar(c.nombre);
+  crearLista("municipios",[...c.municipios].sort(()=>Math.random()-0.5));
+  crearLista("pasaPor",[...c.pasaPor].sort(()=>Math.random()-0.5));
+
+  Object.values(capas).forEach(l=>l.setStyle({color:"#bbb",weight:4}));
+  if(capas[c.ref]){
+    capas[c.ref].setStyle({color:"orange",weight:7});
+    map.fitBounds(capas[c.ref].getBounds());
+  }
 }
 
-function pintarLista(id,arr){
-  const ul=document.getElementById(id);
-  ul.innerHTML="";
-  const copia=[...arr];
-  barajar(copia);
+/* ================= EXAMEN ================= */
+function iniciar(){
+  const usar=[];
+  if(chkPrim.checked) usar.push("primaria");
+  if(chkSec.checked) usar.push("secundaria");
+  if(chkTer.checked) usar.push("terciaria");
 
-  copia.forEach((t,idx)=>{
-    const li=document.createElement("li");
-    li.textContent=t;
+  lista=Object.values(dataCarreteras).filter(c=>usar.includes(c.tipo));
+  if(!lista.length){ alert("Selecciona categorías"); return; }
 
-    const ctr=document.createElement("span");
-    ctr.innerHTML=`
-      <button onclick="mover(this,-1)">▲</button>
-      <button onclick="mover(this,1)">▼</button>
-    `;
-    li.appendChild(ctr);
-    ul.appendChild(li);
-  });
+  barajar(lista);
+  i=0; puntos=0; fallos=0;
+  modo="examen"; corregido=false;
+  actualizar(); mostrar();
 }
 
-function mover(btn,dir){
-  const li=btn.closest("li");
-  const ul=li.parentNode;
-  const idx=[...ul.children].indexOf(li);
-  const nuevo=idx+dir;
-  if(nuevo<0||nuevo>=ul.children.length)return;
-  ul.insertBefore(li,ul.children[nuevo+(dir>0?1:0)]);
-}
-
-/* ================= CORRECCIÓN ================= */
-function leer(id){
-  return [...document.getElementById(id).children]
-    .map(li=>li.firstChild.textContent);
-}
-
+/* ================= CORREGIR ================= */
 function corregir(){
-  const c=lista[i];
-  const ok1=JSON.stringify(leer("municipios"))===JSON.stringify(c.municipios);
-  const ok2=JSON.stringify(leer("pasaPor"))===JSON.stringify(c.pasaPor);
+  if(modo!=="examen") return;
 
-  if(ok1&&ok2){
+  const c=lista[i];
+  const m=[...document.querySelectorAll("#municipios .item")].map(x=>x.textContent);
+  const p=[...document.querySelectorAll("#pasaPor .item")].map(x=>x.textContent);
+
+  const ok1=JSON.stringify(m)===JSON.stringify(c.municipios);
+  const ok2=JSON.stringify(p)===JSON.stringify(c.pasaPor);
+
+  if(ok1 && ok2){
     puntos++;
-    pintar("green");
+    capas[c.ref]?.setStyle({color:"green"});
   }else{
     fallos++;
-    pintar("red");
+    capas[c.ref]?.setStyle({color:"red"});
   }
+  corregido=true;
   actualizar();
 }
 
-function actualizar(){
-  puntosSpan.textContent=`Puntos: ${puntos}`;
-  fallosSpan.textContent=`Fallos: ${fallos}`;
-}
-
-/* ================= MAPA ================= */
-function dibujar(ref){
-  if(capa)map.removeLayer(capa);
-  capa=L.geoJSON(geoData,{
-    filter:f=>f.properties.ref===ref,
-    style:{color:"blue",weight:6}
-  }).addTo(map);
-  map.fitBounds(capa.getBounds(),{padding:[20,20]});
-}
-
-function pintar(color){
-  capa.setStyle({color,weight:7});
-}
-
-/* ================= NAVEGACIÓN ================= */
+/* ================= SIGUIENTE ================= */
 function siguiente(){
-  if(i<lista.length-1){i++;mostrar();}
+  if(modo==="examen" && !corregido){
+    alert("Primero corrige");
+    return;
+  }
+  if(i<lista.length-1){
+    i++; corregido=false; mostrar();
+  }
 }
 
-function volver(){
-  location.href="/Territorio/index.html";
+/* ================= UI ================= */
+function actualizar(){
+  puntosSpan.textContent=puntos;
+  fallosSpan.textContent=fallos;
 }
+function volver(){
+  window.location.href="/Territorio/index.html";
+}
+
+/* ================= INICIO REPASO ================= */
+lista=Object.values(dataCarreteras);
+mostrar();
 </script>
 
 </body>
