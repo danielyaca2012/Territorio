@@ -135,12 +135,16 @@ function tipo(ref){
   if(n>=10&&n<=67)return"secundaria";
   return"terciaria";
 }
-  function aplicarFiltrosRepaso(){
+  function aplicarFiltrosRepaso(refInicial = "LZ-1"){
   if(!modoRepaso || !baseLayer) return;
-   buscador.value = "";
+
+  buscador.value = "";
+
   const usarPrim = chkPrim.checked;
   const usarSec  = chkSec.checked;
   const usarTer  = chkTer.checked;
+
+  let primeraVisible = null;
 
   baseLayer.eachLayer(l=>{
     const ref = l.feature.properties.ref;
@@ -157,13 +161,23 @@ function tipo(ref){
         weight:4,
         opacity:1
       });
+
+      // Guardamos la primera visible por si LZ-1 no entra
+      if(!primeraVisible) primeraVisible = ref;
     } else {
-      l.setStyle({
-        opacity:0
-      });
+      l.setStyle({ opacity:0 });
     }
   });
+
+  // Selección automática
+  const refSeleccionar =
+    (usarPrim && refInicial === "LZ-1") ? "LZ-1" : primeraVisible;
+
+  if(refSeleccionar){
+    mostrarFicha(refSeleccionar);
+  }
 }
+
 
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}}
 
@@ -212,6 +226,21 @@ function renderPasaPor(arr){
 }
 
 /* ================= REPASO ================= */
+function entrarRepasoInicial(){
+  modoRepaso = true;
+  estadisticas.style.display = "none";
+
+  // Mostrar buscador
+  buscador.style.display = "inline";
+
+  // Limpiar estados de examen
+  municipios.innerHTML = "";
+  pasaPor.innerHTML = "";
+
+  // Aplicar filtros y seleccionar LZ-1
+  aplicarFiltrosRepaso("LZ-1");
+}
+
 function mostrarFicha(ref){
   const f=dataCarreteras[ref];
   if(!f)return;
@@ -347,6 +376,10 @@ const fallosEl = document.getElementById("fallos");
 chkPrim.onchange = aplicarFiltrosRepaso;
 chkSec.onchange  = aplicarFiltrosRepaso;
 chkTer.onchange  = aplicarFiltrosRepaso;
+
+  window.addEventListener("load", () => {
+  entrarRepasoInicial();
+});
 
 </script>
 
