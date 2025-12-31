@@ -198,6 +198,8 @@ document.getElementById("start").onclick = () => {
   modoRepaso = false;
   juegoTerminado = false;
   ocultarEstadisticas();
+  // 🔒 PROTECCIÓN: eliminar cualquier tooltip previo
+  carreteras.forEach(c => c.layer.unbindTooltip());
 
   carreteras.forEach(c => {
     c.activa =
@@ -227,10 +229,19 @@ document.getElementById("start").onclick = () => {
 document.getElementById("repaso").onclick = () => {
   modoRepaso = true;
   juegoTerminado = true;
-  carreteras.forEach(c => c.layer.bindTooltip(c.ref,{permanent:true}));
+
+  carreteras.forEach(c => {
+    if(c.activa){
+      c.layer.bindTooltip(c.ref,{ permanent:true });
+    } else {
+      c.layer.unbindTooltip();
+    }
+  });
+
   document.getElementById("carretera").textContent = "Modo repaso";
   document.getElementById("progreso").textContent = "";
 };
+
 
 /* ================= JUEGO ================= */
 function nextRound(){
@@ -325,3 +336,4 @@ function shuffle(a){
 
 </body>
 </html>
+
