@@ -1,106 +1,101 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8" />
 <title>Juego de conexiones – Lanzarote</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
 <style>
-html,body{
-  margin:0;
-  font-family:Arial,Helvetica,sans-serif;
-  background:#0b7;
-}
-#top{
-  padding:10px;
-  background:#0a6;
-  color:#042;
-  display:flex;
-  gap:10px;
-  align-items:center;
-  flex-wrap:wrap;
-}
-#contenedor{
-  max-width:720px;
-  margin:20px auto;
-}
-.caja{
-  background:white;
-  border-radius:12px;
-  padding:15px;
-  margin-bottom:12px;
-}
-.titulo{
-  font-weight:bold;
-  font-size:1.2rem;
-}
-.lista{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-}
-.item{
-  padding:6px 10px;
-  background:#e6f7f3;
-  border-radius:6px;
-  cursor:pointer;
-}
-.item.drag{ cursor:grab; }
-.ok{ background:#c8f7c5; }
-.bad{ background:#f7c5c5; }
-.miss{ background:#eee; }
-
-button{
-  padding:8px 12px;
-  border-radius:6px;
-  border:none;
-  cursor:pointer;
-  background:#0b7;
-  color:white;
-}
-#map{ height:300px; border-radius:12px; }
-.controles{
-  display:flex;
-  gap:10px;
-  justify-content:center;
-}
+  html,body{
+    margin:0;
+    font-family:Arial,Helvetica,sans-serif;
+    background:#0b7;
+  }
+  #top{
+    padding:10px;
+    background:#0a6;
+    color:#042;
+    display:flex;
+    gap:10px;
+    align-items:center;
+    flex-wrap:wrap;
+  }
+  #contenedor{ max-width:820px; margin:18px auto; padding:10px; }
+  .caja{
+    background:white;
+    border-radius:12px;
+    padding:14px;
+    margin-bottom:12px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.12);
+  }
+  .titulo{ font-weight:700; font-size:1.1rem; margin-bottom:8px; }
+  .lista{ display:flex; flex-wrap:wrap; gap:8px; }
+  .item{
+    padding:6px 10px;
+    border-radius:8px;
+    background:#e6f7f3;
+    cursor:pointer;
+    user-select:none;
+  }
+  .item.sel{ box-shadow:inset 0 0 0 2px #0b7; background:#d1f0e6; }
+  .item.ok{ background:#c8f7c5; }
+  .item.bad{ background:#f7c5c5; }
+  .item.miss{ background:#f0f0f0; color:#666; }
+  .drag{ cursor:grab; }
+  button{
+    padding:8px 12px;
+    border-radius:8px;
+    border:none;
+    background:#0b7;
+    color:white;
+    cursor:pointer;
+  }
+  button:hover{ background:#099; }
+  #map{ height:320px; border-radius:10px; overflow:hidden; }
+  .controles{ display:flex; gap:10px; justify-content:center; margin-top:6px; }
+  @media (max-width:640px){
+    #contenedor{ padding:8px; }
+  }
 </style>
 </head>
 
 <body>
 
 <div id="top">
-  <button onclick="iniciar()">📝 Iniciar examen</button>
+  <button id="btnIniciar">📝 Iniciar examen</button>
 
   <label><input type="checkbox" id="chkPrim" checked> Primarias</label>
   <label><input type="checkbox" id="chkSec" checked> Secundarias</label>
   <label><input type="checkbox" id="chkTer" checked> Terciarias</label>
 
-  <strong>Correctas: <span id="correctas">0</span></strong>
-  <strong>Fallos: <span id="fallos">0</span></strong>
+  <strong style="margin-left:10px">Correctas: <span id="correctas">0</span></strong>
+  <strong style="margin-left:6px">Fallos: <span id="fallos">0</span></strong>
 
   <button style="margin-left:auto" onclick="volver()">⬅ Volver</button>
 </div>
 
 <div id="contenedor">
 
-  <div class="caja titulo" id="nombre">—</div>
-
   <div class="caja">
-    📍 <strong>Municipios (selecciona)</strong>
-    <div class="lista" id="municipios"></div>
+    <div id="tituloFicha" class="titulo">—</div>
+    <div id="descFicha"></div>
   </div>
 
   <div class="caja">
-    🏘️ <strong>Pasa por (ordena)</strong>
-    <div class="lista" id="pasaPor"></div>
+    <div style="font-weight:700;margin-bottom:8px">📍 Municipios (selecciona)</div>
+    <div id="municipios" class="lista"></div>
   </div>
 
   <div class="caja">
-    ▶ Inicio: <span id="inicio"></span><br>
-    ⏹ Final: <span id="final"></span>
+    <div style="font-weight:700;margin-bottom:8px">🏘️ Pasa por (ordena: arrastra/soltar)</div>
+    <div id="pasaPor" class="lista"></div>
+  </div>
+
+  <div class="caja">
+    ▶ Inicio: <span id="inicio">—</span><br>
+    ⏹ Final: <span id="final">—</span>
   </div>
 
   <div class="caja">
@@ -108,8 +103,8 @@ button{
   </div>
 
   <div class="controles">
-    <button onclick="corregir()">✔ Corregir</button>
-    <button onclick="siguiente()">Siguiente ➡</button>
+    <button id="btnCorregir">✔ Corregir</button>
+    <button id="btnSiguiente">Siguiente ➡</button>
   </div>
 
 </div>
@@ -118,144 +113,307 @@ button{
 <script src="data_carreteras.js"></script>
 
 <script>
-/* ================= MAPA ================= */
-const map = L.map("map").setView([28.96,-13.60],11);
-L.tileLayer("https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png").addTo(map);
+/* ================= SETUP MAPA ================= */
+const map = L.map("map").setView([28.96, -13.60], 11);
 
-/* ================= VARIABLES ================= */
-const TODOS_MUNICIPIOS=[
-  "Arrecife","Haría","San Bartolomé",
-  "Teguise","Tías","Tinajo","Yaiza"
-];
+// tile sin etiquetas (sin nombres de lugares)
+L.tileLayer("https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png", {
+  attribution: '&copy; OpenStreetMap'
+}).addTo(map);
 
-let lista=[], i=0;
-let correctas=0, fallos=0;
-let corregido=false;
-let capas={};
-let falloEnPregunta=false;
+let geoData = null;
+let activeLayer = null;
+let baseLayer = null;
 
-/* ================= GEOJSON ================= */
+// cargar geojson y guardar en geoData
 fetch("carreteras_lanzarote_fin.geojson")
-.then(r=>r.json())
-.then(g=>{
-  L.geoJSON(g,{
-    style:{ color:"#bbb", weight:4 },
-    onEachFeature:(f,l)=>{
-      if(f.properties.ref) capas[f.properties.ref]=l;
-    }
-  }).addTo(map);
-});
+  .then(r => r.json())
+  .then(j => {
+    geoData = j;
+    // base: dibujar todas en gris claro
+    baseLayer = L.geoJSON(geoData, {
+      style: { color: "#bbb", weight: 4 }
+    }).addTo(map);
+  });
 
-/* ================= UTIL ================= */
-function barajar(a){
+/* ================= DATOS Y ESTADO ================= */
+const TODOS_MUNICIPIOS = ["Arrecife","Haría","San Bartolomé","Teguise","Tías","Tinajo","Yaiza"];
+
+let preguntas = []; // array de {ref, ...data}
+let idx = 0;
+let correctas = 0;
+let fallos = 0;
+let corregido = false;
+const preguntasContestadas = new Set(); // indices ya contabilizados
+
+/* ================= UTILIDADES ================= */
+function tipoCarreteraFromRef(ref){
+  const n = parseInt(String(ref).replace(/[^0-9]/g,''), 10);
+  if([1,2,3].includes(n)) return "primaria";
+  if(n >= 10 && n <= 67) return "secundaria";
+  return "terciaria";
+}
+function shuffle(a){
   for(let i=a.length-1;i>0;i--){
     const j=Math.floor(Math.random()*(i+1));
     [a[i],a[j]]=[a[j],a[i]];
   }
 }
-function crearMunicipios(){
-  const cont=document.getElementById("municipios");
-  cont.innerHTML="";
-  TODOS_MUNICIPIOS.forEach(m=>{
-    const d=document.createElement("div");
-    d.className="item";
-    d.textContent=m;
-    d.onclick=()=>d.classList.toggle("sel");
+
+/* ================= CREACIÓN DE LISTAS UI ================= */
+function renderMunicipios(selectedNames=[]){
+  const cont = document.getElementById("municipios");
+  cont.innerHTML = "";
+  TODOS_MUNICIPIOS.forEach(name=>{
+    const d = document.createElement("div");
+    d.className = "item";
+    d.textContent = name;
+    if(selectedNames.includes(name)) d.classList.add("sel");
+    // toggle selection
+    d.onclick = () => {
+      d.classList.toggle("sel");
+    };
     cont.appendChild(d);
   });
 }
-function crearOrden(id,arr){
-  const c=document.getElementById(id);
-  c.innerHTML="";
-  arr.forEach(t=>{
-    const d=document.createElement("div");
-    d.className="item drag";
-    d.textContent=t;
-    d.draggable=true;
-    d.ondragstart=e=>e.dataTransfer.setData("txt",t);
-    d.ondragover=e=>e.preventDefault();
-    d.ondrop=e=>{
+
+function renderPasaPor(list){
+  const cont = document.getElementById("pasaPor");
+  cont.innerHTML = "";
+  list.forEach(text => {
+    const d = document.createElement("div");
+    d.className = "item drag";
+    d.textContent = text;
+    d.draggable = true;
+    d.ondragstart = e => e.dataTransfer.setData("text/plain", text);
+    d.ondragover = e => e.preventDefault();
+    d.ondrop = e => {
       e.preventDefault();
-      const src=e.dataTransfer.getData("txt");
-      const a=[...c.children].map(x=>x.textContent);
-      const i1=a.indexOf(src), i2=a.indexOf(t);
-      [a[i1],a[i2]]=[a[i2],a[i1]];
-      crearOrden(id,a);
+      const src = e.dataTransfer.getData("text/plain");
+      // swap positions src <-> text
+      const arr = [...cont.children].map(x=>x.textContent);
+      const i1 = arr.indexOf(src);
+      const i2 = arr.indexOf(text);
+      if(i1 === -1 || i2 === -1) return;
+      [arr[i1], arr[i2]] = [arr[i2], arr[i1]];
+      renderPasaPor(arr);
     };
-    c.appendChild(d);
+    cont.appendChild(d);
   });
 }
 
-/* ================= MOSTRAR ================= */
-function mostrar(){
-  const c=lista[i];
-  corregido=false;
-  falloEnPregunta=false;
+/* ================= DIBUJAR CARRETERA ACTIVA ================= */
+function highlightRef(ref, color = "orange"){
+  // remove old
+  if(activeLayer) {
+    map.removeLayer(activeLayer);
+    activeLayer = null;
+  }
+  if(!geoData) return;
+  activeLayer = L.geoJSON(geoData, {
+    filter: f => {
+      // proteger si no existe properties.ref
+      return f.properties && String(f.properties.ref) === String(ref);
+    },
+    style: { color: color, weight: 6 }
+  }).addTo(map);
 
-  document.getElementById("nombre").textContent=c.ref;
-  document.getElementById("inicio").textContent=c.inicio;
-  document.getElementById("final").textContent=c.final;
-
-  crearMunicipios();
-  crearOrden("pasaPor",[...c.pasaPor].sort(()=>Math.random()-0.5));
-
-  Object.values(capas).forEach(l=>l.setStyle({color:"#bbb",weight:4}));
-  capas[c.ref]?.setStyle({color:"orange",weight:7});
-  map.fitBounds(capas[c.ref].getBounds());
+  if(activeLayer && activeLayer.getLayers().length){
+    try { map.fitBounds(activeLayer.getBounds(), {padding:[20,20]}); }
+    catch(e){ /* ignore */ }
+  }
 }
 
-/* ================= EXAMEN ================= */
+/* ================= MOSTRAR PREGUNTA ================= */
+function mostrarPregunta(){
+  corregido = false;
+  const ficha = preguntas[idx];
+  if(!ficha){
+    // vacío: avisar y ocultar contenido
+    document.getElementById("tituloFicha").textContent = "—";
+    document.getElementById("descFicha").textContent = "";
+    renderMunicipios([]);
+    renderPasaPor([]);
+    document.getElementById("inicio").textContent = "—";
+    document.getElementById("final").textContent = "—";
+    if(activeLayer){ map.removeLayer(activeLayer); activeLayer = null; }
+    return;
+  }
+
+  // título + descripción (nombre y ref)
+  const title = (ficha.nombre ? ficha.nombre : ficha.ref) + " (" + ficha.ref + ")";
+  document.getElementById("tituloFicha").textContent = title;
+  document.getElementById("descFicha").textContent = ficha.descripcion || "";
+
+  // municipios: start with none selected (examen)
+  renderMunicipios([]); // user must select
+  // pasaPor: present in shuffled order for the exercise
+  const shuffled = [...(ficha.pasaPor || [])];
+  shuffle(shuffled);
+  renderPasaPor(shuffled);
+
+  document.getElementById("inicio").textContent = ficha.inicio || "—";
+  document.getElementById("final").textContent = ficha.final || "—";
+
+  // highlight in map
+  highlightRef(ficha.ref, "orange");
+}
+
+/* ================= FILTRADO Y LISTA DE PREGUNTAS ================= */
+function buildPreguntasFromData(){
+  const usar = [];
+  if(document.getElementById("chkPrim").checked) usar.push("primaria");
+  if(document.getElementById("chkSec").checked) usar.push("secundaria");
+  if(document.getElementById("chkTer").checked) usar.push("terciaria");
+
+  // map data_carreteras into array with .ref
+  const arr = Object.entries(dataCarreteras).map(([ref, obj]) => {
+    const copy = Object.assign({}, obj);
+    copy.ref = ref;
+    copy.tipo = obj.tipo || tipoCarreteraFromRef(ref);
+    return copy;
+  });
+
+  // filter by tipo
+  const filtered = arr.filter(item => usar.includes(item.tipo));
+
+  return filtered;
+}
+
+/* ================= FUNCIONES DE EXAMEN ================= */
 function iniciar(){
-  lista=Object.values(dataCarreteras);
-  barajar(lista);
-  i=0; correctas=0; fallos=0;
-  actualizar(); mostrar();
+  // crear preguntas filtradas
+  preguntas = buildPreguntasFromData();
+  if(!preguntas.length){
+    alert("Selecciona al menos una categoría (primaria/secundaria/terciaria).");
+    return;
+  }
+  shuffle(preguntas);
+  idx = 0;
+  correctas = 0;
+  fallos = 0;
+  preguntasContestadas.clear();
+  updateCounters();
+  mostrarPregunta();
 }
 
-/* ================= CORREGIR ================= */
+// corregir: marcar elementos y contabilizar
 function corregir(){
-  if(corregido) return;
-  const c=lista[i];
+  if(!preguntas.length) return;
+  if(corregido) return; // no recalcular doble
 
-  // MUNICIPIOS
-  document.querySelectorAll("#municipios .item").forEach(d=>{
-    const ok=c.municipios.includes(d.textContent);
-    const sel=d.classList.contains("sel");
-    if(sel && ok) d.classList.add("ok");
-    else if(sel && !ok){ d.classList.add("bad"); falloEnPregunta=true; }
-    else if(!sel && ok){ d.classList.add("miss"); falloEnPregunta=true; }
+  const ficha = preguntas[idx];
+  if(!ficha) return;
+
+  let anyError = false;
+
+  // MUNICIPIOS: user selects subset of TODOS_MUNICIPIOS
+  const selected = [...document.querySelectorAll("#municipios .item.sel")].map(n => n.textContent);
+  const expectedMuns = ficha.municipios || [];
+
+  // For each municipality element, mark:
+  document.querySelectorAll("#municipios .item").forEach(el => {
+    const name = el.textContent;
+    el.classList.remove("ok","bad","miss");
+    const sel = el.classList.contains("sel");
+    const isExpected = expectedMuns.includes(name);
+    if(sel && isExpected){
+      el.classList.add("ok"); // correctly selected
+    } else if(sel && !isExpected){
+      el.classList.add("bad"); // wrongly selected
+      anyError = true;
+    } else if(!sel && isExpected){
+      el.classList.add("miss"); // missing selection
+      anyError = true;
+    } else {
+      // not selected and not expected -> leave neutral
+    }
   });
 
-  // PASA POR
-  [...document.querySelectorAll("#pasaPor .item")].forEach((d,idx)=>{
-    if(d.textContent===c.pasaPor[idx]) d.classList.add("ok");
-    else{ d.classList.add("bad"); falloEnPregunta=true; }
+  // PASA POR: check ordering exact match
+  const userOrder = [...document.querySelectorAll("#pasaPor .item")].map(x => x.textContent);
+  const expectedOrder = ficha.pasaPor || [];
+  document.querySelectorAll("#pasaPor .item").forEach((el, pos) => {
+    el.classList.remove("ok","bad","miss");
+    if(expectedOrder[pos] && el.textContent === expectedOrder[pos]){
+      el.classList.add("ok");
+    } else {
+      el.classList.add("bad");
+      anyError = true;
+    }
   });
 
-  if(falloEnPregunta) fallos++;
-  else correctas++;
+  // contabilizar solo la primera vez que se corrige esta pregunta
+  if(!preguntasContestadas.has(idx)){
+    if(anyError) {
+      fallos++;
+    } else {
+      correctas++;
+    }
+    preguntasContestadas.add(idx);
+  } else {
+    // si ya se contabilizó antes, no sumar más fallos/correctas (solo visual)
+  }
 
-  corregido=true;
-  actualizar();
+  corregido = true;
+  updateCounters();
+
+  // recolor highway on map: green if perfect, red if anyError
+  highlightRef(ficha.ref, anyError ? "red" : "green");
 }
 
-/* ================= SIGUIENTE ================= */
 function siguiente(){
-  if(!corregido){ alert("Primero corrige"); return; }
-  if(i<lista.length-1){ i++; mostrar(); }
+  if(!preguntas.length) return;
+  if(!corregido){
+    alert("Primero corrige la pregunta antes de pasar.");
+    return;
+  }
+  if(idx < preguntas.length - 1){
+    idx++;
+    corregido = false;
+    mostrarPregunta();
+  } else {
+    alert("Fin del examen. Correctas: "+correctas+" — Fallos: "+fallos);
+  }
 }
 
-/* ================= UI ================= */
-function actualizar(){
-  correctasSpan.textContent=correctas;
-  fallosSpan.textContent=fallos;
+/* ================= UI helpers ================= */
+function updateCounters(){
+  document.getElementById("correctas").textContent = correctas;
+  document.getElementById("fallos").textContent = fallos;
 }
+
 function volver(){
-  window.location.href="/Territorio/index.html";
+  window.location.href = "/Territorio/index.html";
 }
 
-/* ================= INICIO ================= */
-iniciar();
+/* ================= Ganchos de UI ================= */
+document.getElementById("btnIniciar").addEventListener("click", iniciar);
+document.getElementById("btnCorregir").addEventListener("click", corregir);
+document.getElementById("btnSiguiente").addEventListener("click", siguiente);
+
+// cuando cambien los filtros, si estamos en examen reiniciamos (por seguridad)
+document.getElementById("chkPrim").addEventListener("change", ()=>{ if(confirm("Cambiar filtros reiniciará el examen. ¿Continuar?")) iniciar(); });
+document.getElementById("chkSec").addEventListener("change", ()=>{ if(confirm("Cambiar filtros reiniciará el examen. ¿Continuar?")) iniciar(); });
+document.getElementById("chkTer").addEventListener("change", ()=>{ if(confirm("Cambiar filtros reiniciará el examen. ¿Continuar?")) iniciar(); });
+
+// Arranque en modo repaso mostrando la primera carretera disponible por defecto (no examen)
+(function inicioAutomatico(){
+  // build full list (no filters) for repaso view
+  preguntas = Object.entries(dataCarreteras).map(([ref,obj])=>{
+    const copy = Object.assign({}, obj);
+    copy.ref = ref;
+    copy.tipo = obj.tipo || tipoCarreteraFromRef(ref);
+    return copy;
+  });
+  // ordenar por ref para repaso consistente
+  preguntas.sort((a,b)=> (a.ref > b.ref ? 1 : -1));
+  idx = 0;
+  correctas = 0;
+  fallos = 0;
+  updateCounters();
+  mostrarPregunta();
+})();
 </script>
 
 </body>
