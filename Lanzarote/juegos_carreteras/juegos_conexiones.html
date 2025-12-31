@@ -140,4 +140,18 @@ function pintarLista(id, array) {
 }
 
 function siguiente() {
-  indice
+  indice = (indice + 1) % claves.length;
+  mostrarCarretera();
+}
+
+function anterior() {
+  indice = (indice - 1 + claves.length) % claves.length;
+  mostrarCarretera();
+}
+
+// iniciar
+mostrarCarretera();
+</script>
+
+</body>
+</html>
