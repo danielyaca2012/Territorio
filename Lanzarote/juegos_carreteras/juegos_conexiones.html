@@ -2,8 +2,11 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<title>Conexiones de carreteras – Lanzarote</title>
+<title>Juego de carreteras – Lanzarote</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Leaflet -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
 
 <style>
 html, body {
@@ -16,7 +19,7 @@ html, body {
 }
 
 #contenedor {
-  max-width: 700px;
+  max-width: 900px;
   margin: auto;
   padding: 20px;
 }
@@ -33,14 +36,11 @@ h1 {
   box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
 
-.titulo {
-  font-size: 1.4rem;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-.lista {
-  margin-left: 20px;
+input, textarea {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  font-size: 1rem;
 }
 
 button {
@@ -62,6 +62,15 @@ button:hover {
   gap: 10px;
   justify-content: center;
   margin-top: 15px;
+  flex-wrap: wrap;
+}
+
+.correcto { color: green; }
+.incorrecto { color: red; }
+
+#mapa {
+  height: 300px;
+  border-radius: 12px;
 }
 </style>
 </head>
@@ -70,75 +79,145 @@ button:hover {
 
 <div id="contenedor">
 
-  <h1>🛣️ Conoce las carreteras</h1>
+<h1>🛣️ Juego de carreteras</h1>
 
-  <div class="caja">
-    <div class="titulo" id="nombreCarretera">—</div>
-    <div id="descripcion"></div>
-  </div>
+<div class="caja">
+  <strong id="nombreCarretera">—</strong><br>
+  <span id="descripcion"></span>
+</div>
 
-  <div class="caja">
-    <strong>📍 Municipios</strong>
-    <ul class="lista" id="municipios"></ul>
-  </div>
+<div class="caja">
+  <strong>📍 Municipios (separados por coma)</strong>
+  <textarea id="inputMunicipios"></textarea>
+  <div id="resultadoMunicipios"></div>
+</div>
 
-  <div class="caja">
-    <strong>🏘️ Pasa por</strong>
-    <ul class="lista" id="pasaPor"></ul>
-  </div>
+<div class="caja">
+  <strong>🏘️ Pasa por (separados por coma)</strong>
+  <textarea id="inputPasaPor"></textarea>
+  <div id="resultadoPasaPor"></div>
+</div>
 
-  <div class="caja">
-    <strong>🔀 Conecta con</strong>
-    <ul class="lista" id="conecta"></ul>
-  </div>
+<div class="caja">
+  <strong>▶ Inicio:</strong> <span id="inicio">—</span><br>
+  <strong>⏹ Final:</strong> <span id="final">—</span>
+</div>
 
-  <div class="caja">
-    <strong>▶ Inicio:</strong> <span id="inicio"></span><br>
-    <strong>⏹ Final:</strong> <span id="final"></span>
-  </div>
+<div class="caja">
+  <div id="mapa"></div>
+</div>
 
-  <div class="controles">
-    <button onclick="anterior()">⬅ Anterior</button>
-    <button onclick="siguiente()">Siguiente ➡</button>
-  </div>
+<div class="controles">
+  <button onclick="corregir()">✅ Corregir</button>
+  <button onclick="mostrarSolucion()">👁 Mostrar solución</button>
+  <button onclick="anterior()">⬅ Anterior</button>
+  <button onclick="siguiente()">Siguiente ➡</button>
+</div>
 
 </div>
 
 <script src="data_carreteras.js"></script>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 <script>
 // ===============================
-// LÓGICA GENÉRICA (NO TOCAR)
+// DATOS Y ESTADO
 // ===============================
-
 const claves = Object.keys(dataCarreteras);
 let indice = 0;
 
+// ===============================
+// MAPA
+// ===============================
+const mapa = L.map('mapa').setView([29.05, -13.63], 10);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '© OpenStreetMap'
+}).addTo(mapa);
+
+let capaCarretera = null;
+
+// ===============================
+// LÓGICA DEL JUEGO
+// ===============================
 function mostrarCarretera() {
   const c = dataCarreteras[claves[indice]];
 
-  document.getElementById("nombreCarretera").textContent =
-    `${c.nombre} (${c.tipo})`;
-
+  document.getElementById("nombreCarretera").textContent = c.nombre;
   document.getElementById("descripcion").textContent = c.descripcion;
+  document.getElementById("inicio").textContent = "—";
+  document.getElementById("final").textContent = "—";
+
+  document.getElementById("inputMunicipios").value = "";
+  document.getElementById("inputPasaPor").value = "";
+
+  document.getElementById("resultadoMunicipios").textContent = "";
+  document.getElementById("resultadoPasaPor").textContent = "";
+
+  cargarMapa(c.nombre);
+}
+
+function corregir() {
+  const c = dataCarreteras[claves[indice]];
+
+  corregirCampo(
+    "inputMunicipios",
+    "resultadoMunicipios",
+    c.municipios
+  );
+
+  corregirCampo(
+    "inputPasaPor",
+    "resultadoPasaPor",
+    c.pasaPor
+  );
+}
+
+function corregirCampo(inputId, resultadoId, solucion) {
+  const respuesta = document.getElementById(inputId)
+    .value.split(",")
+    .map(e => e.trim().toLowerCase())
+    .filter(e => e !== "");
+
+  const correctas = solucion.map(e => e.toLowerCase());
+
+  let aciertos = respuesta.filter(r => correctas.includes(r)).length;
+
+  document.getElementById(resultadoId).innerHTML =
+    `<span class="correcto">✔ ${aciertos}</span> / ${solucion.length}`;
+}
+
+function mostrarSolucion() {
+  const c = dataCarreteras[claves[indice]];
+
+  document.getElementById("resultadoMunicipios").textContent =
+    c.municipios.join(", ");
+
+  document.getElementById("resultadoPasaPor").textContent =
+    c.pasaPor.join(", ");
+
   document.getElementById("inicio").textContent = c.inicio;
   document.getElementById("final").textContent = c.final;
-
-  pintarLista("municipios", c.municipios);
-  pintarLista("pasaPor", c.pasaPor);
-  pintarLista("conecta", c.conecta);
 }
 
-function pintarLista(id, array) {
-  const ul = document.getElementById(id);
-  ul.innerHTML = "";
-  array.forEach(e => {
-    const li = document.createElement("li");
-    li.textContent = e;
-    ul.appendChild(li);
-  });
+// ===============================
+// MAPA – FUTURO GEOJSON
+// ===============================
+function cargarMapa(nombre) {
+  if (capaCarretera) {
+    mapa.removeLayer(capaCarretera);
+  }
+
+  // Placeholder: centro visual
+  capaCarretera = L.circle([29.05, -13.63], {
+    radius: 2000,
+    color: 'red'
+  }).addTo(mapa);
 }
 
+// ===============================
+// NAVEGACIÓN
+// ===============================
 function siguiente() {
   indice = (indice + 1) % claves.length;
   mostrarCarretera();
@@ -149,7 +228,7 @@ function anterior() {
   mostrarCarretera();
 }
 
-// iniciar
+// ARRANQUE
 mostrarCarretera();
 </script>
 
