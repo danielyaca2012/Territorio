@@ -8,54 +8,72 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
 <style>
-  html,body{
-    margin:0;
-    font-family:Arial,Helvetica,sans-serif;
-    background:#0b7;
-  }
-  #top{
-    padding:10px;
-    background:#0a6;
-    color:#042;
-    display:flex;
-    gap:10px;
-    align-items:center;
-    flex-wrap:wrap;
-  }
-  #contenedor{ max-width:820px; margin:18px auto; padding:10px; }
-  .caja{
-    background:white;
-    border-radius:12px;
-    padding:14px;
-    margin-bottom:12px;
-    box-shadow:0 4px 10px rgba(0,0,0,0.12);
-  }
-  .titulo{ font-weight:700; font-size:1.1rem; margin-bottom:8px; }
-  .lista{ display:flex; flex-wrap:wrap; gap:8px; }
-  .item{
-    padding:6px 10px;
-    border-radius:8px;
-    background:#e6f7f3;
-    cursor:pointer;
-    user-select:none;
-  }
-  .item.sel{ box-shadow:inset 0 0 0 2px #0b7; background:#d1f0e6; }
-  .item.ok{ background:#c8f7c5; }
-  .item.bad{ background:#f7c5c5; }
-  .item.miss{ background:#f0f0f0; color:#666; }
-  .drag{ cursor:grab; }
-  button{
-    padding:8px 12px;
-    border-radius:8px;
-    border:none;
-    background:#0b7;
-    color:white;
-    cursor:pointer;
-  }
-  button:hover{ background:#099; }
-  #map{ height:320px; border-radius:10px; overflow:hidden; }
-  .controles{ display:flex; gap:10px; justify-content:center; margin-top:6px; }
-  @media (max-width:640px){ #contenedor{ padding:8px; } }
+html,body{
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#0b7;
+}
+#top{
+  padding:10px;
+  background:#0a6;
+  color:#042;
+  display:flex;
+  gap:10px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+#contenedor{ max-width:820px; margin:18px auto; padding:10px; }
+.caja{
+  background:white;
+  border-radius:12px;
+  padding:14px;
+  margin-bottom:12px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.12);
+}
+.titulo{ font-weight:700; font-size:1.1rem; margin-bottom:8px; }
+.lista{ display:flex; flex-wrap:wrap; gap:8px; }
+.item{
+  padding:6px 10px;
+  border-radius:8px;
+  background:#e6f7f3;
+  cursor:pointer;
+  user-select:none;
+}
+.item.sel{ box-shadow:inset 0 0 0 2px #0b7; background:#d1f0e6; }
+.item.ok{ background:#c8f7c5; }
+.item.bad{ background:#f7c5c5; }
+.item.miss{ background:#f0f0f0; color:#666; }
+.drag{ cursor:grab; }
+
+button{
+  padding:8px 12px;
+  border-radius:8px;
+  border:none;
+  background:#0b7;
+  color:white;
+  cursor:pointer;
+}
+button:hover{ background:#099; }
+
+#map{ height:320px; border-radius:10px; overflow:hidden; }
+.controles{ display:flex; gap:10px; justify-content:center; margin-top:6px; }
+
+#estadisticas{
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  background:rgba(0,0,0,0.8);
+  color:white;
+  padding:30px 40px;
+  border-radius:14px;
+  display:none;
+  z-index:2000;
+  text-align:center;
+  font-size:1.1rem;
+}
+
+@media (max-width:640px){ #contenedor{ padding:8px; } }
 </style>
 </head>
 
@@ -68,8 +86,8 @@
   <label><input type="checkbox" id="chkSec" checked> Secundarias</label>
   <label><input type="checkbox" id="chkTer" checked> Terciarias</label>
 
-  <strong style="margin-left:10px">Correctas: <span id="correctas">0</span></strong>
-  <strong style="margin-left:6px">Fallos: <span id="fallos">0</span></strong>
+  <strong>Correctas: <span id="correctas">0</span></strong>
+  <strong>Fallos: <span id="fallos">0</span></strong>
 
   <button style="margin-left:auto" onclick="volver()">⬅ Volver</button>
 </div>
@@ -82,12 +100,12 @@
   </div>
 
   <div class="caja">
-    <div style="font-weight:700;margin-bottom:8px">📍 Municipios (selecciona)</div>
+    <strong>📍 Municipios</strong>
     <div id="municipios" class="lista"></div>
   </div>
 
   <div class="caja">
-    <div style="font-weight:700;margin-bottom:8px">🏘️ Pasa por (ordena: arrastra/soltar)</div>
+    <strong>🏘️ Pasa por (ordena)</strong>
     <div id="pasaPor" class="lista"></div>
   </div>
 
@@ -96,9 +114,7 @@
     ⏹ Final: <span id="final">—</span>
   </div>
 
-  <div class="caja">
-    <div id="map"></div>
-  </div>
+  <div class="caja"><div id="map"></div></div>
 
   <div class="controles">
     <button id="btnCorregir">✔ Corregir</button>
@@ -107,278 +123,175 @@
 
 </div>
 
+<div id="estadisticas"></div>
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="data_carreteras.js"></script>
 
 <script>
 /* ================= MAPA ================= */
 const map = L.map("map").setView([28.96, -13.60], 11);
-L.tileLayer("https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png", {
-  attribution: '&copy; OpenStreetMap'
-}).addTo(map);
+L.tileLayer("https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png").addTo(map);
 
-let geoData = null;
-let activeLayer = null;
+let geoData=null, activeLayer=null;
 
-// cargar geojson
 fetch("carreteras_lanzarote_fin.geojson")
-  .then(r => r.json())
-  .then(j => { geoData = j; });
+  .then(r=>r.json())
+  .then(j=>geoData=j);
 
 /* ================= ESTADO ================= */
-const TODOS_MUNICIPIOS = ["Arrecife","Haría","San Bartolomé","Teguise","Tías","Tinajo","Yaiza"];
-let preguntas = [], idx = 0;
-let correctas = 0, fallos = 0;
-let lastSignature = {}; // lastSignature[indice] = signature string to prevent recount identical state
-let attempts = {};      // attempts[indice] = number of distinct correction attempts
+const TODOS_MUNICIPIOS=["Arrecife","Haría","San Bartolomé","Teguise","Tías","Tinajo","Yaiza"];
+let preguntas=[], idx=0;
+let correctas=0, fallos=0;
+let perfectas=0, conErrores=0;
+let attempts={}, lastSig={};
 
 /* ================= UTIL ================= */
-function tipoCarreteraFromRef(ref){
-  const n = parseInt(String(ref).replace(/[^0-9]/g,''), 10);
-  if([1,2,3].includes(n)) return "primaria";
-  if(n >= 10 && n <= 67) return "secundaria";
-  return "terciaria";
-}
 function shuffle(a){
   for(let i=a.length-1;i>0;i--){
     const j=Math.floor(Math.random()*(i+1));
     [a[i],a[j]]=[a[j],a[i]];
   }
 }
-
-/* ================= UI lists ================= */
-function renderMunicipios(selected=[]) {
-  const cont = document.getElementById("municipios");
-  cont.innerHTML = "";
-  TODOS_MUNICIPIOS.forEach(name => {
-    const d = document.createElement("div");
-    d.className = "item";
-    d.textContent = name;
-    if(selected.includes(name)) d.classList.add("sel");
-    d.onclick = () => d.classList.toggle("sel");
-    cont.appendChild(d);
-  });
-}
-function renderPasaPor(orderArr){
-  const cont = document.getElementById("pasaPor");
-  cont.innerHTML = "";
-  orderArr.forEach(text => {
-    const d = document.createElement("div");
-    d.className = "item drag";
-    d.textContent = text;
-    d.draggable = true;
-    d.ondragstart = e => e.dataTransfer.setData("text/plain", text);
-    d.ondragover = e => e.preventDefault();
-    d.ondrop = e => {
-      e.preventDefault();
-      const src = e.dataTransfer.getData("text/plain");
-      const arr = [...cont.children].map(x => x.textContent);
-      const i1 = arr.indexOf(src), i2 = arr.indexOf(text);
-      if(i1 === -1 || i2 === -1) return;
-      [arr[i1], arr[i2]] = [arr[i2], arr[i1]];
-      renderPasaPor(arr);
-    };
-    cont.appendChild(d);
-  });
+function tipoCarreteraFromRef(ref){
+  const n=parseInt(ref.replace(/\D/g,""));
+  if([1,2,3].includes(n))return"primaria";
+  if(n>=10&&n<=67)return"secundaria";
+  return"terciaria";
 }
 
-/* ================ highlightRef with retry if geoData not ready ================ */
-function highlightRef(ref, color = "orange"){
-  // remove previous
-  if(activeLayer){ try{ map.removeLayer(activeLayer); } catch(e){} activeLayer = null; }
-  if(!geoData){
-    // retry shortly until geoData loaded
-    setTimeout(()=> highlightRef(ref, color), 200);
-    return;
-  }
-  activeLayer = L.geoJSON(geoData, {
-    filter: f => f.properties && String(f.properties.ref) === String(ref),
-    style: { color: color, weight: 6 }
+/* ================= MAP HIGHLIGHT ================= */
+function highlight(ref,color){
+  if(activeLayer) map.removeLayer(activeLayer);
+  if(!geoData){ setTimeout(()=>highlight(ref,color),200); return; }
+  activeLayer=L.geoJSON(geoData,{
+    filter:f=>String(f.properties.ref)===String(ref),
+    style:{color,weight:6}
   }).addTo(map);
-  if(activeLayer && activeLayer.getLayers && activeLayer.getLayers().length){
-    try { map.fitBounds(activeLayer.getBounds(), {padding:[20,20]}); } catch(e){}
-  }
+  map.fitBounds(activeLayer.getBounds(),{padding:[20,20]});
 }
 
-/* ================= mostrar pregunta ================= */
-function mostrarPregunta(){
-  const f = preguntas[idx];
-  if(!f){
-    document.getElementById("tituloFicha").textContent = "—";
-    document.getElementById("descFicha").textContent = "";
-    renderMunicipios([]);
-    renderPasaPor([]);
-    document.getElementById("inicio").textContent = "—";
-    document.getElementById("final").textContent = "—";
-    if(activeLayer){ map.removeLayer(activeLayer); activeLayer = null; }
-    return;
-  }
-
-  document.getElementById("tituloFicha").textContent = (f.nombre || f.ref) + " (" + f.ref + ")";
-  document.getElementById("descFicha").textContent = f.descripcion || "";
-  document.getElementById("inicio").textContent = f.inicio || "—";
-  document.getElementById("final").textContent = f.final || "—";
-
-  // municipios: start unselected (examen)
-  renderMunicipios([]);
-
-  // pasaPor: show shuffled order
-  const shuffled = [...(f.pasaPor || [])];
-  shuffle(shuffled);
-  renderPasaPor(shuffled);
-
-  // highlight road (retry inside highlightRef if geo not ready)
-  highlightRef(f.ref, "orange");
-}
-
-/* ================= build preguntas ================= */
-function buildPreguntas(){
-  const usar = [];
-  if(document.getElementById("chkPrim").checked) usar.push("primaria");
-  if(document.getElementById("chkSec").checked) usar.push("secundaria");
-  if(document.getElementById("chkTer").checked) usar.push("terciaria");
-
-  const arr = Object.entries(dataCarreteras).map(([ref,obj])=>{
-    const copy = Object.assign({}, obj);
-    copy.ref = ref;
-    copy.tipo = obj.tipo || tipoCarreteraFromRef(ref);
-    return copy;
+/* ================= UI ================= */
+function renderMunicipios(){
+  const c=document.getElementById("municipios"); c.innerHTML="";
+  TODOS_MUNICIPIOS.forEach(m=>{
+    const d=document.createElement("div");
+    d.className="item";
+    d.textContent=m;
+    d.onclick=()=>d.classList.toggle("sel");
+    c.appendChild(d);
   });
-
-  return arr.filter(x => usar.includes(x.tipo));
+}
+function renderPasaPor(arr){
+  const c=document.getElementById("pasaPor"); c.innerHTML="";
+  arr.forEach(t=>{
+    const d=document.createElement("div");
+    d.className="item drag";
+    d.textContent=t;
+    d.draggable=true;
+    d.ondragstart=e=>e.dataTransfer.setData("t",t);
+    d.ondragover=e=>e.preventDefault();
+    d.ondrop=e=>{
+      e.preventDefault();
+      const s=e.dataTransfer.getData("t");
+      const a=[...c.children].map(x=>x.textContent);
+      const i1=a.indexOf(s), i2=a.indexOf(t);
+      [a[i1],a[i2]]=[a[i2],a[i1]];
+      renderPasaPor(a);
+    };
+    c.appendChild(d);
+  });
 }
 
-/* ================= examen: iniciar ================= */
+/* ================= EXAMEN ================= */
+function mostrar(){
+  const f=preguntas[idx];
+  document.getElementById("tituloFicha").textContent=f.ref;
+  document.getElementById("descFicha").textContent=f.descripcion||"";
+  document.getElementById("inicio").textContent=f.inicio||"—";
+  document.getElementById("final").textContent=f.final||"—";
+  renderMunicipios();
+  const p=[...f.pasaPor]; shuffle(p); renderPasaPor(p);
+  highlight(f.ref,"orange");
+}
+
 function iniciar(){
-  preguntas = buildPreguntas();
-  if(!preguntas.length){ alert("Selecciona al menos una categoría."); return; }
+  preguntas=Object.entries(dataCarreteras).map(([r,o])=>{
+    o.ref=r; o.tipo=o.tipo||tipoCarreteraFromRef(r); return o;
+  }).filter(o=>
+    (chkPrim.checked&&o.tipo==="primaria")||
+    (chkSec.checked&&o.tipo==="secundaria")||
+    (chkTer.checked&&o.tipo==="terciaria")
+  );
   shuffle(preguntas);
-  idx = 0;
-  correctas = 0; fallos = 0;
-  lastSignature = {}; attempts = {};
-  updateCounters();
-  mostrarPregunta();
-}
-
-/* ================== corregir (ahora permite rectificar) ================== */
-function signatureForCurrent(){
-  // build signature string representing current selections + order
-  const m = [...document.querySelectorAll("#municipios .item")]
-            .map(d => (d.classList.contains("sel") ? "1":"0") + "|" + d.textContent)
-            .join("||");
-  const p = [...document.querySelectorAll("#pasaPor .item")].map(d => d.textContent).join("||");
-  return m + "##" + p;
+  idx=0; correctas=fallos=perfectas=conErrores=0;
+  attempts={}; lastSig={};
+  actualizar();
+  mostrar();
 }
 
 function corregir(){
-  if(!preguntas.length) return;
-  const ficha = preguntas[idx];
-  if(!ficha) return;
+  const f=preguntas[idx];
+  const sig=document.querySelector("#municipios").innerText+
+            document.querySelector("#pasaPor").innerText;
+  if(lastSig[idx]===sig)return;
+  lastSig[idx]=sig;
+  attempts[idx]=(attempts[idx]||0)+1;
 
-  const sig = signatureForCurrent();
-  // if same signature as last time, do nothing
-  if(lastSignature[idx] && lastSignature[idx] === sig){
-    alert("No ha habido cambios desde la última corrección.");
-    return;
-  }
+  let error=false;
 
-  // mark attempts distinct
-  attempts[idx] = (attempts[idx] || 0) + 1;
-
-  let anyError = false;
-
-  // municipios check
-  const expectedMuns = ficha.municipios || [];
-  document.querySelectorAll("#municipios .item").forEach(el=>{
-    el.classList.remove("ok","bad","miss");
-    const name = el.textContent;
-    const sel = el.classList.contains("sel");
-    const should = expectedMuns.includes(name);
-    if(sel && should) el.classList.add("ok");
-    else if(sel && !should){ el.classList.add("bad"); anyError = true; }
-    else if(!sel && should){ el.classList.add("miss"); anyError = true; }
+  document.querySelectorAll("#municipios .item").forEach(d=>{
+    const ok=f.municipios.includes(d.textContent);
+    if(d.classList.contains("sel")!==ok){ error=true; d.classList.add("bad"); }
+    else d.classList.add("ok");
   });
 
-  // pasaPor order check
-  const expectedOrder = ficha.pasaPor || [];
-  document.querySelectorAll("#pasaPor .item").forEach((el,pos)=>{
-    el.classList.remove("ok","bad","miss");
-    if(expectedOrder[pos] && el.textContent === expectedOrder[pos]) el.classList.add("ok");
-    else { el.classList.add("bad"); anyError = true; }
+  document.querySelectorAll("#pasaPor .item").forEach((d,i)=>{
+    if(d.textContent!==f.pasaPor[i]){ error=true; d.classList.add("bad"); }
+    else d.classList.add("ok");
   });
 
-  // contabilización:
-  // - si anyError => incrementa fallos (cada corrección distinta con error suma)
-  // - si no anyError y attempts[idx] === 1 => primera vez y perfecta => correctas++
-  if(anyError){
+  if(error){
     fallos++;
-  } else {
-    if(attempts[idx] === 1){
-      correctas++;
-    } else {
-      // no sumamos correctas si no fue a la primera (regla pedida)
-    }
+    highlight(f.ref,"red");
+  }else{
+    correctas++;
+    if(attempts[idx]===1){ perfectas++; highlight(f.ref,"green"); }
+    else{ conErrores++; highlight(f.ref,"orange"); }
   }
-
-  // guardar última firma
-  lastSignature[idx] = sig;
-
-  // recolor highway
-  highlightRef(ficha.ref, anyError ? "red":"green");
-
-  updateCounters();
+  actualizar();
 }
 
-/* ================= siguiente ================= */
 function siguiente(){
-  if(!preguntas.length) return;
-  // require at least one correction attempt / or allow skipping? guardamos que el usuario debe corregir
-  if(!lastSignature[idx]){
-    if(!confirm("Aún no has corregido esta pregunta. ¿Quieres pasar igualmente? (no se contabilizará)") ){
-      return;
-    }
-  }
-  if(idx < preguntas.length - 1){
-    idx++;
-    mostrarPregunta();
-  } else {
-    alert("Fin del examen.\nCorrectas: "+correctas+"\nFallos: "+fallos);
-  }
+  if(idx<preguntas.length-1){ idx++; mostrar(); }
+  else mostrarResultados();
 }
 
-/* ================= UI helpers ================= */
-function updateCounters(){
-  document.getElementById("correctas").textContent = correctas;
-  document.getElementById("fallos").textContent = fallos;
+function mostrarResultados(){
+  estadisticas.innerHTML=`
+    <h2>📊 Resultados</h2>
+    ✔ Correctas: ${correctas}<br>
+    ❌ Fallos: ${fallos}<br><br>
+    🟢 Perfectas: ${perfectas}<br>
+    🟠 Con errores: ${conErrores}
+  `;
+  estadisticas.style.display="block";
 }
-function volver(){ window.location.href = "/Territorio/index.html"; }
 
-/* ================= event hooks ================= */
-document.getElementById("btnIniciar").addEventListener("click", iniciar);
-document.getElementById("btnCorregir").addEventListener("click", corregir);
-document.getElementById("btnSiguiente").addEventListener("click", siguiente);
+function actualizar(){
+  correctasEl.textContent=correctas;
+  fallosEl.textContent=fallos;
+}
 
-// change filters => restart
-document.getElementById("chkPrim").addEventListener("change", ()=>{ if(confirm("Cambiar filtros reiniciará el examen. ¿Continuar?")) iniciar(); else document.getElementById("chkPrim").checked = !document.getElementById("chkPrim").checked; });
-document.getElementById("chkSec").addEventListener("change", ()=>{ if(confirm("Cambiar filtros reiniciará el examen. ¿Continuar?")) iniciar(); else document.getElementById("chkSec").checked = !document.getElementById("chkSec").checked; });
-document.getElementById("chkTer").addEventListener("change", ()=>{ if(confirm("Cambiar filtros reiniciará el examen. ¿Continuar?")) iniciar(); else document.getElementById("chkTer").checked = !document.getElementById("chkTer").checked; });
+function volver(){ location.href="/Territorio/index.html"; }
 
-/* ================ START: initial repaso view ================ */
-(function inicioAutomatico(){
-  // show all data in alphabetical order for initial repaso view (not exam)
-  preguntas = Object.entries(dataCarreteras).map(([ref,obj])=>{
-    const copy = Object.assign({}, obj);
-    copy.ref = ref;
-    copy.tipo = obj.tipo || tipoCarreteraFromRef(ref);
-    return copy;
-  });
-  preguntas.sort((a,b)=> a.ref.localeCompare(b.ref));
-  idx = 0;
-  correctas = 0; fallos = 0;
-  lastSignature = {}; attempts = {};
-  updateCounters();
-  mostrarPregunta(); // mostrar first and highlight (highlightRef retries until geoData)
-})();
+/* ================= EVENTS ================= */
+btnIniciar.onclick=iniciar;
+btnCorregir.onclick=corregir;
+btnSiguiente.onclick=siguiente;
+
+const correctasEl=document.getElementById("correctas");
+const fallosEl=document.getElementById("fallos");
 </script>
 
 </body>
