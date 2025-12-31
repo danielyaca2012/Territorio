@@ -124,6 +124,36 @@ function tipo(ref){
   if(n>=10&&n<=67)return"secundaria";
   return"terciaria";
 }
+  function aplicarFiltrosRepaso(){
+  if(!modoRepaso || !baseLayer) return;
+
+  const usarPrim = chkPrim.checked;
+  const usarSec  = chkSec.checked;
+  const usarTer  = chkTer.checked;
+
+  baseLayer.eachLayer(l=>{
+    const ref = l.feature.properties.ref;
+    const t = tipo(ref);
+
+    const visible =
+      (usarPrim && t==="primaria") ||
+      (usarSec  && t==="secundaria") ||
+      (usarTer  && t==="terciaria");
+
+    if(visible){
+      l.setStyle({
+        color:"#3388ff",
+        weight:4,
+        opacity:1
+      });
+    } else {
+      l.setStyle({
+        opacity:0
+      });
+    }
+  });
+}
+
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}}
 
 /* ================= MAP ================= */
@@ -265,16 +295,20 @@ function volver(){location.href="/Territorio/index.html";}
 btnIniciar.onclick=iniciar;
 btnRepaso.onclick = () => {
   modoRepaso = true;
-
-  // ocultar resultados si estaban visibles
   estadisticas.style.display = "none";
+  aplicarFiltrosRepaso();
 };
+
 
 btnCorregir.onclick=corregir;
 btnSiguiente.onclick=siguiente;
 
 const correctasEl = document.getElementById("correctas");
 const fallosEl = document.getElementById("fallos");
+
+chkPrim.onchange = aplicarFiltrosRepaso;
+chkSec.onchange  = aplicarFiltrosRepaso;
+chkTer.onchange  = aplicarFiltrosRepaso;
 
 </script>
 
