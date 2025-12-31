@@ -23,7 +23,7 @@ html,body{
   flex-wrap:wrap;
 }
 #contenedor{
-  max-width:700px;
+  max-width:720px;
   margin:20px auto;
 }
 .caja{
@@ -45,8 +45,13 @@ html,body{
   padding:6px 10px;
   background:#e6f7f3;
   border-radius:6px;
-  cursor:grab;
+  cursor:pointer;
 }
+.item.drag{ cursor:grab; }
+.ok{ background:#c8f7c5; }
+.bad{ background:#f7c5c5; }
+.miss{ background:#eee; }
+
 button{
   padding:8px 12px;
   border-radius:6px;
@@ -55,7 +60,6 @@ button{
   background:#0b7;
   color:white;
 }
-button:hover{ background:#099; }
 #map{ height:300px; border-radius:12px; }
 .controles{
   display:flex;
@@ -74,7 +78,7 @@ button:hover{ background:#099; }
   <label><input type="checkbox" id="chkSec" checked> Secundarias</label>
   <label><input type="checkbox" id="chkTer" checked> Terciarias</label>
 
-  <strong>Puntos: <span id="puntos">0</span></strong>
+  <strong>Correctas: <span id="correctas">0</span></strong>
   <strong>Fallos: <span id="fallos">0</span></strong>
 
   <button style="margin-left:auto" onclick="volver()">⬅ Volver</button>
@@ -85,7 +89,7 @@ button:hover{ background:#099; }
   <div class="caja titulo" id="nombre">—</div>
 
   <div class="caja">
-    📍 <strong>Municipios (ordena)</strong>
+    📍 <strong>Municipios (selecciona)</strong>
     <div class="lista" id="municipios"></div>
   </div>
 
@@ -119,22 +123,25 @@ const map = L.map("map").setView([28.96,-13.60],11);
 L.tileLayer("https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png").addTo(map);
 
 /* ================= VARIABLES ================= */
+const TODOS_MUNICIPIOS=[
+  "Arrecife","Haría","San Bartolomé",
+  "Teguise","Tías","Tinajo","Yaiza"
+];
+
 let lista=[], i=0;
-let puntos=0, fallos=0;
-let modo="repaso";
+let correctas=0, fallos=0;
 let corregido=false;
 let capas={};
+let falloEnPregunta=false;
 
-/* ================= CARGA GEOJSON ================= */
+/* ================= GEOJSON ================= */
 fetch("carreteras_lanzarote_fin.geojson")
 .then(r=>r.json())
 .then(g=>{
   L.geoJSON(g,{
     style:{ color:"#bbb", weight:4 },
     onEachFeature:(f,l)=>{
-      if(f.properties.ref){
-        capas[f.properties.ref]=l;
-      }
+      if(f.properties.ref) capas[f.properties.ref]=l;
     }
   }).addTo(map);
 });
@@ -146,12 +153,23 @@ function barajar(a){
     [a[i],a[j]]=[a[j],a[i]];
   }
 }
-function crearLista(id,arr){
-  const cont=document.getElementById(id);
+function crearMunicipios(){
+  const cont=document.getElementById("municipios");
   cont.innerHTML="";
-  arr.forEach(t=>{
+  TODOS_MUNICIPIOS.forEach(m=>{
     const d=document.createElement("div");
     d.className="item";
+    d.textContent=m;
+    d.onclick=()=>d.classList.toggle("sel");
+    cont.appendChild(d);
+  });
+}
+function crearOrden(id,arr){
+  const c=document.getElementById(id);
+  c.innerHTML="";
+  arr.forEach(t=>{
+    const d=document.createElement("div");
+    d.className="item drag";
     d.textContent=t;
     d.draggable=true;
     d.ondragstart=e=>e.dataTransfer.setData("txt",t);
@@ -159,93 +177,85 @@ function crearLista(id,arr){
     d.ondrop=e=>{
       e.preventDefault();
       const src=e.dataTransfer.getData("txt");
-      const a=[...cont.children].map(x=>x.textContent);
+      const a=[...c.children].map(x=>x.textContent);
       const i1=a.indexOf(src), i2=a.indexOf(t);
       [a[i1],a[i2]]=[a[i2],a[i1]];
-      crearLista(id,a);
+      crearOrden(id,a);
     };
-    cont.appendChild(d);
+    c.appendChild(d);
   });
 }
 
 /* ================= MOSTRAR ================= */
 function mostrar(){
   const c=lista[i];
-  document.getElementById("nombre").textContent=c.nombre+" ("+c.ref+")";
+  corregido=false;
+  falloEnPregunta=false;
+
+  document.getElementById("nombre").textContent=c.ref;
   document.getElementById("inicio").textContent=c.inicio;
   document.getElementById("final").textContent=c.final;
 
-  crearLista("municipios",[...c.municipios].sort(()=>Math.random()-0.5));
-  crearLista("pasaPor",[...c.pasaPor].sort(()=>Math.random()-0.5));
+  crearMunicipios();
+  crearOrden("pasaPor",[...c.pasaPor].sort(()=>Math.random()-0.5));
 
   Object.values(capas).forEach(l=>l.setStyle({color:"#bbb",weight:4}));
-  if(capas[c.ref]){
-    capas[c.ref].setStyle({color:"orange",weight:7});
-    map.fitBounds(capas[c.ref].getBounds());
-  }
+  capas[c.ref]?.setStyle({color:"orange",weight:7});
+  map.fitBounds(capas[c.ref].getBounds());
 }
 
 /* ================= EXAMEN ================= */
 function iniciar(){
-  const usar=[];
-  if(chkPrim.checked) usar.push("primaria");
-  if(chkSec.checked) usar.push("secundaria");
-  if(chkTer.checked) usar.push("terciaria");
-
-  lista=Object.values(dataCarreteras).filter(c=>usar.includes(c.tipo));
-  if(!lista.length){ alert("Selecciona categorías"); return; }
-
+  lista=Object.values(dataCarreteras);
   barajar(lista);
-  i=0; puntos=0; fallos=0;
-  modo="examen"; corregido=false;
+  i=0; correctas=0; fallos=0;
   actualizar(); mostrar();
 }
 
 /* ================= CORREGIR ================= */
 function corregir(){
-  if(modo!=="examen") return;
-
+  if(corregido) return;
   const c=lista[i];
-  const m=[...document.querySelectorAll("#municipios .item")].map(x=>x.textContent);
-  const p=[...document.querySelectorAll("#pasaPor .item")].map(x=>x.textContent);
 
-  const ok1=JSON.stringify(m)===JSON.stringify(c.municipios);
-  const ok2=JSON.stringify(p)===JSON.stringify(c.pasaPor);
+  // MUNICIPIOS
+  document.querySelectorAll("#municipios .item").forEach(d=>{
+    const ok=c.municipios.includes(d.textContent);
+    const sel=d.classList.contains("sel");
+    if(sel && ok) d.classList.add("ok");
+    else if(sel && !ok){ d.classList.add("bad"); falloEnPregunta=true; }
+    else if(!sel && ok){ d.classList.add("miss"); falloEnPregunta=true; }
+  });
 
-  if(ok1 && ok2){
-    puntos++;
-    capas[c.ref]?.setStyle({color:"green"});
-  }else{
-    fallos++;
-    capas[c.ref]?.setStyle({color:"red"});
-  }
+  // PASA POR
+  [...document.querySelectorAll("#pasaPor .item")].forEach((d,idx)=>{
+    if(d.textContent===c.pasaPor[idx]) d.classList.add("ok");
+    else{ d.classList.add("bad"); falloEnPregunta=true; }
+  });
+
+  if(falloEnPregunta) fallos++;
+  else correctas++;
+
   corregido=true;
   actualizar();
 }
 
 /* ================= SIGUIENTE ================= */
 function siguiente(){
-  if(modo==="examen" && !corregido){
-    alert("Primero corrige");
-    return;
-  }
-  if(i<lista.length-1){
-    i++; corregido=false; mostrar();
-  }
+  if(!corregido){ alert("Primero corrige"); return; }
+  if(i<lista.length-1){ i++; mostrar(); }
 }
 
 /* ================= UI ================= */
 function actualizar(){
-  puntosSpan.textContent=puntos;
+  correctasSpan.textContent=correctas;
   fallosSpan.textContent=fallos;
 }
 function volver(){
   window.location.href="/Territorio/index.html";
 }
 
-/* ================= INICIO REPASO ================= */
-lista=Object.values(dataCarreteras);
-mostrar();
+/* ================= INICIO ================= */
+iniciar();
 </script>
 
 </body>
