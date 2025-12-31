@@ -50,6 +50,17 @@ button:hover{background:#099;}
 
   <strong>Correctas: <span id="correctas">0</span></strong>
   <strong>Fallos: <span id="fallos">0</span></strong>
+  <input
+  id="buscador"
+  placeholder="Buscar carretera (LZ-2)"
+  style="
+    display:none;
+    padding:6px 10px;
+    border-radius:8px;
+    border:none;
+    outline:none;
+  "
+>
 
   <button style="margin-left:auto" onclick="volver()">⬅ Volver</button>
 </div>
@@ -126,7 +137,7 @@ function tipo(ref){
 }
   function aplicarFiltrosRepaso(){
   if(!modoRepaso || !baseLayer) return;
-
+   buscador.value = "";
   const usarPrim = chkPrim.checked;
   const usarSec  = chkSec.checked;
   const usarTer  = chkTer.checked;
@@ -217,7 +228,7 @@ function mostrarFicha(ref){
 function iniciar(){
   estadisticas.style.display="none";
   modoRepaso=false;
-
+  buscador.style.display="none";
   preguntas=Object.entries(dataCarreteras)
     .map(([r,o])=>({...o,ref:r,tipo:o.tipo||tipo(r)}))
     .filter(o=>
@@ -291,13 +302,40 @@ function actualizar(){
 }
 function volver(){location.href="/Territorio/index.html";}
 
+buscador.addEventListener("input", e => {
+  if(!modoRepaso || !baseLayer) return;
+
+  const q = e.target.value.trim().toUpperCase();
+  if(!q){
+    aplicarFiltrosRepaso();
+    return;
+  }
+
+  let buscada = q.startsWith("LZ") ? q : "LZ-" + q.replace(/\D/g,"");
+
+  baseLayer.eachLayer(l=>{
+    const ref = l.feature.properties.ref.toUpperCase();
+    const coincide = ref === buscada;
+
+    if(coincide){
+      l.setStyle({ color:"#ff9800", weight:6, opacity:1 });
+      map.fitBounds(l.getBounds(), { padding:[20,20] });
+      mostrarFicha(ref);
+    } else {
+      l.setStyle({ opacity:0.15 });
+    }
+  });
+});
+  
 /* ================= EVENTS ================= */
 btnIniciar.onclick=iniciar;
 btnRepaso.onclick = () => {
   modoRepaso = true;
   estadisticas.style.display = "none";
+  buscador.style.display = "inline";
   aplicarFiltrosRepaso();
 };
+
 
 
 btnCorregir.onclick=corregir;
