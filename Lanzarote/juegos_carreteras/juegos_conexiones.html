@@ -2,93 +2,90 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<title>Juego de conexiones de carreteras – Lanzarote</title>
+<title>Juego de conexiones – Lanzarote</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
 <style>
-html, body {
-  margin: 0;
-  height: 100%;
-  font-family: Arial, Helvetica, sans-serif;
-  background: linear-gradient(135deg, #0b7, #0a5);
+html,body{
+  margin:0;
+  font-family:Arial;
+  background:linear-gradient(135deg,#0b7,#0a5);
 }
 
-#top {
-  padding: 10px;
-  background: #0b7;
-  color: #042;
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  flex-wrap: wrap;
+#top{
+  padding:10px;
+  background:#0b7;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  align-items:center;
 }
 
-#contenedor {
-  max-width: 720px;
-  margin: auto;
-  padding: 15px;
+#contenedor{
+  max-width:760px;
+  margin:auto;
+  padding:15px;
 }
 
-.caja {
-  background: white;
-  border-radius: 12px;
-  padding: 15px;
-  margin-bottom: 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+.caja{
+  background:white;
+  padding:15px;
+  margin-bottom:12px;
+  border-radius:12px;
+  box-shadow:0 4px 10px rgba(0,0,0,.15);
 }
 
-textarea {
-  width: 100%;
-  min-height: 60px;
+h2{margin:0}
+
+.lista{
+  list-style:none;
+  padding:0;
 }
 
-button {
-  padding: 8px 14px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  background: #0b7;
-  color: white;
-  font-size: 1rem;
+.lista li{
+  background:#eef;
+  margin:5px 0;
+  padding:6px 10px;
+  border-radius:6px;
+  display:flex;
+  justify-content:space-between;
 }
 
-button:hover {
-  background: #099;
+button{
+  padding:6px 10px;
+  border:none;
+  border-radius:6px;
+  background:#0b7;
+  color:white;
+  cursor:pointer;
 }
 
-#map {
-  height: 260px;
-  border-radius: 12px;
-  overflow: hidden;
+button:hover{background:#099}
+
+#map{
+  height:260px;
+  border-radius:12px;
 }
 
-.resultado {
-  margin-top: 5px;
-  font-weight: bold;
-}
-
-.correcto { color: green; }
-.incorrecto { color: red; }
-
-.controles {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-}
+.correcto{color:green;font-weight:bold}
+.incorrecto{color:red;font-weight:bold}
 </style>
 </head>
 
 <body>
 
 <div id="top">
-  <button onclick="iniciarExamen()">📝 Modo examen</button>
-  <button onclick="activarRepaso()">👀 Modo repaso</button>
+  <button onclick="iniciar()">📝 Iniciar examen</button>
 
-  <label><input type="checkbox" id="chkPrimarias" checked> Primarias</label>
-  <label><input type="checkbox" id="chkSecundarias" checked> Secundarias</label>
-  <label><input type="checkbox" id="chkTerciarias" checked> Terciarias</label>
+  <label><input type="checkbox" id="chkPrim" checked> Primarias</label>
+  <label><input type="checkbox" id="chkSec" checked> Secundarias</label>
+  <label><input type="checkbox" id="chkTer" checked> Terciarias</label>
+
+  <span id="estado">—</span>
+  <span id="puntos">Puntos: 0</span>
+  <span id="fallos">Fallos: 0</span>
 
   <button style="margin-left:auto" onclick="volver()">⬅ Volver</button>
 </div>
@@ -101,15 +98,13 @@ button:hover {
   </div>
 
   <div class="caja">
-    📍 <strong>Municipios</strong>
-    <textarea id="municipios"></textarea>
-    <div id="resMunicipios" class="resultado"></div>
+    📍 <strong>Municipios (ordena)</strong>
+    <ul id="municipios" class="lista"></ul>
   </div>
 
   <div class="caja">
-    🏘️ <strong>Pasa por</strong>
-    <textarea id="pasaPor"></textarea>
-    <div id="resPasaPor" class="resultado"></div>
+    🏘️ <strong>Pasa por (ordena)</strong>
+    <ul id="pasaPor" class="lista"></ul>
   </div>
 
   <div class="caja">
@@ -121,10 +116,8 @@ button:hover {
     <div id="map"></div>
   </div>
 
-  <div class="controles">
+  <div style="text-align:center">
     <button onclick="corregir()">✔ Corregir</button>
-    <button onclick="mostrarSolucion()">👁 Mostrar solución</button>
-    <button onclick="anterior()">⬅ Anterior</button>
     <button onclick="siguiente()">Siguiente ➡</button>
   </div>
 
@@ -135,118 +128,148 @@ button:hover {
 
 <script>
 /* ================= MAPA ================= */
-const map = L.map("map").setView([28.96, -13.60], 11);
-
+const map=L.map("map").setView([28.96,-13.6],11);
 L.tileLayer(
   "https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png"
 ).addTo(map);
 
-let capaBase, capaActiva;
+let geoData,capa;
 
-/* ================= DATOS ================= */
-const claves = Object.keys(dataCarreteras);
-let indice = 0;
-let modoRepaso = false;
+/* ================= ESTADO ================= */
+let lista=[];
+let i=0,puntos=0,fallos=0;
 
-/* ================= CARGAR GEOJSON ================= */
+/* ================= GEOJSON ================= */
 fetch("carreteras_lanzarote_fin.geojson")
-  .then(r => r.json())
-  .then(data => {
-    capaBase = data;
-    mostrar();
-  });
+.then(r=>r.json())
+.then(d=>geoData=d);
 
-function tipoCarretera(ref){
-  const n = parseInt(ref.replace("LZ-",""));
-  if([1,2,3].includes(n)) return "primaria";
-  if(n >= 10 && n <= 67) return "secundaria";
-  return "terciaria";
+/* ================= UTIL ================= */
+function tipo(ref){
+  const n=parseInt(ref.replace("LZ-",""));
+  if([1,2,3].includes(n))return"primaria";
+  if(n>=10&&n<=67)return"secundaria";
+  return"terciaria";
+}
+
+function barajar(a){
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+}
+
+/* ================= INICIO ================= */
+function iniciar(){
+  const usar=[];
+  if(chkPrim.checked)usar.push("primaria");
+  if(chkSec.checked)usar.push("secundaria");
+  if(chkTer.checked)usar.push("terciaria");
+
+  lista=Object.values(dataCarreteras)
+    .filter(c=>usar.includes(c.tipo));
+
+  if(lista.length===0){
+    alert("Selecciona al menos una categoría");
+    return;
+  }
+
+  barajar(lista);
+  i=0;puntos=0;fallos=0;
+  actualizar();
+  mostrar();
 }
 
 /* ================= MOSTRAR ================= */
 function mostrar(){
-  const c = dataCarreteras[claves[indice]];
+  const c=lista[i];
+  estado.textContent=`${i+1}/${lista.length}`;
+  titulo.textContent=c.nombre;
+  descripcion.textContent=c.descripcion;
+  inicio.textContent=c.inicio;
+  final.textContent=c.final;
 
-  document.getElementById("titulo").textContent = c.nombre;
-  document.getElementById("descripcion").textContent = c.descripcion;
-  document.getElementById("inicio").textContent = c.inicio;
-  document.getElementById("final").textContent = c.final;
-
-  if(!modoRepaso){
-    municipios.value = "";
-    pasaPor.value = "";
-  }
-
-  resMunicipios.textContent = "";
-  resPasaPor.textContent = "";
-
-  dibujarCarretera(c.nombre);
+  pintarLista("municipios",c.municipios);
+  pintarLista("pasaPor",c.pasaPor);
+  dibujar(c.nombre);
 }
 
-function dibujarCarretera(ref){
-  if(capaActiva) map.removeLayer(capaActiva);
+function pintarLista(id,arr){
+  const ul=document.getElementById(id);
+  ul.innerHTML="";
+  const copia=[...arr];
+  barajar(copia);
 
-  capaActiva = L.geoJSON(capaBase, {
-    filter: f => f.properties.ref === ref,
-    style: { color:"red", weight:6 }
-  }).addTo(map);
+  copia.forEach((t,idx)=>{
+    const li=document.createElement("li");
+    li.textContent=t;
 
-  map.fitBounds(capaActiva.getBounds(), { padding:[20,20] });
+    const ctr=document.createElement("span");
+    ctr.innerHTML=`
+      <button onclick="mover(this,-1)">▲</button>
+      <button onclick="mover(this,1)">▼</button>
+    `;
+    li.appendChild(ctr);
+    ul.appendChild(li);
+  });
 }
 
-/* ================= JUEGO ================= */
-function normalizar(t){
-  return t.toLowerCase().trim();
+function mover(btn,dir){
+  const li=btn.closest("li");
+  const ul=li.parentNode;
+  const idx=[...ul.children].indexOf(li);
+  const nuevo=idx+dir;
+  if(nuevo<0||nuevo>=ul.children.length)return;
+  ul.insertBefore(li,ul.children[nuevo+(dir>0?1:0)]);
+}
+
+/* ================= CORRECCIÓN ================= */
+function leer(id){
+  return [...document.getElementById(id).children]
+    .map(li=>li.firstChild.textContent);
 }
 
 function corregir(){
-  const c = dataCarreteras[claves[indice]];
+  const c=lista[i];
+  const ok1=JSON.stringify(leer("municipios"))===JSON.stringify(c.municipios);
+  const ok2=JSON.stringify(leer("pasaPor"))===JSON.stringify(c.pasaPor);
 
-  const munUser = municipios.value.split(",").map(normalizar);
-  const munOk = c.municipios.map(normalizar);
-
-  const pasaUser = pasaPor.value.split(",").map(normalizar);
-  const pasaOk = c.pasaPor.map(normalizar);
-
-  evaluar(munUser, munOk, resMunicipios);
-  evaluar(pasaUser, pasaOk, resPasaPor);
+  if(ok1&&ok2){
+    puntos++;
+    pintar("green");
+  }else{
+    fallos++;
+    pintar("red");
+  }
+  actualizar();
 }
 
-function evaluar(user, ok, cont){
-  let aciertos = user.filter(v => ok.includes(v)).length;
-  cont.textContent = `✔ ${aciertos} / ${ok.length}`;
-  cont.className = "resultado " + (aciertos === ok.length ? "correcto":"incorrecto");
+function actualizar(){
+  puntosSpan.textContent=`Puntos: ${puntos}`;
+  fallosSpan.textContent=`Fallos: ${fallos}`;
 }
 
-function mostrarSolucion(){
-  const c = dataCarreteras[claves[indice]];
-  municipios.value = c.municipios.join(", ");
-  pasaPor.value = c.pasaPor.join(", ");
+/* ================= MAPA ================= */
+function dibujar(ref){
+  if(capa)map.removeLayer(capa);
+  capa=L.geoJSON(geoData,{
+    filter:f=>f.properties.ref===ref,
+    style:{color:"blue",weight:6}
+  }).addTo(map);
+  map.fitBounds(capa.getBounds(),{padding:[20,20]});
+}
+
+function pintar(color){
+  capa.setStyle({color,weight:7});
 }
 
 /* ================= NAVEGACIÓN ================= */
 function siguiente(){
-  indice = (indice + 1) % claves.length;
-  mostrar();
-}
-function anterior(){
-  indice = (indice - 1 + claves.length) % claves.length;
-  mostrar();
+  if(i<lista.length-1){i++;mostrar();}
 }
 
-/* ================= MODOS ================= */
-function iniciarExamen(){
-  modoRepaso = false;
-  mostrar();
-}
-function activarRepaso(){
-  modoRepaso = true;
-  mostrarSolucion();
-}
-
-/* ================= UTIL ================= */
 function volver(){
-  location.href = "/Territorio/index.html";
+  location.href="/Territorio/index.html";
 }
 </script>
 
