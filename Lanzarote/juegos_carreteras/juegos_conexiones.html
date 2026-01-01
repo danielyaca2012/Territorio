@@ -114,21 +114,20 @@ function tipo(ref){
 }  
   function aplicarFiltrosRepaso(){  
   if(!modoRepaso || !baseLayer) return;  
-  
+
   const usarPrim = chkPrim.checked;  
   const usarSec  = chkSec.checked;  
   const usarTer  = chkTer.checked;  
-  
-  baseLayer.eachLayer(l=>{  
-    baseLayer.eachLayer(l=>{
-  const ref = normalizarRef(l.feature.properties.ref);
-  const t = tipo(ref);  
-  
+
+  baseLayer.eachLayer(l=>{
+    const ref = normalizarRef(l.feature.properties.ref);
+    const t = tipo(ref);  
+
     const visible =  
       (usarPrim && t==="primaria") ||  
       (usarSec  && t==="secundaria") ||  
       (usarTer  && t==="terciaria");  
-  
+
     if(visible){  
       l.setStyle({  
         color:"#3388ff",  
@@ -139,7 +138,7 @@ function tipo(ref){
       l.setStyle({ opacity:0 });  
     }  
   });  
-}  
+}
   
   
   
