@@ -80,21 +80,30 @@ let geoData, baseLayer, activeLayer;
 let modoRepaso=true;  
   
 /* ================= GEOJSON ================= */  
-fetch("carreteras_lanzarote_fin.geojson")  
-.then(r=>r.json())  
-.then(j=>{  
-  geoData=j;  
-  baseLayer=L.geoJSON(geoData,{  
-    style:{color:"#3388ff",weight:4},  
-    onEachFeature:(f,l)=>{  
-      l.on("click", () => {  
-  if(!modoRepaso) return;  
-  const ref = normalizarRef(f.properties.ref);  
-  mostrarFicha(ref);  
-});  
-    }  
-  }).addTo(map);  
-});  
+fetch("carreteras_lanzarote_fin.geojson")
+.then(r=>r.json())
+.then(j=>{
+  geoData = j;
+
+  // Normalizar todas las refs en los features del geojson (por si acaso)
+  geoData.features.forEach(feat => {
+    const raw = feat.properties && feat.properties.ref ? String(feat.properties.ref) : "";
+    feat.properties.refNorm = normalizarRef(raw);
+  });
+
+  baseLayer = L.geoJSON(geoData, {
+    style: { color:"#3388ff", weight:4 },
+    onEachFeature: (f, l) => {
+      // guardamos la ref normalizada en la capa para acceso rápido
+      l.refNorm = f.properties.refNorm;
+      // click en modo repaso muestra ficha usando la ref normalizada guardada
+      l.on("click", () => {
+        if (!modoRepaso) return;
+        mostrarFicha(l.refNorm);
+      });
+    }
+  }).addTo(map);
+});
   
 /* ================= ESTADO ================= */  
 let preguntas=[],idx=0;  
@@ -110,51 +119,50 @@ function tipo(ref){
   if(n>=10&&n<=67)return"secundaria";  
   return"terciaria";  
 }  
-  function aplicarFiltrosRepaso(){  
-  if(!modoRepaso || !baseLayer) return;  
-  
-  const usarPrim = chkPrim.checked;  
-  const usarSec  = chkSec.checked;  
-  const usarTer  = chkTer.checked;  
-  
-  baseLayer.eachLayer(l=>{
-    const ref = normalizarRef(l.feature.properties.ref);
-    const t = tipo(ref); // ← **añadido**: obtener el tipo a partir de la ref normalizada
+  function aplicarFiltrosRepaso(){
+  if(!modoRepaso || !baseLayer) return;
+
+  const usarPrim = chkPrim.checked;
+  const usarSec  = chkSec.checked;
+  const usarTer  = chkTer.checked;
+
+  baseLayer.eachLayer(l => {
+    // usa la ref normalizada almacenada en la capa o en feature
+    const ref = l.refNorm || (l.feature && l.feature.properties && l.feature.properties.refNorm) || String(l.feature && l.feature.properties && l.feature.properties.ref || "");
+    const t = tipo(ref); // ahora sí tenemos el tipo correcto
 
     const visible =
       (usarPrim && t === "primaria") ||
       (usarSec  && t === "secundaria") ||
       (usarTer  && t === "terciaria");
 
-    if(visible){
-      l.setStyle({
-        color:"#3388ff",
-        weight:4,
-        opacity:1
-      });
+    if (visible) {
+      l.setStyle({ color:"#3388ff", weight:4, opacity:1 });
     } else {
       l.setStyle({ opacity:0 });
     }
   });
-}  
+}
   
   
   
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}}  
   
 /* ================= MAP ================= */  
-function highlight(ref,color){  
-  if(activeLayer) map.removeLayer(activeLayer);  
-  
-  const refNorm = normalizarRef(ref);  
-  
-  activeLayer=L.geoJSON(geoData,{  
-    filter:f => normalizarRef(f.properties.ref) === refNorm,  
-    style:{color,weight:6}  
-  }).addTo(map);  
-  
-  map.fitBounds(activeLayer.getBounds(),{padding:[20,20]});  
-}  
+function highlight(ref, color){
+  if(activeLayer) { map.removeLayer(activeLayer); activeLayer = null; }
+  const refNorm = normalizarRef(ref);
+
+  activeLayer = L.geoJSON(geoData, {
+    filter: f => (f.properties && f.properties.refNorm) ? f.properties.refNorm === refNorm
+                                              : normalizarRef(f.properties && f.properties.ref || "") === refNorm,
+    style: { color, weight: 6 }
+  }).addTo(map);
+
+  if (activeLayer && activeLayer.getBounds && !activeLayer.getBounds().isEmpty()) {
+    map.fitBounds(activeLayer.getBounds(), { padding:[20,20] });
+  }
+}
   
 /* ================= UI ================= */  
 function renderMunicipios(arr=[],sel=[]){  
@@ -223,18 +231,19 @@ function entrarRepasoInicial(){
   final.textContent = "—";  
 }  
   
-function mostrarFicha(ref){  
-ref = normalizarRef(ref);  
-  const f=dataCarreteras[ref];  
-  if(!f)return;  
-  tituloFicha.textContent=ref;  
-  descFicha.textContent=f.descripcion||"";  
-  inicio.textContent=f.inicio||"—";  
-  final.textContent=f.final||"—";  
-  renderMunicipios(f.municipios||[]);  
-  renderPasaPor(f.pasaPor||[]);  
-  highlight(ref,"orange");  
-}  
+function mostrarFicha(ref){
+  // asumimos ref ya normalizada; si no, la normalizamos de forma segura
+  const refNorm = normalizarRef(ref);
+  const f = dataCarreteras[refNorm];
+  if(!f) return;
+  tituloFicha.textContent = refNorm;
+  descFicha.textContent = f.descripcion || "";
+  inicio.textContent = f.inicio || "—";
+  final.textContent = f.final || "—";
+  renderMunicipios(f.municipios || []);
+  renderPasaPor(f.pasaPor || []);
+  highlight(refNorm, "orange");
+}
   
 /* ================= EXAMEN ================= */  
 function iniciar(){  
@@ -314,35 +323,33 @@ function actualizar(){
 }  
 function volver(){location.href="/Territorio/index.html";}  
   
-buscador.addEventListener("input", e => {  
-  if(!modoRepaso || !baseLayer) return;  
-  
-  const q = e.target.value.trim().toUpperCase();  
-  if(!q){  
-    aplicarFiltrosRepaso();  
-    return;  
-  }  
-  
-  if(activeLayer){  
-    map.removeLayer(activeLayer);  
-    activeLayer = null;  
-  }  
-  
-  const buscada = normalizarRef(  
-  q.startsWith("LZ") ? q : "LZ-" + q.replace(/\D/g,"")  
-);  
-  
-  baseLayer.eachLayer(l=>{  
-  const ref = normalizarRef(l.feature.properties.ref);  
-  if(ref === buscada){  
-    l.setStyle({ color:"#ff9800", weight:6, opacity:1 });  
-    map.fitBounds(l.getBounds(), { padding:[20,20] });  
-    mostrarFicha(ref);  
-  } else {  
-    l.setStyle({ opacity:0.15 });  
-  }  
-});  
-});  
+buscador.addEventListener("input", e => {
+  if(!modoRepaso || !baseLayer) return;
+
+  const q = e.target.value.trim().toUpperCase();
+  if(!q){
+    aplicarFiltrosRepaso();
+    return;
+  }
+
+  if(activeLayer){
+    map.removeLayer(activeLayer);
+    activeLayer = null;
+  }
+
+  const buscada = normalizarRef(q.startsWith("LZ") ? q : "LZ-" + q.replace(/\D/g,""));
+
+  baseLayer.eachLayer(l => {
+    const ref = l.refNorm || (l.feature && l.feature.properties && l.feature.properties.refNorm);
+    if(ref === buscada){
+      l.setStyle({ color:"#ff9800", weight:6, opacity:1 });
+      map.fitBounds(l.getBounds(), { padding:[20,20] });
+      mostrarFicha(ref);
+    } else {
+      l.setStyle({ opacity:0.15 });
+    }
+  });
+});
   
   
 /* ================= EVENTS ================= */  
