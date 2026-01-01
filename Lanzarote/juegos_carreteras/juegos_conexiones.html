@@ -117,24 +117,25 @@ function tipo(ref){
   const usarSec  = chkSec.checked;  
   const usarTer  = chkTer.checked;  
   
-  baseLayer.eachLayer(l=>{  
-    const ref = normalizarRef(l.feature.properties.ref);  
-  
-    const visible =  
-      (usarPrim && t==="primaria") ||  
-      (usarSec  && t==="secundaria") ||  
-      (usarTer  && t==="terciaria");  
-  
-    if(visible){  
-      l.setStyle({  
-        color:"#3388ff",  
-        weight:4,  
-        opacity:1  
-      });  
-    } else {  
-      l.setStyle({ opacity:0 });  
-    }  
-  });  
+  baseLayer.eachLayer(l=>{
+    const ref = normalizarRef(l.feature.properties.ref);
+    const t = tipo(ref); // ← **añadido**: obtener el tipo a partir de la ref normalizada
+
+    const visible =
+      (usarPrim && t === "primaria") ||
+      (usarSec  && t === "secundaria") ||
+      (usarTer  && t === "terciaria");
+
+    if(visible){
+      l.setStyle({
+        color:"#3388ff",
+        weight:4,
+        opacity:1
+      });
+    } else {
+      l.setStyle({ opacity:0 });
+    }
+  });
 }  
   
   
