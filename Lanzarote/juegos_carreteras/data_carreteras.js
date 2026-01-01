@@ -48,6 +48,20 @@ const dataCarreteras = {
     descripcion: "Tahiche-Haría"
   },
 
+
+
+    "LZ-14": {
+    nombre: "LZ-14",
+    tipo: "secundaria",
+    municipios: ["Arrecife", "Teguise"],
+    pasaPor: ["Exterior Arrecife", "Costa de Teguise"],
+    conecta: ["LZ-3","LZ-101"],
+    inicio: "Rotonda LZ-3",
+    final: "Costa de Teguise",
+    descripcion: "Arrecife-Costa de Teguise"
+  },
+
+
   "LZ-20": {
     nombre: "LZ-20",
     tipo: "secundaria",
