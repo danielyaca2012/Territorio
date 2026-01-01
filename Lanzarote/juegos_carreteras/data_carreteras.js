@@ -73,4 +73,17 @@ const dataCarreteras = {
     descripcion: "Arrecife-Tinajo"
   }
 
+
+
+"LZ-30": {
+    nombre: "LZ-30",
+    tipo: "secundaria",
+    municipios: ["Teguise", "San Bartolomé", "Tías", "Yaiza"],
+    pasaPor: ["Teguise", "Mozaga", "Exterior de El Islote", "Masdache","Uga"],
+    conecta: ["LZ-402", "LZ-408", "LZ-20", "LZ-58", "LZ-503", "LZ-56", "LZ-501", "LZ-2"],
+    inicio: "Teguise",
+    final: "Uga(LZ-2)",
+    descripcion: "Teguise-Uga"
+  }
+
 };
