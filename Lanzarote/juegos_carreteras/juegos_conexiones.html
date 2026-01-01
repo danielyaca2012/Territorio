@@ -117,7 +117,11 @@ fetch("carreteras_lanzarote_fin.geojson")
   baseLayer=L.geoJSON(geoData,{
     style:{color:"#3388ff",weight:4},
     onEachFeature:(f,l)=>{
-      l.on("click",()=>modoRepaso && mostrarFicha(f.properties.ref));
+      l.on("click", () => {
+  if(!modoRepaso) return;
+  const ref = normalizarRef(f.properties.ref);
+  mostrarFicha(ref);
+});
     }
   }).addTo(map);
 });
@@ -127,7 +131,7 @@ let preguntas=[],idx=0;
 let correctas=0,fallos=0;
 let perfectas=0,conErrores=0;
 let attempts={},lastSig={};
-let seleccionInicialHecha = false;
+
 
 /* ================= UTIL ================= */
 function tipo(ref){
@@ -144,8 +148,7 @@ function tipo(ref){
   const usarTer  = chkTer.checked;
 
   baseLayer.eachLayer(l=>{
-    const ref = l.feature.properties.ref;
-    const t = tipo(ref);
+    const ref = normalizarRef(l.feature.properties.ref);
 
     const visible =
       (usarPrim && t==="primaria") ||
@@ -171,10 +174,14 @@ function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random
 /* ================= MAP ================= */
 function highlight(ref,color){
   if(activeLayer) map.removeLayer(activeLayer);
+
+  const refNorm = normalizarRef(ref);
+
   activeLayer=L.geoJSON(geoData,{
-    filter:f=>f.properties.ref===ref,
+    filter:f => normalizarRef(f.properties.ref) === refNorm,
     style:{color,weight:6}
   }).addTo(map);
+
   map.fitBounds(activeLayer.getBounds(),{padding:[20,20]});
 }
 
@@ -213,6 +220,14 @@ function renderPasaPor(arr){
 }
 
 /* ================= REPASO ================= */
+
+function normalizarRef(ref){
+  return ref
+    .toUpperCase()
+    .replace(/\s+/g, "-")   // espacios → guiones
+    .replace(/--+/g, "-"); // doble guión → simple
+}
+
 function entrarRepasoInicial(){
   modoRepaso = true;
   estadisticas.style.display = "none";
@@ -223,13 +238,15 @@ function entrarRepasoInicial(){
 
   aplicarFiltrosRepaso();
 
-  if(!seleccionInicialHecha){
-    mostrarFicha("LZ-1");
-    seleccionInicialHecha = true;
-  }
+  // ❌ NO seleccionar ninguna carretera aquí
+  tituloFicha.textContent = "Selecciona una carretera";
+  descFicha.textContent = "";
+  inicio.textContent = "—";
+  final.textContent = "—";
 }
 
 function mostrarFicha(ref){
+ref = normalizarRef(ref);
   const f=dataCarreteras[ref];
   if(!f)return;
   tituloFicha.textContent=ref;
@@ -333,18 +350,20 @@ buscador.addEventListener("input", e => {
     activeLayer = null;
   }
 
-  const buscada = q.startsWith("LZ") ? q : "LZ-" + q.replace(/\D/g,"");
+  const buscada = normalizarRef(
+  q.startsWith("LZ") ? q : "LZ-" + q.replace(/\D/g,"")
+);
 
   baseLayer.eachLayer(l=>{
-    const ref = l.feature.properties.ref.toUpperCase();
-    if(ref === buscada){
-      l.setStyle({ color:"#ff9800", weight:6, opacity:1 });
-      map.fitBounds(l.getBounds(), { padding:[20,20] });
-      mostrarFicha(ref);
-    } else {
-      l.setStyle({ opacity:0.15 });
-    }
-  });
+  const ref = normalizarRef(l.feature.properties.ref);
+  if(ref === buscada){
+    l.setStyle({ color:"#ff9800", weight:6, opacity:1 });
+    map.fitBounds(l.getBounds(), { padding:[20,20] });
+    mostrarFicha(ref);
+  } else {
+    l.setStyle({ opacity:0.15 });
+  }
+});
 });
 
   
