@@ -71,7 +71,7 @@ const dataCarreteras = {
     inicio: "LZ-3",
     final: "Tinajo",
     descripcion: "Arrecife-Tinajo"
-  }
+  },
 
 
 
