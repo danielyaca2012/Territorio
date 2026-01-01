@@ -140,7 +140,7 @@ function tipo(ref){
   if(n>=10&&n<=67)return"secundaria";
   return"terciaria";
 }
-  function aplicarFiltrosRepaso(){
+ function aplicarFiltrosRepaso(){
   if(!modoRepaso || !baseLayer) return;
 
   const usarPrim = chkPrim.checked;
@@ -149,6 +149,7 @@ function tipo(ref){
 
   baseLayer.eachLayer(l=>{
     const ref = normalizarRef(l.feature.properties.ref);
+    const t = tipo(ref); // ✅ ESTO FALTABA
 
     const visible =
       (usarPrim && t==="primaria") ||
