@@ -83,7 +83,18 @@ const dataCarreteras = {
     conecta: ["LZ-402", "LZ-408", "LZ-20", "LZ-58", "LZ-503", "LZ-56", "LZ-501", "LZ-2"],
     inicio: "Teguise",
     final: "Uga(LZ-2)",
-    descripcion: "Teguise-Uga"
+    descripcion: "Teguise - Uga"
+  },
+"LZ-34": {
+    nombre: "LZ-34",
+    tipo: "secundaria",
+    municipios: ["Arrecife", "Teguise", "San Bartolomé", "Tías", "Yaiza"],
+    pasaPor: ["Tahiche", "San Bartolomé"],
+    conecta: ["LZ-1", "LZ-20", "LZ-35"],
+    inicio: "LZ-1, Tahiche",
+    final: "San Bartolomé",
+    descripcion: "Tahiche-San Bartolomé"
   }
+
 
 };
