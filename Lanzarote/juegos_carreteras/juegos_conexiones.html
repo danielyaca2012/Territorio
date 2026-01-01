@@ -1,6 +1,6 @@
+Mira mi codigo y dime lo q me falta: <!DOCTYPE html>
 
-
-<!DOCTYPE html>  <html lang="es">  
+<html lang="es">  
 <head>  
 <meta charset="utf-8" />  
 <title>Juego de conexiones – Lanzarote</title>  
@@ -102,7 +102,8 @@ let preguntas=[],idx=0;
 let correctas=0,fallos=0;  
 let perfectas=0,conErrores=0;  
 let attempts={},lastSig={};  
-let seleccionadoPasaPor = null;  
+let seleccionadoPasaPor = null;
+  
   
 /* ================= UTIL ================= */  
 function tipo(ref){  
@@ -119,7 +120,9 @@ function tipo(ref){
   const usarTer  = chkTer.checked;  
   
   baseLayer.eachLayer(l=>{  
-    const ref = normalizarRef(l.feature.properties.ref);  
+    baseLayer.eachLayer(l=>{
+  const ref = normalizarRef(l.feature.properties.ref);
+  const t = tipo(ref);  
   
     const visible =  
       (usarPrim && t==="primaria") ||  
@@ -143,18 +146,18 @@ function tipo(ref){
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}}  
   
 /* ================= MAP ================= */  
-function highlight(ref,color){  
-  if(activeLayer) map.removeLayer(activeLayer);  
-  
-  const refNorm = normalizarRef(ref);  
-  
-  activeLayer=L.geoJSON(geoData,{  
-    filter:f => normalizarRef(f.properties.ref) === refNorm,  
-    style:{color,weight:6}  
-  }).addTo(map);  
-  
-  map.fitBounds(activeLayer.getBounds(),{padding:[20,20]});  
-}  
+function highlight(ref,color){
+  if(activeLayer) map.removeLayer(activeLayer);
+
+  const refNorm = normalizarRef(ref);
+
+  activeLayer=L.geoJSON(geoData,{
+    filter:f => normalizarRef(f.properties.ref) === refNorm,
+    style:{color,weight:6}
+  }).addTo(map);
+
+  map.fitBounds(activeLayer.getBounds(),{padding:[20,20]});
+}
   
 /* ================= UI ================= */  
 function renderMunicipios(arr=[],sel=[]){  
@@ -167,35 +170,35 @@ function renderMunicipios(arr=[],sel=[]){
     c.appendChild(d);  
   });  
 }  
-function renderPasaPor(arr){  
-  pasaPor.innerHTML="";  
-  
-  arr.forEach((t,i)=>{  
-    const d=document.createElement("div");  
-    d.className="item";  
-    d.textContent=t;  
-  
-    if(!modoRepaso){  
-      d.onclick=()=>{  
-        // primer toque  
-        if(seleccionadoPasaPor===null){  
-          seleccionadoPasaPor=i;  
-          d.classList.add("sel");  
-        }  
-        // segundo toque → intercambiar  
-        else{  
-          const nuevo=[...arr];  
-          [nuevo[seleccionadoPasaPor],nuevo[i]] =  
-          [nuevo[i],nuevo[seleccionadoPasaPor]];  
-          seleccionadoPasaPor=null;  
-          renderPasaPor(nuevo);  
-        }  
-      };  
-    }  
-  
-    pasaPor.appendChild(d);  
-  });  
-}  
+function renderPasaPor(arr){
+  pasaPor.innerHTML="";
+
+  arr.forEach((t,i)=>{
+    const d=document.createElement("div");
+    d.className="item";
+    d.textContent=t;
+
+    if(!modoRepaso){
+      d.onclick=()=>{
+        // primer toque
+        if(seleccionadoPasaPor===null){
+          seleccionadoPasaPor=i;
+          d.classList.add("sel");
+        }
+        // segundo toque → intercambiar
+        else{
+          const nuevo=[...arr];
+          [nuevo[seleccionadoPasaPor],nuevo[i]] =
+          [nuevo[i],nuevo[seleccionadoPasaPor]];
+          seleccionadoPasaPor=null;
+          renderPasaPor(nuevo);
+        }
+      };
+    }
+
+    pasaPor.appendChild(d);
+  });
+}
   
 /* ================= REPASO ================= */  
   
@@ -332,19 +335,19 @@ buscador.addEventListener("input", e => {
   q.startsWith("LZ") ? q : "LZ-" + q.replace(/\D/g,"")  
 );  
   
-  baseLayer.eachLayer(l=>{  
-  const ref = normalizarRef(l.feature.properties.ref);  
-  if(ref === buscada){  
-    l.setStyle({ color:"#ff9800", weight:6, opacity:1 });  
-    map.fitBounds(l.getBounds(), { padding:[20,20] });  
-    mostrarFicha(ref);  
-  } else {  
-    l.setStyle({ opacity:0.15 });  
-  }  
-});  
+  baseLayer.eachLayer(l=>{
+  const ref = normalizarRef(l.feature.properties.ref);
+  if(ref === buscada){
+    l.setStyle({ color:"#ff9800", weight:6, opacity:1 });
+    map.fitBounds(l.getBounds(), { padding:[20,20] });
+    mostrarFicha(ref);
+  } else {
+    l.setStyle({ opacity:0.15 });
+  }
+});
 });  
   
-  
+    
 /* ================= EVENTS ================= */  
 btnIniciar.onclick=iniciar;  
 btnRepaso.onclick = () => {  
@@ -371,4 +374,4 @@ chkTer.onchange  = aplicarFiltrosRepaso;
 });  
   
 </script>  </body>  
-</html>
+</html>  
