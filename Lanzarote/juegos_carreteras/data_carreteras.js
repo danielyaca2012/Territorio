@@ -94,6 +94,17 @@ const dataCarreteras = {
     inicio: "LZ-1, Tahiche",
     final: "San Bartolomé",
     descripcion: "Tahiche-San Bartolomé"
+  },
+
+"LZ-35": {
+    nombre: "LZ-35",
+    tipo: "secundaria",
+    municipios: ["San Bartolomé"],
+    pasaPor: [""San Bartolomé"],
+    conecta: ["LZ-35", "LZ-20", "LZ-35"],
+    inicio: "San Bartolomé, Tahiche",
+    final: "San Bartolomé",
+    descripcion: "San Bartolomé-"
   }
 
 
