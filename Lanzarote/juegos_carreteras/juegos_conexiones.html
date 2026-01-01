@@ -131,7 +131,7 @@ let preguntas=[],idx=0;
 let correctas=0,fallos=0;
 let perfectas=0,conErrores=0;
 let attempts={},lastSig={};
-
+let seleccionadoPasaPor = null;
 
 /* ================= UTIL ================= */
 function tipo(ref){
@@ -198,23 +198,30 @@ function renderMunicipios(arr=[],sel=[]){
 }
 function renderPasaPor(arr){
   pasaPor.innerHTML="";
-  arr.forEach(t=>{
+
+  arr.forEach((t,i)=>{
     const d=document.createElement("div");
-    d.className="item"+(modoRepaso?"":" drag");
+    d.className="item";
     d.textContent=t;
+
     if(!modoRepaso){
-      d.draggable=true;
-      d.ondragstart=e=>e.dataTransfer.setData("t",t);
-      d.ondragover=e=>e.preventDefault();
-      d.ondrop=e=>{
-        e.preventDefault();
-        const s=e.dataTransfer.getData("t");
-        const a=[...pasaPor.children].map(x=>x.textContent);
-        const i1=a.indexOf(s),i2=a.indexOf(t);
-        [a[i1],a[i2]]=[a[i2],a[i1]];
-        renderPasaPor(a);
+      d.onclick=()=>{
+        // primer toque
+        if(seleccionadoPasaPor===null){
+          seleccionadoPasaPor=i;
+          d.classList.add("sel");
+        }
+        // segundo toque → intercambiar
+        else{
+          const nuevo=[...arr];
+          [nuevo[seleccionadoPasaPor],nuevo[i]] =
+          [nuevo[i],nuevo[seleccionadoPasaPor]];
+          seleccionadoPasaPor=null;
+          renderPasaPor(nuevo);
+        }
       };
     }
+
     pasaPor.appendChild(d);
   });
 }
