@@ -88,7 +88,7 @@ const dataCarreteras = {
 "LZ-34": {
     nombre: "LZ-34",
     tipo: "secundaria",
-    municipios: ["Arrecife", "Teguise", "San Bartolomé", "Tías", "Yaiza"],
+    municipios: ["Arrecife", "Teguise", "San Bartolomé"],
     pasaPor: ["Tahiche", "San Bartolomé"],
     conecta: ["LZ-1", "LZ-20", "LZ-35"],
     inicio: "LZ-1, Tahiche",
