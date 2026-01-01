@@ -127,6 +127,7 @@ let preguntas=[],idx=0;
 let correctas=0,fallos=0;
 let perfectas=0,conErrores=0;
 let attempts={},lastSig={};
+let seleccionInicialHecha = false;
 
 /* ================= UTIL ================= */
 function tipo(ref){
@@ -135,16 +136,12 @@ function tipo(ref){
   if(n>=10&&n<=67)return"secundaria";
   return"terciaria";
 }
-  function aplicarFiltrosRepaso(refInicial = "LZ-1"){
+  function aplicarFiltrosRepaso(){
   if(!modoRepaso || !baseLayer) return;
-
-  if(buscador.value.trim() !== "") return; // 👈 CLAVE
 
   const usarPrim = chkPrim.checked;
   const usarSec  = chkSec.checked;
   const usarTer  = chkTer.checked;
-
-  let primeraVisible = null;
 
   baseLayer.eachLayer(l=>{
     const ref = l.feature.properties.ref;
@@ -156,15 +153,15 @@ function tipo(ref){
       (usarTer  && t==="terciaria");
 
     if(visible){
-      l.setStyle({ color:"#3388ff", weight:4, opacity:1 });
-      if(!primeraVisible) primeraVisible = ref;
+      l.setStyle({
+        color:"#3388ff",
+        weight:4,
+        opacity:1
+      });
     } else {
       l.setStyle({ opacity:0 });
     }
   });
-
-  const refSel = primeraVisible;
-  if(refSel) mostrarFicha(refSel);
 }
 
 
@@ -219,16 +216,17 @@ function renderPasaPor(arr){
 function entrarRepasoInicial(){
   modoRepaso = true;
   estadisticas.style.display = "none";
-
-  // Mostrar buscador
   buscador.style.display = "inline";
 
-  // Limpiar estados de examen
   municipios.innerHTML = "";
   pasaPor.innerHTML = "";
 
-  // Aplicar filtros y seleccionar LZ-1
-  aplicarFiltrosRepaso("LZ-1");
+  aplicarFiltrosRepaso();
+
+  if(!seleccionInicialHecha){
+    mostrarFicha("LZ-1");
+    seleccionInicialHecha = true;
+  }
 }
 
 function mostrarFicha(ref){
