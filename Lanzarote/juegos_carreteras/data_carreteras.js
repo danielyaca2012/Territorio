@@ -101,7 +101,7 @@ const dataCarreteras = {
     tipo: "secundaria",
     municipios: ["San Bartolomé", "Tías"],
     pasaPor: ["San Bartolomé", "Exterior de Montaña Blanza","Tías"],
-    conecta: ["LZ-35", "LZ-301"],
+    conecta: ["LZ-34", "LZ-301"],
     inicio: "San Bartolomé",
     final: "Tías",
     descripcion: "San Bartolomé - Tías"
@@ -133,7 +133,7 @@ const dataCarreteras = {
     nombre: "LZ-46",
     tipo: "secundaria",
     municipios: ["Tinajo"],
-    pasaPor: ["Tiagua","La Vegueta", "Mancha   Blanca"],
+    pasaPor: ["Tiagua","La Vegueta", "Mancha Blanca"],
     conecta: ["LZ-20", "LZ-58", "LZ-56"],
     inicio: "Tiagua",
     final: "Mancha Blanca",
