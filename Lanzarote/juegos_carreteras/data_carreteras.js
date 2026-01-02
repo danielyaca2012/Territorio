@@ -148,12 +148,53 @@ const dataCarreteras = {
     conecta: ["LZ-67", "LZ-46", "LZ-30"],
     inicio: "Mancha Blanca",
     final: "LZ-30",
-    descripcion: " Mancha Blanca -  LZ-30"
+    descripcion: " Mancha Blanca - LZ-30"
 },
 
 
-"LZ-58": { nombre: "LZ-58" },
-"LZ-67": { nombre: "LZ-58" }
+"LZ-58": { 
+    nombre: "LZ-58",
+    tipo: "secundaria",
+    municipios: ["Tinajo", "Tías"],
+    pasaPor: ["Masdache","La Vegueta"],
+    conecta: ["LZ-30", "LZ-409", "LZ-46"],
+    inicio: "Masdache",
+    final: "La Vegueta",
+    descripcion: " Masdache - La Vegueta"
+},
+
+  "LZ-67": { 
+    nombre: "LZ-67",
+    tipo: "secundaria",
+    municipios: ["Tinajo", "Yaiza"],
+    pasaPor: ["Urbanización la Santa","La Santa","Exterior El Cuchillo","Tinajo","Mancha Blanca","Yaiza"],
+    conecta: ["LZ-20", "LZ-56", "LZ-2"],
+    inicio: "Urbanización la Santa",
+    final: "Yaiza",
+    descripcion: " Urbanización la Santa -  Yaiza"
+},
+
+    "LZ-101": { 
+    nombre: "LZ-101",
+    tipo: "terciaria",
+    municipios: ["Arrecife"],
+    pasaPor: ["Avenida Pérez Galdós","Polígono Industrial Los Mármoles","LZ-3"],
+    conecta: ["LZ-102", "LZ-3"],
+    inicio: "Avenida Pérez Galdós",
+    final: "LZ-3",
+    descripcion: "Avenida Pérez Galdós - LZ-3"
+},
+
+    "LZ-102": { 
+    nombre: "LZ-102",
+    tipo: "terciaria",
+    municipios: ["Arrecife"],
+    pasaPor: ["Puerto de Arrecife","Polígono Industrial Los Mármoles", "Playa de la Arena","LZ-101"],
+    conecta: ["LZ-101"],
+    inicio: "Puerto de Arrecife",
+    final: "LZ-101",
+    descripcion: "Puerto de Arrecife - LZ-101"
+}
 
 
 
