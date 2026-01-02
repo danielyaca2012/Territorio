@@ -223,7 +223,7 @@ const dataCarreteras = {
     tipo: "terciaria",
     municipios: ["Haría"],
     pasaPor: ["Mirador del Río","Ye"],
-    conecta: ["LZ-201","LZ-203"],
+    conecta: ["LZ-201","LZ-202"],
     inicio: "Mirador del Río",
     final: "Ye",
     descripcion: "Mirador del Río - Ye"
@@ -310,7 +310,7 @@ const dataCarreteras = {
     descripcion: "LZ-301 - San Bartolomé"
 },
 
-      "LZ-401": { 
+    "LZ-401": { 
     nombre: "LZ-401",
     tipo: "terciaria",
     municipios: ["Teguise"],
