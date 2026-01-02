@@ -194,6 +194,39 @@ const dataCarreteras = {
     inicio: "Puerto de Arrecife",
     final: "LZ-101",
     descripcion: "Puerto de Arrecife - LZ-101"
+},
+
+      "LZ-201": { 
+    nombre: "LZ-201",
+    tipo: "terciaria",
+    municipios: ["Haría"],
+    pasaPor: ["Maguez","Ye", "Arrieta"],
+    conecta: ["LZ-202","LZ-203","LZ-204","LZ-205" ],
+    inicio: "Maguez",
+    final: "Arrieta",
+    descripcion: "Maguez - Arrieta"
+},
+
+        "LZ-202": { 
+    nombre: "LZ-202",
+    tipo: "terciaria",
+    municipios: ["Haría"],
+    pasaPor: ["LZ-201","Mirador del Río"],
+    conecta: ["LZ-201","LZ-203"],
+    inicio: "LZ-201",
+    final: "Mirador del Río",
+    descripcion: "LZ-201 - Mirador del Río"
+},
+
+          "LZ-203": { 
+    nombre: "LZ-203",
+    tipo: "terciaria",
+    municipios: ["Haría"],
+    pasaPor: ["Mirador del Río","Ye"],
+    conecta: ["LZ-201","LZ-203"],
+    inicio: "Mirador del Río",
+    final: "Ye",
+    descripcion: "Mirador del Río - Ye"
 }
 
 
