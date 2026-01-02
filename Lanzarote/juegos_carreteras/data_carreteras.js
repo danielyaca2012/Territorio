@@ -136,7 +136,7 @@ const dataCarreteras = {
 //    pasaPor: ["Tiagua","La Vegueta", "Mancha Blanca"],
 //    conecta: ["LZ-20", "LZ-58", "LZ-56"],
 //    inicio: "Tiagua",
-/)    final: "Mancha Blanca",
+//    final: "Mancha Blanca",
 //    descripcion: " Tiagua - Mancha Blanca"
   }
 
