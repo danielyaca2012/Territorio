@@ -45,7 +45,7 @@ const dataCarreteras = {
     conecta: ["LZ-1","LZ-408","LZ-404",  "LZ-207", "LZ-208"],
     inicio: "Tahiche",
     final: "Haría",
-    descripcion: "Tahiche-Haría"
+    descripcion: "Tahiche - Haría"
   },
 
 
@@ -58,7 +58,7 @@ const dataCarreteras = {
     conecta: ["LZ-3","LZ-101"],
     inicio: "Rotonda LZ-3",
     final: "Costa de Teguise",
-    descripcion: "Arrecife-Costa de Teguise"
+    descripcion: "Arrecife - Costa de Teguise"
   },
 
 
@@ -70,7 +70,7 @@ const dataCarreteras = {
     conecta: ["LZ-3", "LZ-303", "LZ-34", "LZ-30", "LZ-409", "LZ-407", "LZ-46", "LZ-401"],
     inicio: "LZ-3",
     final: "Tinajo",
-    descripcion: "Arrecife-Tinajo"
+    descripcion: "Arrecife - Tinajo"
   },
 
 
@@ -93,18 +93,18 @@ const dataCarreteras = {
     conecta: ["LZ-1", "LZ-20", "LZ-35"],
     inicio: "LZ-1, Tahiche",
     final: "San Bartolomé",
-    descripcion: "Tahiche-San Bartolomé"
+    descripcion: "Tahiche - San Bartolomé"
   },
 
 "LZ-35": {
     nombre: "LZ-35",
     tipo: "secundaria",
-    municipios: ["San Bartolomé"],
-    pasaPor: [""San Bartolomé"],
-    conecta: ["LZ-35", "LZ-20", "LZ-35"],
-    inicio: "San Bartolomé, Tahiche",
-    final: "San Bartolomé",
-    descripcion: "San Bartolomé-"
+    municipios: ["San Bartolomé", "Tías"],
+    pasaPor: ["San Bartolomé", "Exterior de Montaña Blanza","Tías"],
+    conecta: ["LZ-35", "LZ-301"],
+    inicio: "San Bartolomé",
+    final: "Tías",
+    descripcion: "San Bartolomé - Tías"
   }
 
 
