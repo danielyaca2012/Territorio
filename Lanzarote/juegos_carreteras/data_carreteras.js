@@ -342,6 +342,18 @@ const dataCarreteras = {
     descripcion: "Teguise - Famara"
 },
 
+    "LZ-404": { 
+    nombre: "LZ-404",
+    tipo: "terciaria",
+    municipios: ["Teguise"],
+    pasaPor: ["LZ-1","Teseguite", "Teguise"],
+    conecta: ["LZ-1","LZ-42", "LZ-405", "LZ-10"],
+    inicio: "LZ-1",
+    final: "Teguise",
+    descripcion: "LZ-1 - Teguise"
+},
+  
+
     "LZ-410": { 
     nombre: "LZ-410",
     tipo: "terciaria",
