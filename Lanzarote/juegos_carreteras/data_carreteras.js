@@ -105,6 +105,17 @@ const dataCarreteras = {
     inicio: "San Bartolomé",
     final: "Tías",
     descripcion: "San Bartolomé - Tías"
+  },
+
+"LZ-40": {
+    nombre: "LZ-40",
+    tipo: "secundaria",
+    municipios: ["San Bartolomé", "Tías"],
+    pasaPor: ["Exterior Aeropuerto","Puerto del Carmen"],
+    conecta: ["LZ-2", "LZ-505", "LZ-504", LZ-506"],
+    inicio: "LZ-2 (Aeropuerto)",
+    final: "Puerto del Carmen",
+    descripcion: "Aeropuerto - Puerto del Carmen"
   }
 
 
