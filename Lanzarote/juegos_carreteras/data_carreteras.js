@@ -127,17 +127,17 @@ const dataCarreteras = {
     inicio: "Guatiza",
     final: "Mala",
     descripcion: " Conexión LZ-1 Guatiza - Conexión LZ-1 Mala "
-  },
+//  },
 
-"LZ-46": {
-    nombre: "LZ-46",
-    tipo: "secundaria",
-    municipios: ["Tinajo"],
-    pasaPor: ["Tiagua","La Vegueta", "Mancha Blanca"],
-    conecta: ["LZ-20", "LZ-58", "LZ-56"],
-    inicio: "Tiagua",
-    final: "Mancha Blanca",
-    descripcion: " Tiagua - Mancha Blanca"
+//"LZ-46": {
+//    nombre: "LZ-46",
+//    tipo: "secundaria",
+//    municipios: ["Tinajo"],
+//    pasaPor: ["Tiagua","La Vegueta", "Mancha Blanca"],
+))    conecta: ["LZ-20", "LZ-58", "LZ-56"],
+//    inicio: "Tiagua",
+/)    final: "Mancha Blanca",
+//    descripcion: " Tiagua - Mancha Blanca"
   }
 
 
