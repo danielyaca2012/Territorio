@@ -308,6 +308,49 @@ const dataCarreteras = {
     inicio: "LZ-301",
     final: "San Bartolomé",
     descripcion: "LZ-301 - San Bartolomé"
+},
+
+      "LZ-401": { 
+    nombre: "LZ-401",
+    tipo: "terciaria",
+    municipios: ["Teguise"],
+    pasaPor: ["Tiagua","Muñique", "Soo"],
+    conecta: ["LZ-46","LZ-20", "LZ-410"],
+    inicio: "Tiagua",
+    final: "Soo",
+    descripcion: "Tiagua - Soo"
+},
+    "LZ-402": { 
+    nombre: "LZ-402",
+    tipo: "terciaria",
+    municipios: ["Teguise"],
+    pasaPor: ["Exterior de Teguise", "Caleta de Famara"],
+    conecta: ["LZ-30","LZ-403", "LZ-410"],
+    inicio: "LZ-30",
+    final: "Caleta de Famara",
+    descripcion: "LZ-30 - Caleta de Famara"
+},
+
+    "LZ-403": { 
+    nombre: "LZ-403",
+    tipo: "terciaria",
+    municipios: ["Teguise"],
+    pasaPor: ["Teguise", "Famara"],
+    conecta: ["LZ-402"],
+    inicio: "Teguise",
+    final: "Famara",
+    descripcion: "Teguise - Famara"
+},
+
+    "LZ-410": { 
+    nombre: "LZ-410",
+    tipo: "terciaria",
+    municipios: ["Teguise"],
+    pasaPor: ["Soo", "Caleta de Famara"],
+    conecta: ["LZ-401", "LZ-402"],
+    inicio: "Soo",
+    final: "Caleta de Famara",
+    descripcion: "Soo - Caleta de Famara"
 }
   
 
