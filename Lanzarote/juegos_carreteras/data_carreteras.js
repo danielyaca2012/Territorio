@@ -112,7 +112,7 @@ const dataCarreteras = {
     tipo: "secundaria",
     municipios: ["San Bartolomé", "Tías"],
     pasaPor: ["Exterior Aeropuerto","Puerto del Carmen"],
-    conecta: ["LZ-2", "LZ-505", "LZ-504", LZ-506"],
+    conecta: ["LZ-2", "LZ-505", "LZ-504", "LZ-506"],
     inicio: "LZ-2 (Aeropuerto)",
     final: "Puerto del Carmen",
     descripcion: "Aeropuerto - Puerto del Carmen"
