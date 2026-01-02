@@ -116,6 +116,17 @@ const dataCarreteras = {
     inicio: "LZ-2 (Aeropuerto)",
     final: "Puerto del Carmen",
     descripcion: "Aeropuerto - Puerto del Carmen"
+  },
+
+"LZ-42": {
+    nombre: "LZ-42",
+    tipo: "secundaria",
+    municipios: ["Teguise", "Haría"],
+    pasaPor: ["Guatiza","Mala"],
+    conecta: ["LZ-1", "LZ-404", "LZ-406"],
+    inicio: "Guatiza",
+    final: "Mala",
+    descripcion: " Conexión LZ-1 Guatiza - Conexión LZ-1 Mala "
   }
 
 
