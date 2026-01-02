@@ -138,7 +138,12 @@ const dataCarreteras = {
     inicio: "Tiagua",
     final: "Mancha Blanca",
     descripcion: " Tiagua - Mancha Blanca"
-  }
+  },
+
+"LZ-56": { nombre: "LZ-56" },
+"LZ-58": { nombre: "LZ-58" },
+"LZ-67": { nombre: "LZ-58" }
+
 
 
 };
