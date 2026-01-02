@@ -62,7 +62,7 @@ const dataCarreteras = {
   },
 
 
-  "LZ-20": {
+    "LZ-20": {
     nombre: "LZ-20",
     tipo: "secundaria",
     municipios: ["Arrecife", "San Bartolomé", "Tinajo"],
@@ -75,7 +75,7 @@ const dataCarreteras = {
 
 
 
-"LZ-30": {
+    "LZ-30": {
     nombre: "LZ-30",
     tipo: "secundaria",
     municipios: ["Teguise", "San Bartolomé", "Tías", "Yaiza"],
@@ -85,7 +85,7 @@ const dataCarreteras = {
     final: "Uga(LZ-2)",
     descripcion: "Teguise - Uga"
   },
-"LZ-34": {
+    "LZ-34": {
     nombre: "LZ-34",
     tipo: "secundaria",
     municipios: ["Arrecife", "Teguise", "San Bartolomé"],
@@ -96,7 +96,7 @@ const dataCarreteras = {
     descripcion: "Tahiche - San Bartolomé"
   },
 
-"LZ-35": {
+    "LZ-35": {
     nombre: "LZ-35",
     tipo: "secundaria",
     municipios: ["San Bartolomé", "Tías"],
@@ -107,7 +107,7 @@ const dataCarreteras = {
     descripcion: "San Bartolomé - Tías"
   },
 
-"LZ-40": {
+    "LZ-40": {
     nombre: "LZ-40",
     tipo: "secundaria",
     municipios: ["San Bartolomé", "Tías"],
@@ -118,7 +118,7 @@ const dataCarreteras = {
     descripcion: "Aeropuerto - Puerto del Carmen"
   },
 
-"LZ-42": {
+    "LZ-42": {
     nombre: "LZ-42",
     tipo: "secundaria",
     municipios: ["Teguise", "Haría"],
@@ -129,7 +129,7 @@ const dataCarreteras = {
     descripcion: " Conexión LZ-1 Guatiza - Conexión LZ-1 Mala "
   },
 
-"LZ-46": {
+    "LZ-46": {
     nombre: "LZ-46",
     tipo: "secundaria",
     municipios: ["Tinajo", "Teguise"],
@@ -140,7 +140,7 @@ const dataCarreteras = {
     descripcion: " Tiagua - Mancha Blanca"
   },
 
-"LZ-56": { 
+    "LZ-56": { 
     nombre: "LZ-56",
     tipo: "secundaria",
     municipios: ["Tinajo", "Tías"],
@@ -152,7 +152,7 @@ const dataCarreteras = {
 },
 
 
-"LZ-58": { 
+    "LZ-58": { 
     nombre: "LZ-58",
     tipo: "secundaria",
     municipios: ["Tinajo", "Tías"],
@@ -163,7 +163,7 @@ const dataCarreteras = {
     descripcion: " Masdache - La Vegueta"
 },
 
-  "LZ-67": { 
+    "LZ-67": { 
     nombre: "LZ-67",
     tipo: "secundaria",
     municipios: ["Tinajo", "Yaiza"],
@@ -196,7 +196,7 @@ const dataCarreteras = {
     descripcion: "Puerto de Arrecife - LZ-101"
 },
 
-      "LZ-201": { 
+    "LZ-201": { 
     nombre: "LZ-201",
     tipo: "terciaria",
     municipios: ["Haría"],
@@ -207,7 +207,7 @@ const dataCarreteras = {
     descripcion: "Maguez - Arrieta"
 },
 
-        "LZ-202": { 
+    "LZ-202": { 
     nombre: "LZ-202",
     tipo: "terciaria",
     municipios: ["Haría"],
@@ -218,7 +218,7 @@ const dataCarreteras = {
     descripcion: "LZ-201 - Mirador del Río"
 },
 
-          "LZ-203": { 
+    "LZ-203": { 
     nombre: "LZ-203",
     tipo: "terciaria",
     municipios: ["Haría"],
@@ -227,8 +227,89 @@ const dataCarreteras = {
     inicio: "Mirador del Río",
     final: "Ye",
     descripcion: "Mirador del Río - Ye"
+},
+    "LZ-204": { 
+    nombre: "LZ-204",
+    tipo: "terciaria",
+    municipios: ["Haría"],
+    pasaPor: ["Orzola","Las Hoyas", "LZ-201"],
+    conecta: ["LZ-1","LZ-201"],
+    inicio: "Orzola",
+    final: "LZ-201",
+    descripcion: "Orzola - LZ-201"
+},
+    "LZ-205": { 
+    nombre: "LZ-205",
+    tipo: "terciaria",
+    municipios: ["Haría"],
+    pasaPor: ["Jameos del Agua","Cueva de los Verdes", "LZ-201"],
+    conecta: ["LZ-1","LZ-201"],
+    inicio: "Jameos del Agua",
+    final: "LZ-201",
+    descripcion: "Jameos del Agua - LZ-201"
+},
+    "LZ-206": { 
+    nombre: "LZ-206",
+    tipo: "terciaria",
+    municipios: ["Haría"],
+    pasaPor: ["LZ-208", "Maguez"],
+    conecta: ["LZ-208"],
+    inicio: "LZ-208",
+    final: "Maguez",
+    descripcion: "LZ-208 - Maguez"
+},
+    "LZ-207": { 
+    nombre: "LZ-207",
+    tipo: "terciaria",
+    municipios: ["Haría"],
+    pasaPor: ["LZ-1","Tabayesco", "LZ-10"],
+    conecta: ["LZ-1","LZ-10"],
+    inicio: "LZ-1",
+    final: "LZ-10",
+    descripcion: "LZ-1 - LZ-10"
+},
+    "LZ-208": { 
+    nombre: "LZ-208",
+    tipo: "terciaria",
+    municipios: ["Haría"],
+    pasaPor: ["Haría","Tabayesco", "Arrieta"],
+    conecta: ["LZ-1","LZ-206"],
+    inicio: "Haría",
+    final: "Arrieta",
+    descripcion: "Haría - Arrieta"
+},
+    "LZ-301": { 
+    nombre: "LZ-301",
+    tipo: "terciaria",
+    municipios: ["San Bartolomé"],
+    pasaPor: ["Polígono Industrial Playa Honda","Guime", "Montaña Blanca"],
+    conecta: ["LZ-2","LZ-303","LZ-302","LZ-35"],
+    inicio: "Polígono Industrial Playa Honda",
+    final: "Montaña Blanca",
+    descripcion: "Polígono Industrial Playa Honda - Montaña Blanca"
+},
+  
+    "LZ-302": { 
+    nombre: "LZ-302",
+    tipo: "terciaria",
+    municipios: ["San Bartolomé"],
+    pasaPor: ["Guime","Tabayesco", "San Bartolomé"],
+    conecta: ["LZ-301"],
+    inicio: "Guime",
+    final: "San Bartolomé",
+    descripcion: "Guime - San Bartolomé"
+},
+    "LZ-303": { 
+    nombre: "LZ-303",
+    tipo: "terciaria",
+    municipios: ["San Bartolomé"],
+    pasaPor: ["LZ-301","San Bartolomé"],
+    conecta: ["LZ-301","LZ-20"],
+    inicio: "LZ-301",
+    final: "San Bartolomé",
+    descripcion: "LZ-301 - San Bartolomé"
 }
-
+  
 
 
 };
