@@ -132,7 +132,7 @@ const dataCarreteras = {
 "LZ-46": {
     nombre: "LZ-46",
     tipo: "secundaria",
-    municipios: ["Tinajo"],
+    municipios: ["Tinajo", "Teguise"],
     pasaPor: ["Tiagua","La Vegueta", "Mancha Blanca"],
     conecta: ["LZ-20", "LZ-58", "LZ-56"],
     inicio: "Tiagua",
@@ -140,7 +140,18 @@ const dataCarreteras = {
     descripcion: " Tiagua - Mancha Blanca"
   },
 
-"LZ-56": { nombre: "LZ-56" },
+"LZ-56": { 
+    nombre: "LZ-56",
+    tipo: "secundaria",
+    municipios: ["Tinajo", "Tías"],
+    pasaPor: ["Mancha Blanca","Tinguatón"],
+    conecta: ["LZ-67", "LZ-46", "LZ-30"],
+    inicio: "Mancha Blanca",
+    final: "LZ-30",
+    descripcion: " Mancha Blanca -  LZ-30"
+},
+
+
 "LZ-58": { nombre: "LZ-58" },
 "LZ-67": { nombre: "LZ-58" }
 
