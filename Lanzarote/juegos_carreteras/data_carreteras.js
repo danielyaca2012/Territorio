@@ -347,12 +347,70 @@ const dataCarreteras = {
     tipo: "terciaria",
     municipios: ["Teguise"],
     pasaPor: ["LZ-1","Teseguite", "Teguise"],
-    conecta: ["LZ-1","LZ-42", "LZ-405", "LZ-10"],
+    conecta: ["LZ-1","LZ-42", "LZ-405","LZ-10"],
     inicio: "LZ-1",
     final: "Teguise",
     descripcion: "LZ-1 - Teguise"
 },
+
+
+    "LZ-405": { 
+    nombre: "LZ-405",
+    tipo: "terciaria",
+    municipios: ["Teguise"],
+    pasaPor: ["LZ-404","El Mojón"],
+    conecta: ["LZ-404","LZ-406"],
+    inicio: "LZ-404",
+    final: "El Mojón",
+    descripcion: "El Mojón"
+},
+
+   "LZ-406": { 
+    nombre: "LZ-406",
+    tipo: "terciaria",
+    municipios: ["Teguise"],
+    pasaPor: ["El Mojón", "Guatiza"],
+    conecta: ["LZ-405","LZ-42"],
+    inicio: "El Mojón",
+    final: "Guatiza",
+    descripcion: "El Mojón - Guatiza"
+},
   
+
+   "LZ-407": { 
+    nombre: "LZ-407",
+    tipo: "terciaria",
+    municipios: ["Teguise"],
+    pasaPor: ["Teguise", "Tao"],
+    conecta: ["LZ-30","LZ-402", "LZ-20"],
+    inicio: "Teguise",
+    final: "Tao",
+    descripcion: "Teguise - Tao"
+},
+
+
+   "LZ-408": { 
+    nombre: "LZ-408",
+    tipo: "terciaria",
+    municipios: ["Teguise"],
+    pasaPor: ["Nazaret", "LZ-30"],
+    conecta: ["LZ-10","LZ-30"],
+    inicio: "LZ-10",
+    final: "LZ-30",
+    descripcion: "LZ-10 - LZ-30"
+},
+
+   "LZ-409": { 
+    nombre: "LZ-409",
+    tipo: "terciaria",
+    municipios: ["Teguise"],
+    pasaPor: ["Mozaga", "LZ-58"],
+    conecta: ["LZ-20","LZ-58"],
+    inicio: "Mozaga",
+    final: "LZ-58",
+    descripcion: "Mozaga - LZ-58"
+},
+
 
     "LZ-410": { 
     nombre: "LZ-410",
