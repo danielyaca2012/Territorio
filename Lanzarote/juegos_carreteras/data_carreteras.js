@@ -421,6 +421,94 @@ const dataCarreteras = {
     inicio: "Soo",
     final: "Caleta de Famara",
     descripcion: "Soo - Caleta de Famara"
+},
+
+    "LZ-501": { 
+    nombre: "LZ-501",
+    tipo: "terciaria",
+    municipios: ["Tías"],
+    pasaPor: ["LZ-30", "Conil", "Tías"],
+    conecta: ["LZ-30", "LZ-502", "LZ-503", "LZ-2"],
+    inicio: "LZ-30",
+    final: "Tías",
+    descripcion: "LZ-30 - Tías"
+},
+
+      "LZ-502": { 
+    nombre: "LZ-502",
+    tipo: "terciaria",
+    municipios: ["Tías"],
+    pasaPor: ["LZ-501", "La Asomada", "Mácher"],
+    conecta: ["LZ-501", "LZ-2"],
+    inicio: "LZ-501",
+    final: "Mácher",
+    descripcion: "LZ-501 - Mácher"
+},
+
+      "LZ-503": { 
+    nombre: "LZ-503",
+    tipo: "terciaria",
+    municipios: ["Tías"],
+    pasaPor: ["LZ-30", "Conil"],
+    conecta: ["LZ-30", "LZ-501"],
+    inicio: "LZ-30",
+    final: "Conil",
+    descripcion: "LZ-30 - Conil"
+},
+
+      "LZ-504": { 
+    nombre: "LZ-504",
+    tipo: "terciaria",
+    municipios: ["Tías"],
+    pasaPor: ["Puerto del Carmen", "Conil", "Mácher"],
+    conecta: ["LZ-40", "LZ-506", "LZ-2", "LZ-502"],
+    inicio: "Puerto del Carmen",
+    final: "Mácher",
+    descripcion: "Puerto del Carmen - Mácher"
+},
+
+      "LZ-505": { 
+    nombre: "LZ-505",
+    tipo: "terciaria",
+    municipios: ["Tías"],
+    pasaPor: ["Puerto del Carmen", "Conil", "Tías"],
+    conecta: ["LZ-40", "LZ-2"],
+    inicio: "Puerto del Carmen",
+    final: "Tías",
+    descripcion: "Puerto del Carmen - Tías"
+},
+
+      "LZ-506": { 
+    nombre: "LZ-506",
+    tipo: "terciaria",
+    municipios: ["Tías"],
+    pasaPor: ["Puerto del Carmen", "Conil", "Puerto Calero"],
+    conecta: ["LZ-40", "LZ-504"],
+    inicio: "Puerto del Carmen",
+    final: "Puerto Calero",
+    descripcion: "Puerto del Carmen - Puerto Calero"
+},
+
+     "LZ-601": { 
+    nombre: "LZ-601",
+    tipo: "terciaria",
+    municipios: ["Tinajo"],
+    pasaPor: ["LZ-67", "Caldera Blanca"],
+    conecta: ["LZ-67"],
+    inicio: "LZ-67",
+    final: "Caldera Blanca",
+    descripcion: "Pista: LZ-67 - Caldera Blanca"
+},
+
+     "LZ-602": { 
+    nombre: "LZ-602",
+    tipo: "terciaria",
+    municipios: ["Tinajo"],
+    pasaPor: ["LZ-67", "Parque Nacional de Timanfaya"],
+    conecta: ["LZ-67"],
+    inicio: "LZ-67",
+    final: "Parque Nacional de Timanfaya",
+    descripcion: " LZ-67 - Parque Nacional de Timanfaya"
 }
   
 
