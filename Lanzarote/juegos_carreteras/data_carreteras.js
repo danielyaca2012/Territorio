@@ -528,55 +528,55 @@ const dataCarreteras = {
     nombre: "LZ-702",
     tipo: "terciaria",
     municipios: ["Yaiza"],
-    pasaPor: ["Yaiza", "Playa"],
-    conecta: ["LZ-2", "LZ-704", "LZ-703"],
-    inicio: "Yaiza",
-    final: "Playa",
-    descripcion: " Yaiza - Playa"
+    pasaPor: ["Uga", "Fernés"],
+    conecta: ["LZ-2", "LZ-30"],
+    inicio: "Uga",
+    final: "Fernés",
+    descripcion: " Uga - Fernés"
 },
 
     "LZ-703": { 
     nombre: "LZ-703",
     tipo: "terciaria",
     municipios: ["Yaiza"],
-    pasaPor: ["Yaiza", "Playa"],
-    conecta: ["LZ-2", "LZ-704", "LZ-703"],
-    inicio: "Yaiza",
-    final: "Playa",
-    descripcion: " Yaiza - Playa"
+    pasaPor: ["Las Breñas"," Salinas de Janubio", "El Golfo"],
+    conecta: ["LZ-2", "LZ-701", "LZ-704", "LZ-705"],
+    inicio: "Las Breñas",
+    final: "El Golfo",
+    descripcion: " Las Breñas - El Golfo"
 },
 
     "LZ-704": { 
     nombre: "LZ-704",
     tipo: "terciaria",
     municipios: ["Yaiza"],
-    pasaPor: ["Yaiza", "Playa"],
-    conecta: ["LZ-2", "LZ-704", "LZ-703"],
+    pasaPor: ["Yaiza", "El Golfo"],
+    conecta: ["LZ-2", "LZ-701","LZ-705", "LZ-703"],
     inicio: "Yaiza",
-    final: "Playa",
-    descripcion: " Yaiza - Playa"
+    final: "El Golfo",
+    descripcion: " Yaiza - El Golfo"
 },
 
     "LZ-705": { 
     nombre: "LZ-705",
     tipo: "terciaria",
     municipios: ["Yaiza"],
-    pasaPor: ["Yaiza", "Playa"],
-    conecta: ["LZ-2", "LZ-704", "LZ-703"],
-    inicio: "Yaiza",
-    final: "Playa",
-    descripcion: "Pista: Yaiza - Playa"
+    pasaPor: ["El Golfo", "Playa del Paso"],
+    conecta: ["LZ-704", "LZ-703"],
+    inicio: "El Golfo",
+    final: "Playa del Paso",
+    descripcion: "Pista: El Golfo - Playa del Paso"
 },
 
     "LZ-706": { 
     nombre: "LZ-706",
     tipo: "terciaria",
     municipios: ["Yaiza"],
-    pasaPor: ["Yaiza", "Playa"],
-    conecta: ["LZ-2", "LZ-704", "LZ-703"],
-    inicio: "Yaiza",
-    final: "Playa",
-    descripcion: " Yaiza - Playa"
+    pasaPor: ["LZ-2", "Playa Quemada"],
+    conecta: ["LZ-2"],
+    inicio: "LZ-2",
+    final: "Playa Quemada",
+    descripcion: " LZ-2 - Playa Quemada"
 }
 
 };
