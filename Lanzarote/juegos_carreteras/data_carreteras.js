@@ -509,8 +509,74 @@ const dataCarreteras = {
     inicio: "LZ-67",
     final: "Parque Nacional de Timanfaya",
     descripcion: " LZ-67 - Parque Nacional de Timanfaya"
-}
+},
+
+
+    "LZ-701": { 
+    nombre: "LZ-701",
+    tipo: "terciaria",
+    municipios: ["Yaiza"],
+    pasaPor: ["Yaiza", "Playa Blanca"],
+    conecta: ["LZ-2", "LZ-704", "LZ-703"],
+    inicio: "Yaiza",
+    final: "Playa Blanca",
+    descripcion: " Yaiza - Playa Blanca"
+},
   
 
+    "LZ-702": { 
+    nombre: "LZ-702",
+    tipo: "terciaria",
+    municipios: ["Yaiza"],
+    pasaPor: ["Yaiza", "Playa"],
+    conecta: ["LZ-2", "LZ-704", "LZ-703"],
+    inicio: "Yaiza",
+    final: "Playa",
+    descripcion: " Yaiza - Playa"
+},
+
+    "LZ-703": { 
+    nombre: "LZ-703",
+    tipo: "terciaria",
+    municipios: ["Yaiza"],
+    pasaPor: ["Yaiza", "Playa"],
+    conecta: ["LZ-2", "LZ-704", "LZ-703"],
+    inicio: "Yaiza",
+    final: "Playa",
+    descripcion: " Yaiza - Playa"
+},
+
+    "LZ-704": { 
+    nombre: "LZ-704",
+    tipo: "terciaria",
+    municipios: ["Yaiza"],
+    pasaPor: ["Yaiza", "Playa"],
+    conecta: ["LZ-2", "LZ-704", "LZ-703"],
+    inicio: "Yaiza",
+    final: "Playa",
+    descripcion: " Yaiza - Playa"
+},
+
+    "LZ-705": { 
+    nombre: "LZ-705",
+    tipo: "terciaria",
+    municipios: ["Yaiza"],
+    pasaPor: ["Yaiza", "Playa"],
+    conecta: ["LZ-2", "LZ-704", "LZ-703"],
+    inicio: "Yaiza",
+    final: "Playa",
+    descripcion: "Pista: Yaiza - Playa"
+},
+
+    "LZ-706": { 
+    nombre: "LZ-706",
+    tipo: "terciaria",
+    municipios: ["Yaiza"],
+    pasaPor: ["Yaiza", "Playa"],
+    conecta: ["LZ-2", "LZ-704", "LZ-703"],
+    inicio: "Yaiza",
+    final: "Playa",
+    descripcion: " Yaiza - Playa"
+}
 
 };
