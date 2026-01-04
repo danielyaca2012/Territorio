@@ -107,11 +107,18 @@ fetch("carreteras_lanzarote_fin.geojson")
     onEachFeature:(f,l)=>{  
   const ref = normalizarRef(f.properties.ref);
 
-  // 🖱️ Hover → nombre de carretera (solo repaso)
-  l.bindTooltip(ref, {
-    sticky: true,
-    direction: "top",
-    opacity: 0.9
+  // Tooltip SOLO en repaso
+  l.on("mouseover", () => {
+    if(!modoRepaso) return;
+    l.bindTooltip(ref, {
+      sticky: true,
+      direction: "top",
+      opacity: 0.9
+    }).openTooltip();
+  });
+
+  l.on("mouseout", () => {
+    l.unbindTooltip();
   });
 
   l.on("click", () => {  
@@ -119,6 +126,7 @@ fetch("carreteras_lanzarote_fin.geojson")
     mostrarFicha(ref);  
   });  
 }
+
 
   }).addTo(map);  
 });  
@@ -271,31 +279,51 @@ function entrarRepasoInicial(){
   const f = dataCarreteras[ref];
   if(!f || !f.conecta) return;
 
+  // 🔥 LIMPIAMOS PRIMERO
+  limpiarConectadas();
+
   baseLayer.eachLayer(l=>{
     const r = normalizarRef(l.feature.properties.ref);
     if(f.conecta.includes(r)){
-      l.setStyle({ color:"#00bcd4", weight:5, opacity:1 });
+      l.setStyle({ color:"#e8f70c", weight:5, opacity:1 });
     }
+  });
+}
+
+
+ function limpiarConectadas(){
+  if(!baseLayer) return;
+
+  baseLayer.eachLayer(l=>{
+    l.setStyle({
+      color:"#3388ff",
+      weight:4,
+      opacity:1
+    });
   });
 }
 
   
 function mostrarFicha(ref){  
-ref = normalizarRef(ref);  
+  ref = normalizarRef(ref);  
   const f=dataCarreteras[ref];  
   if(!f)return;  
- highlightConectadas(ref);
 
-  tituloFicha.textContent=ref;  
-  descFicha.textContent=f.descripcion||"";  
-  inicio.textContent=f.inicio||"—";  
-  final.textContent=f.final||"—";  
-  renderMunicipios(f.municipios||[]);  
-  renderPasaPor(f.pasaPor||[]);  
-  // ✅ SOLO REPASO
-  renderConectaRepaso(f.conecta || []);
+  limpiarConectadas();     // 👈 AÑADIR
+  highlightConectadas(ref);
+
+  tituloFicha.textContent = ref;  
+  descFicha.textContent   = f.descripcion || "";  
+  inicio.textContent      = f.inicio || "—";  
+  final.textContent       = f.final || "—";  
+
+  renderMunicipios(f.municipios || []);  
+  renderPasaPor(f.pasaPor || []);  
+  renderConectaRepaso(f.conecta || []);  
+
   highlight(ref,"orange");  
-}  
+}
+
   
 /* ================= EXAMEN ================= */  
 function iniciar(){  
