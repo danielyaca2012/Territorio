@@ -26,6 +26,16 @@ button{padding:8px 12px;border-radius:8px;border:none;background:#0b7;color:whit
 button:hover{background:#099;}  
 #map{height:320px;border-radius:10px;}  
 .controles{display:flex;gap:10px;justify-content:center;}  
+
+ .leaflet-tooltip {
+  background: #1f2937;
+  color: white;
+  border-radius: 6px;
+  padding: 4px 8px;
+  border: none;
+  font-size: 13px;
+}
+
   
 #estadisticas{  
   position:fixed;top:50%;left:50%;  
@@ -95,12 +105,21 @@ fetch("carreteras_lanzarote_fin.geojson")
   baseLayer=L.geoJSON(geoData,{  
     style:{color:"#3388ff",weight:4},  
     onEachFeature:(f,l)=>{  
-      l.on("click", () => {  
-  if(!modoRepaso) return;  
-  const ref = normalizarRef(f.properties.ref);  
-  mostrarFicha(ref);  
-});  
-    }  
+  const ref = normalizarRef(f.properties.ref);
+
+  // 🖱️ Hover → nombre de carretera (solo repaso)
+  l.bindTooltip(ref, {
+    sticky: true,
+    direction: "top",
+    opacity: 0.9
+  });
+
+  l.on("click", () => {  
+    if(!modoRepaso) return;  
+    mostrarFicha(ref);  
+  });  
+}
+
   }).addTo(map);  
 });  
   
@@ -205,7 +224,21 @@ function renderPasaPor(arr){
     pasaPor.appendChild(d);
   });
 }
-  
+
+
+function renderConectaRepaso(arr = []) {
+  boxConecta.style.display = "block";
+  conecta.innerHTML = "";
+
+  arr.forEach(ref => {
+    const d = document.createElement("div");
+    d.className = "item ok"; // verde directamente
+    d.textContent = ref;
+    conecta.appendChild(d);
+  });
+}
+
+ 
 /* ================= REPASO ================= */  
   
 function normalizarRef(ref){  
@@ -230,6 +263,8 @@ function entrarRepasoInicial(){
   descFicha.textContent = "";  
   inicio.textContent = "—";  
   final.textContent = "—";  
+ boxConecta.style.display = "none";
+
 }  
 
  function highlightConectadas(ref){
@@ -257,6 +292,8 @@ ref = normalizarRef(ref);
   final.textContent=f.final||"—";  
   renderMunicipios(f.municipios||[]);  
   renderPasaPor(f.pasaPor||[]);  
+  // ✅ SOLO REPASO
+  renderConectaRepaso(f.conecta || []);
   highlight(ref,"orange");  
 }  
   
