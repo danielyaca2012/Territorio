@@ -66,7 +66,14 @@ outline:none;
 </div>  <div class="caja">  
   <strong>🏘️ Pasa por (Ordenar)</strong>  
   <div id="pasaPor" class="lista"></div>  
-</div>  <div class="caja">  
+</div>  
+ <div class="caja" id="boxConecta" style="display:none">
+  <strong>🔗 Conecta con (Seleccionar)</strong>
+  <div id="conecta" class="lista"></div>
+</div>
+
+ 
+ <div class="caja">  
   ▶ Inicio: <span id="inicio">—</span><br>  
   ⏹ Final: <span id="final">—</span>  
 </div>  <div class="caja"><div id="map"></div></div>  <div class="controles">  
@@ -224,11 +231,26 @@ function entrarRepasoInicial(){
   inicio.textContent = "—";  
   final.textContent = "—";  
 }  
+
+ function highlightConectadas(ref){
+  const f = dataCarreteras[ref];
+  if(!f || !f.conecta) return;
+
+  baseLayer.eachLayer(l=>{
+    const r = normalizarRef(l.feature.properties.ref);
+    if(f.conecta.includes(r)){
+      l.setStyle({ color:"#00bcd4", weight:5, opacity:1 });
+    }
+  });
+}
+
   
 function mostrarFicha(ref){  
 ref = normalizarRef(ref);  
   const f=dataCarreteras[ref];  
   if(!f)return;  
+ highlightConectadas(ref);
+
   tituloFicha.textContent=ref;  
   descFicha.textContent=f.descripcion||"";  
   inicio.textContent=f.inicio||"—";  
@@ -256,9 +278,44 @@ function iniciar(){
   actualizar();  
   mostrarPregunta();  
 }  
+
+ function renderConecta(correctas = []) {
+  conecta.innerHTML = "";
+
+  // Universo de carreteras (para distractores)
+  const todas = Object.keys(dataCarreteras);
+
+  // Mezclamos correctas + distractores
+  const opciones = [...new Set([
+    ...correctas,
+    ...shuffleArray(
+      todas.filter(r => !correctas.includes(r))
+    ).slice(0, Math.max(3, 6 - correctas.length))
+  ])];
+
+  shuffle(opciones);
+
+  opciones.forEach(ref => {
+    const d = document.createElement("div");
+    d.className = "item";
+    d.textContent = ref;
+    d.onclick = () => !modoRepaso && d.classList.toggle("sel");
+    conecta.appendChild(d);
+  });
+}
+
+ function shuffleArray(arr){
+  const a=[...arr];
+  shuffle(a);
+  return a;
+}
+
   
 function mostrarPregunta(){  
   const f=preguntas[idx];  
+  boxConecta.style.display = "block";
+  renderConecta(f.conecta || []);
+
   tituloFicha.textContent=f.ref;  
   descFicha.textContent=f.descripcion||"";  
   inicio.textContent=f.inicio||"—";  
@@ -282,6 +339,19 @@ function corregir(){
     if(d.classList.contains("sel")!==ok){error=true;d.classList.add("bad");}  
     else d.classList.add("ok");  
   });  
+
+
+ // 🔗 CONEXIONES
+document.querySelectorAll("#conecta .item").forEach(d=>{
+  const ok = f.conecta.includes(d.textContent);
+  if(d.classList.contains("sel") !== ok){
+    error = true;
+    d.classList.add("bad");
+  } else {
+    d.classList.add("ok");
+  }
+});
+
   
   document.querySelectorAll("#pasaPor .item").forEach((d,i)=>{  
     if(d.textContent!==f.pasaPor[i]){error=true;d.classList.add("bad");}  
