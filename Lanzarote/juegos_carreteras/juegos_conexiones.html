@@ -327,6 +327,13 @@ function mostrarFicha(ref){
   
 /* ================= EXAMEN ================= */  
 function iniciar(){  
+ // 🔥 LIMPIAR CUALQUIER RESALTADO DE REPASO
+  limpiarConectadas();
+  if(activeLayer){
+    map.removeLayer(activeLayer);
+    activeLayer = null;
+  }
+ 
   estadisticas.style.display="none";  
   modoRepaso=false;  
   buscador.style.display="none";  
@@ -486,6 +493,11 @@ buscador.addEventListener("input", e => {
 btnIniciar.onclick=iniciar;  
 btnRepaso.onclick = () => {  
   modoRepaso = true;  
+ limpiarConectadas();
+  if(activeLayer){
+    map.removeLayer(activeLayer);
+    activeLayer = null;
+  }
   estadisticas.style.display = "none";  
   buscador.style.display = "inline";  
   aplicarFiltrosRepaso();  
