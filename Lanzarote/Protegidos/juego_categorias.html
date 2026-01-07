@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Espacios protegidos – Categorías</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<style>
+html,body{
+  height:100%;
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+}
+
+#top{
+  padding:8px;
+  background:#0b7;
+  color:#042;
+  display:flex;
+  gap:8px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+
+button{
+  padding:10px 14px;
+  border-radius:6px;
+  border:1px solid #999;
+  cursor:pointer;
+  font-size:0.9rem;
+  background:white;
+}
+
+#lugar{
+  font-weight:bold;
+  font-size:1rem;
+}
+
+.boton-volver{
+  margin-left:auto;
+  font-weight:bold;
+}
+
+#panel{
+  padding:20px;
+  max-width:600px;
+  margin:20px auto;
+}
+
+.opciones{
+  display:grid;
+  gap:12px;
+}
+
+.opcion{
+  padding:14px;
+  border-radius:10px;
+  background:#e6f7f3;
+  cursor:pointer;
+  font-weight:bold;
+  text-align:center;
+}
+
+.opcion.ok{background:#c8f7c5;}
+.opcion.bad{background:#f7c5c5;}
+
+#mensaje,#estadisticas{
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  background:rgba(0,0,0,.75);
+  color:white;
+  padding:20px 26px;
+  border-radius:14px;
+  display:none;
+  z-index:1000;
+  text-align:center;
+}
+</style>
+</head>
+
+<body>
+
+<div id="top">
+  <button id="start">▶ Iniciar examen</button>
+  <button id="repaso">📖 Repaso</button>
+  <span id="progreso">—/—</span>
+  <span id="lugar">—</span>
+  <span id="fallos">Fallos: 0</span>
+  <button class="boton-volver" onclick="volver()">⬅ Volver</button>
+</div>
+
+<div id="panel">
+  <div class="opciones" id="opciones"></div>
+</div>
+
+<div id="mensaje"></div>
+<div id="estadisticas"></div>
+
+<script>
+// =======================
+// DATOS
+// =======================
+const espacios = [
+  {nombre:"Timanfaya", codigo:"L-0", categoria:"Parque Nacional"},
+  {nombre:"Los Islotes", codigo:"L-1", categoria:"Reserva Natural Integral"},
+  {nombre:"Archipiélago Chinijo", codigo:"L-2", categoria:"Parque Natural"},
+  {nombre:"Los Volcanes", codigo:"L-3", categoria:"Parque Natural"},
+  {nombre:"La Corona", codigo:"L-4", categoria:"Monumento Natural"},
+  {nombre:"Los Ajaches", codigo:"L-5", categoria:"Monumento Natural"},
+  {nombre:"Cueva de Los Naturalistas", codigo:"L-6", categoria:"Monumento Natural"},
+  {nombre:"Islote de Halcones", codigo:"L-7", categoria:"Monumento Natural"},
+  {nombre:"Las Montañas del Fuego", codigo:"L-8", categoria:"Monumento Natural"},
+  {nombre:"Tenegüime", codigo:"L-9", categoria:"Paisaje Protegido"},
+  {nombre:"La Geria", codigo:"L-10", categoria:"Paisaje Protegido"},
+  {nombre:"Los Jameos", codigo:"L-11", categoria:"Sitio de Interés Científico"},
+  {nombre:"Janubio", codigo:"L-12", categoria:"Sitio de Interés Científico"}
+];
+
+const categorias = [
+  "Parque Nacional",
+  "Reserva Natural Integral",
+  "Parque Natural",
+  "Monumento Natural",
+  "Paisaje Protegido",
+  "Sitio de Interés Científico"
+];
+
+// =======================
+let orden=[], index=0;
+let fallosTotales=0;
+let modoRepaso=false;
+let terminado=false;
+
+// =======================
+function shuffle(a){
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function mostrarMensaje(txt){
+  const m=document.getElementById("mensaje");
+  m.textContent=txt;
+  m.style.display="block";
+  setTimeout(()=>{
+    m.style.display="none";
+    index++;
+    siguiente();
+  },700);
+}
+
+// =======================
+// BOTONES
+// =======================
+start.onclick=()=>{
+  modoRepaso=false;
+  terminado=false;
+  index=0;
+  fallosTotales=0;
+  fallos.textContent="Fallos: 0";
+  estadisticas.style.display="none";
+  orden=shuffle([...espacios]);
+  siguiente();
+};
+
+repaso.onclick=()=>{
+  modoRepaso=true;
+  terminado=true;
+  progreso.textContent="";
+  lugar.textContent="Modo repaso";
+  mostrarRepaso();
+};
+
+// =======================
+function siguiente(){
+  opciones.innerHTML="";
+  if(index>=orden.length){
+    terminado=true;
+    mostrarEstadisticas();
+    return;
+  }
+
+  const e=orden[index];
+  lugar.textContent=`${e.codigo} · ${e.nombre}`;
+  progreso.textContent=`${index+1}/${orden.length}`;
+
+  categorias.forEach(c=>{
+    const d=document.createElement("div");
+    d.className="opcion";
+    d.textContent=c;
+
+    d.onclick=()=>{
+      if(terminado||modoRepaso) return;
+
+      if(c===e.categoria){
+        d.classList.add("ok");
+        mostrarMensaje("✔");
+      } else {
+        d.classList.add("bad");
+        fallosTotales++;
+        fallos.textContent=`Fallos: ${fallosTotales}`;
+      }
+    };
+
+    opciones.appendChild(d);
+  });
+}
+
+// =======================
+function mostrarRepaso(){
+  opciones.innerHTML="";
+  espacios.forEach(e=>{
+    const d=document.createElement("div");
+    d.className="opcion ok";
+    d.textContent=`${e.codigo} · ${e.nombre} → ${e.categoria}`;
+    opciones.appendChild(d);
+  });
+}
+
+// =======================
+function mostrarEstadisticas(){
+  const total=espacios.length;
+  const aciertos=total-fallosTotales;
+  const porcentaje=Math.round((aciertos/total)*100);
+
+  estadisticas.innerHTML=`
+    <h2>📊 Resultados</h2>
+    Espacios: ${total}<br>
+    Fallos: ${fallosTotales}<br>
+    Aciertos: ${aciertos}<br><br>
+    🎯 Precisión: ${porcentaje}%
+  `;
+  estadisticas.style.display="block";
+}
+
+// =======================
+function volver(){
+  location.href="/Territorio/Lanzarote/espacios_protegidos/espacios_protegidos_lanzarote.html";
+}
+</script>
+
+</body>
+</html>
