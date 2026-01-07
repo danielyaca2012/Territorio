@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Espacios protegidos – Lanzarote</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+<style>
+html,body{
+  height:100%;
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+}
+
+#top{
+  padding:8px;
+  background:#0b7;
+  color:#042;
+  display:flex;
+  gap:8px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+
+#map{
+  height:calc(100vh - 64px);
+  width:100%;
+}
+
+button{
+  padding:10px 14px;
+  border-radius:6px;
+  border:1px solid #999;
+  cursor:pointer;
+  font-size:0.9rem;
+}
+
+#lugar{
+  font-weight:bold;
+  font-size:1rem;
+}
+
+.boton-volver{
+  margin-left:auto;
+  background:#fff;
+  font-weight:bold;
+}
+
+#mensaje,#estadisticas{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  background:rgba(0,0,0,0.75);
+  color:white;
+  padding:20px;
+  border-radius:12px;
+  display:none;
+  z-index:1000;
+  text-align:center;
+}
+
+#mensaje{font-size:2.5rem;}
+
+.leaflet-tooltip{
+  font-size:0.85rem;
+  padding:4px 6px;
+}
+</style>
+</head>
+
+<body>
+
+<div id="top">
+  <button id="start">▶ Iniciar</button>
+  <button id="repaso">📍 Repaso</button>
+  <span id="progreso">—/—</span>
+  <span id="lugar">—</span>
+  <span id="fallos">Fallos: 0</span>
+  <button class="boton-volver" onclick="volver()">⬅ Volver</button>
+</div>
+
+<div id="mensaje"></div>
+<div id="estadisticas"></div>
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+// =====================
+// MAPA
+// =====================
+const map = L.map('map').setView([29.02,-13.63],10);
+L.tileLayer(
+  'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png'
+).addTo(map);
+
+let capaEspacios;
+let espacios = [];
+let orden = [];
+let index = 0;
+let zonas = [];
+
+let fallosTotales = 0;
+let fallosActual = 0;
+let aciertoActual = false;
+let modoRepaso = false;
+let juegoTerminado = false;
+
+// =====================
+function shuffle(a){
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+// =====================
+function mostrarMensaje(txt){
+  const m=document.getElementById("mensaje");
+  m.textContent=txt;
+  m.style.display="block";
+  setTimeout(()=>{
+    m.style.display="none";
+    index++;
+    siguiente();
+  },700);
+}
+
+// =====================
+// CARGA GEOJSON
+// =====================
+fetch("espacios_protegidos.geojson")
+.then(r=>r.json())
+.then(data=>{
+  espacios = data.features;
+  capaEspacios = L.geoJSON(espacios,{
+    style: estiloBase,
+    onEachFeature: configurarFeature
+  }).addTo(map);
+});
+
+// =====================
+function estiloBase(){
+  return {
+    color:"#3388ff",
+    weight:2,
+    fillOpacity:0.25
+  };
+}
+
+function configurarFeature(f, layer){
+  zonas.push(layer);
+
+  layer.on("click",()=>{
+    if(juegoTerminado || modoRepaso || aciertoActual) return;
+
+    const nombreCorrecto = orden[index].properties.nombre;
+
+    if(f.properties.nombre === nombreCorrecto){
+      aciertoActual = true;
+      const color = fallosActual===0 ? "green" : "orange";
+      layer.setStyle({color,fillOpacity:0.45});
+      f.properties.colorAcertado = color;
+      mostrarMensaje("✔");
+    } else {
+      fallosTotales++;
+      fallosActual++;
+      layer.setStyle({color:"red"});
+      document.getElementById("fallos").textContent =
+        `Fallos: ${fallosTotales}`;
+    }
+  });
+}
+
+// =====================
+// BOTONES
+// =====================
+document.getElementById("start").onclick=()=>{
+  modoRepaso=false;
+  juegoTerminado=false;
+  document.getElementById("estadisticas").style.display="none";
+
+  espacios.forEach(e=>delete e.properties.colorAcertado);
+  resetMapa();
+
+  orden = shuffle([...espacios]);
+  index = 0;
+  fallosTotales = 0;
+  document.getElementById("fallos").textContent="Fallos: 0";
+
+  siguiente();
+};
+
+document.getElementById("repaso").onclick=()=>{
+  modoRepaso=true;
+  juegoTerminado=true;
+  resetMapa(true);
+
+  document.getElementById("lugar").textContent="Modo repaso";
+  document.getElementById("progreso").textContent="";
+};
+
+// =====================
+function siguiente(){
+  resetMapa();
+
+  aciertoActual=false;
+  fallosActual=0;
+
+  if(index>=orden.length){
+    juegoTerminado=true;
+    pintarFinal();
+    mostrarEstadisticas();
+    return;
+  }
+
+  document.getElementById("lugar").textContent =
+    orden[index].properties.nombre;
+
+  document.getElementById("progreso").textContent =
+    `${index+1}/${orden.length}`;
+}
+
+// =====================
+function resetMapa(permanente=false){
+  zonas.forEach(z=>{
+    z.setStyle({
+      color: z.feature.properties.colorAcertado || "#3388ff",
+      fillOpacity: z.feature.properties.colorAcertado ? 0.45 : 0.25
+    });
+
+    z.unbindTooltip();
+
+    if(permanente){
+      z.bindTooltip(
+        z.feature.properties.nombre,
+        {permanent:true,direction:"top"}
+      );
+    }
+  });
+}
+
+// =====================
+function pintarFinal(){
+  resetMapa(true);
+}
+
+// =====================
+function mostrarEstadisticas(){
+  const verdes = espacios.filter(
+    e=>e.properties.colorAcertado==="green"
+  ).length;
+
+  const naranjas = espacios.filter(
+    e=>e.properties.colorAcertado==="orange"
+  ).length;
+
+  const total = espacios.length;
+  const porcentaje = Math.round((verdes/total)*100);
+
+  const e=document.getElementById("estadisticas");
+  e.innerHTML=`
+    <h2>📊 Resultados</h2>
+    Espacios: ${total}<br>
+    Fallos totales: ${fallosTotales}<br>
+    Perfectos (verde): ${verdes}<br>
+    Con errores (naranja): ${naranjas}<br><br>
+    🎯 Precisión perfecta: ${porcentaje}%
+  `;
+  e.style.display="block";
+}
+
+// =====================
+function volver(){
+  window.location.href="/Territorio/index.html";
+}
+</script>
+
+</body>
+</html>
