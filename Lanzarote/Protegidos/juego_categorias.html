@@ -241,6 +241,18 @@ function mostrarEstadisticas(){
 function volver(){
   location.href="/Territorio/Lanzarote/Protegidos/espacios_protegidos_lanzarote.html";
 }
+
+// =======================
+// INICIO POR DEFECTO EN REPASO
+// =======================
+window.addEventListener("load", () => {
+  modoRepaso = true;
+  terminado = true;
+  progreso.textContent = "";
+  lugar.textContent = "Modo repaso";
+  mostrarRepaso();
+});
+  
 </script>
 
 </body>
