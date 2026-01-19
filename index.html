@@ -119,6 +119,10 @@ function mostrarLanzarote(){
   document.getElementById("pantalla-lanzarote").classList.add("activa");
 }
 
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/sw.js");
+}
+
 
 </script>
 
