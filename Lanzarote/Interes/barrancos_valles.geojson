@@ -1,0 +1,39 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    { "type":"Feature","properties":{"nombre":"Las Cañadas","municipio":"Yaiza","tipo":"valle"},"geometry":{"type":"Point","coordinates":[0,0]}},
+    { "type":"Feature","properties":{"nombre":"Barranco Juan Perdomo","municipio":"Yaiza","tipo":"barranco"},"geometry":{"type":"Point","coordinates":[0,0]}},
+    { "type":"Feature","properties":{"nombre":"Barranco Parrado","municipio":"Yaiza","tipo":"barranco"},"geometry":{"type":"Point","coordinates":[0,0]}},
+    { "type":"Feature","properties":{"nombre":"Barranco Los Dises","municipio":"Yaiza","tipo":"barranco"},"geometry":{"type":"Point","coordinates":[0,0]}},
+    { "type":"Feature","properties":{"nombre":"Barranco La Casita","municipio":"Yaiza","tipo":"barranco"},"geometry":{"type":"Point","coordinates":[0,0]}},
+    { "type":"Feature","properties":{"nombre":"Barranco de La Higuera y El Fraile","municipio":"Yaiza","tipo":"barranco"},"geometry":{"type":"Point","coordinates":[0,0]}},
+    { "type":"Feature","properties":{"nombre":"Barranco del Valle","municipio":"Yaiza","tipo":"barranco"},"geometry":{"type":"Point","coordinates":[0,0]}},
+    { "type":"Feature","properties":{"nombre":"Barranco del Agua","municipio":"Yaiza","tipo":"barranco"},"geometry":{"type":"Point","coordinates":[0,0]}},
+    { "type":"Feature","properties":{"nombre":"Barranco del Barquillo","municipio":"Yaiza","tipo":"barranco"},"geometry":{"type":"Point","coordinates":[0,0]}},
+    { "type":"Feature","properties":{"nombre":"Barranco de la Pila","municipio":"Tías / Yaiza","tipo":"barranco"},"geometry":{"type":"Point","coordinates":[0,0]}},
+    { "type":"Feature","properties":{"nombre":"Barranco de la Fuente","municipio":"Tías","tipo":"barranco"},"geometry":{"type":"Point","coordinates":[0,0]}},
+
+    { "type":"Feature","properties":{"nombre":"Corral Hermoso","municipio":"Teguise","tipo":"valle"},"geometry":{"type":"Point","coordinates":[0,0]}},
+    { "type":"Feature","properties":{"nombre":"Barranco de Mutión","municipio":"Teguise","tipo":"barranco"},"geometry":{"type":"Point","coordinates":[0,0]}},
+    { "type":"Feature","properties":{"nombre":"Barranco de la Espoleta / Piletas","municipio":"Teguise","tipo":"barranco"},"geometry":{"type":"Point","coordinates":[0,0]}},
+    { "type":"Feature","properties":{"nombre":"Barranco de Tenegüime","municipio":"Teguise","tipo":"barranco"},"geometry":{"type":"Point","coordinates":[0,0]}},
+
+    { "type":"Feature","properties":{"nombre":"Valle Grande","municipio":"Haría","tipo":"valle"},"geometry":{"type":"Point","coordinates":[0,0]}},
+    { "type":"Feature","properties":{"nombre":"Barranco del Palomo hasta presa Mala","municipio":"Haría","tipo":"barranco"},"geometry":{"type":"Point","coordinates":[0,0]}},
+    { "type":"Feature","properties":{"nombre":"Barranco del Palomo (resto)","municipio":"Haría","tipo":"barranco"},"geometry":{"type":"Point","coordinates":[0,0]}},
+    { "type":"Feature","properties":{"nombre":"Barranco de Chafaris","municipio":"Haría","tipo":"barranco"},"geometry":{"type":"Point","coordinates":[0,0]}},
+    { "type":"Feature","properties":{"nombre":"Barranco de Temisa","municipio":"Haría","tipo":"barranco"},"geometry":{"type":"Point","coordinates":[0,0]}},
+    { "type":"Feature","properties":{"nombre":"Barranco de Tenesía / Malpaso","municipio":"Haría","tipo":"barranco"},"geometry":{"type":"Point","coordinates":[0,0]}},
+    { "type":"Feature","properties":{"nombre":"Barranco Hondo del Valle / La Negra","municipio":"Haría","tipo":"barranco"},"geometry":{"type":"Point","coordinates":[0,0]}},
+    { "type":"Feature","properties":{"nombre":"Barranco de Castillejos","municipio":"Haría","tipo":"barranco"},"geometry":{"type":"Point","coordinates":[0,0]}},
+    { "type":"Feature","properties":{"nombre":"El Valle","municipio":"Haría","tipo":"valle"},"geometry":{"type":"Point","coordinates":[0,0]}},
+    { "type":"Feature","properties":{"nombre":"Barranco de Fuente Salada","municipio":"Haría","tipo":"barranco"},"geometry":{"type":"Point","coordinates":[0,0]}},
+    { "type":"Feature","properties":{"nombre":"Barranco de Fuente Dulce","municipio":"Haría","tipo":"barranco"},"geometry":{"type":"Point","coordinates":[0,0]}},
+    { "type":"Feature","properties":{"nombre":"Valle Chico","municipio":"Haría","tipo":"valle"},"geometry":{"type":"Point","coordinates":[0,0]}},
+
+    { "type":"Feature","properties":{"nombre":"Barranco de la Poceta","municipio":"Teguise","tipo":"barranco"},"geometry":{"type":"Point","coordinates":[0,0]}},
+    { "type":"Feature","properties":{"nombre":"Matorrales / Lomo del Hueso","municipio":"Teguise","tipo":"valle"},"geometry":{"type":"Point","coordinates":[0,0]}},
+    { "type":"Feature","properties":{"nombre":"Valle de Fena","municipio":"Yaiza","tipo":"valle"},"geometry":{"type":"Point","coordinates":[0,0]}},
+    { "type":"Feature","properties":{"nombre":"Valle de Femés","municipio":"Yaiza","tipo":"valle"},"geometry":{"type":"Point","coordinates":[0,0]}}
+  ]
+}
