@@ -1,0 +1,252 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Peñas del Chache"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-13.520861820729625, 29.120123660914885] 
+      }
+    },
+
+
+{
+      "type": "Feature",
+      "properties": {
+        "nombre": "La Corona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-13.482048540643172, 29.18491388691597]   
+      }
+    },
+
+{
+      "type": "Feature",
+      "properties": {
+        "nombre": "Atalaya de Femés"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-13.783873626870914, 28.919174309147344]   
+      }
+    },
+
+{
+      "type": "Feature",
+      "properties": {
+        "nombre": "Guardilama "
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-13.706671067479517, 28.961863681541413]     
+      }
+    },
+
+{
+      "type": "Feature",
+      "properties": {
+        "nombre": "Caldera Blanca "
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-13.729727261612657, 29.04101968396781]  
+      }
+    },
+
+
+{
+      "type": "Feature",
+      "properties": {
+        "nombre": "Ermita - Mirador de Las Nieves "
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-13.530213998753805, 29.107127530505487] 
+      }
+    },
+
+
+{
+      "type": "Feature",
+      "properties": {
+        "nombre": "Montaña Ganada o Aganada "
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-13.521331838729317, 29.13823006520747] 
+      }
+    },
+
+
+
+{
+      "type": "Feature",
+      "properties": {
+        "nombre": "Mirador Los Helechos "
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-13.513242776608285, 29.12780521180753] 
+      }
+    },
+
+
+{
+      "type": "Feature",
+      "properties": {
+        "nombre": "Peña de Juan Estévez"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-13.525038718173334, 29.102196976162972]  
+      }
+    },
+
+
+{
+      "type": "Feature",
+      "properties": {
+        "nombre": "Caldera de Gaida"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-13.704798641640526, 28.964554811015972]     
+      }
+    },
+
+
+{
+      "type": "Feature",
+      "properties": {
+        "nombre": "Hacha Grande"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-13.781876617309111, 28.88688648400026]     
+      }
+    },
+
+
+{
+      "type": "Feature",
+      "properties": {
+        "nombre": "Pico Redondo 561 m"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-13.778006529913423 , 28.902658990888206]    
+      }
+    },
+
+{
+      "type": "Feature",
+      "properties": {
+        "nombre": "Montaña Tamia"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-13.636837165889332 , 29.035892451875235]  
+      }
+    },
+
+
+{
+      "type": "Feature",
+      "properties": {
+        "nombre": "La Mesa"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-13.5176408710071, 29.1548525909927]  
+      }
+    },
+
+{
+
+      "type": "Feature",
+      "properties": {
+        "nombre": "Mirador El Gayo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-13.513198309803474, 29.16886638816213] 
+      }
+    },
+
+
+{
+        "type": "Feature",
+      "properties": {
+        "nombre": "Monte Guatisea"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-13.630805603624905,  28.99214178186148]  
+      }
+    },
+
+
+{
+        "type": "Feature",
+      "properties": {
+        "nombre": "Pico del Fuego"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-13.744406242725528,  28.99583457099691]   
+      }
+    },
+
+{
+        "type": "Feature",
+      "properties": {
+        "nombre": "Montaña Negra"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-13.678867517661976,  28.995030450308246]    
+      }
+    },
+
+
+{
+        "type": "Feature",
+      "properties": {
+        "nombre": "Montaña del Señalo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-13.716188574767566,  29.003783008448316]  
+      }
+    },
+
+{
+        "type": "Feature",
+      "properties": {
+        "nombre": "Montaña Tersa"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-13.656421555723345,  28.975871146103653] 
+      }
+    },
+
+{
+        "type": "Feature",
+      "properties": {
+        "nombre": "Montaña Tinasorio"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-13.718392043801492,  28.950933811598553]    
+      }
+    },
+
+
+  ]
+}
