@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>CACTs – Lanzarote</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+<style>
+html,body{
+  height:100%;
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+}
+
+#top{
+  padding:8px;
+  background:#0b7;
+  color:#042;
+  display:flex;
+  gap:8px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+
+#map{
+  height:calc(100vh - 64px);
+  width:100%;
+}
+
+button{
+  padding:10px 14px;
+  border-radius:6px;
+  border:1px solid #999;
+  cursor:pointer;
+  font-size:0.9rem;
+  background:white;
+}
+
+#nucleo{
+  font-weight:bold;
+  font-size:1rem;
+}
+
+.boton-volver{
+  margin-left:auto;
+  background:#fff;
+  font-weight:bold;
+}
+
+#mensaje,#estadisticas{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  background:rgba(0,0,0,0.75);
+  color:white;
+  padding:20px;
+  border-radius:12px;
+  display:none;
+  z-index:1000;
+  text-align:center;
+}
+
+#mensaje{font-size:2.5rem;}
+
+.leaflet-tooltip{
+  font-size:0.9rem;
+  padding:4px 6px;
+}
+</style>
+</head>
+
+<body>
+
+<div id="top">
+  <button id="start">▶ Iniciar</button>
+  <button id="repaso">📍 Repaso</button>
+  <span id="progreso">—/—</span>
+  <span id="nucleo">—</span>
+  <span id="fallos">Fallos: 0</span>
+  <button class="boton-volver" onclick="volverInicio()">⬅ Volver</button>
+</div>
+
+<div id="mensaje"></div>
+<div id="estadisticas"></div>
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+// =====================
+// VARIABLES
+// =====================
+let map;
+let puntos = [];
+let order = [];
+let index = 0;
+let marcadores = [];
+let fallosTotales = 0;
+let juegoTerminado = false;
+let modoRepaso = false;
+
+// =====================
+// MAPA
+// =====================
+map = L.map('map').setView([29.0, -13.6], 10);
+
+L.tileLayer(
+  'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png'
+).addTo(map);
+
+setTimeout(()=>map.invalidateSize(),300);
+
+// =====================
+// CARGA GEOJSON
+// =====================
+fetch("puntos_interes_lanzarote.geojson")
+  .then(r => r.json())
+  .then(data => {
+    puntos = data.features.map(f => ({
+      nombre: f.properties.nombre,
+      lat: f.geometry.coordinates[1],
+      lng: f.geometry.coordinates[0],
+      acertado: false
+    }));
+  });
+
+// =====================
+// UTILIDADES
+// =====================
+function shuffle(a){
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function mostrarMensaje(txt){
+  const m=document.getElementById("mensaje");
+  m.textContent=txt;
+  m.style.display="block";
+  setTimeout(()=>m.style.display="none",700);
+}
+
+// =====================
+// BOTONES
+// =====================
+document.getElementById("start").onclick=()=>{
+  if(puntos.length===0) return;
+
+  modoRepaso=false;
+  juegoTerminado=false;
+  fallosTotales=0;
+  index=0;
+
+  puntos.forEach(p=>p.acertado=false);
+  document.getElementById("fallos").textContent="Fallos: 0";
+  document.getElementById("estadisticas").style.display="none";
+
+  clearMap();
+  order = shuffle([...puntos]);
+  nextRound();
+};
+
+document.getElementById("repaso").onclick=()=>{
+  modoRepaso=true;
+  juegoTerminado=true;
+  clearMap();
+  mostrarTodos(true);
+  document.getElementById("nucleo").textContent="Modo repaso";
+  document.getElementById("progreso").textContent="";
+};
+
+// =====================
+// JUEGO
+// =====================
+function nextRound(){
+  clearMap();
+
+  if(index >= order.length){
+    juegoTerminado=true;
+    mostrarTodos(false);
+    mostrarEstadisticas();
+    return;
+  }
+
+  document.getElementById("nucleo").textContent = order[index].nombre;
+  document.getElementById("progreso").textContent = `${index+1}/${order.length}`;
+
+  puntos.forEach(p=>{
+    const m=L.circleMarker([p.lat,p.lng],{
+      radius:10,
+      color:p.acertado?"green":"blue",
+      fillOpacity:0.6
+    }).addTo(map);
+
+    m.on("click",()=>{
+      if(juegoTerminado||modoRepaso) return;
+
+      if(p.nombre===order[index].nombre){
+        p.acertado=true;
+        mostrarMensaje("✔");
+        index++;
+        nextRound();
+      } else {
+        fallosTotales++;
+        m.setStyle({color:"red"});
+        document.getElementById("fallos").textContent=
+          `Fallos: ${fallosTotales}`;
+      }
+    });
+
+    marcadores.push(m);
+  });
+}
+
+// =====================
+function mostrarTodos(permanente){
+  puntos.forEach(p=>{
+    const m=L.circleMarker([p.lat,p.lng],{
+      radius:10,
+      color:p.acertado?"green":"blue",
+      fillOpacity:0.6
+    }).addTo(map);
+
+    m.bindTooltip(p.nombre,{
+      permanent:permanente,
+      direction:"top"
+    });
+
+    marcadores.push(m);
+  });
+}
+
+// =====================
+function mostrarEstadisticas(){
+  const total=puntos.length;
+  const acertados=puntos.filter(p=>p.acertado).length;
+  const porcentaje=Math.round((acertados/total)*100);
+
+  const e=document.getElementById("estadisticas");
+  e.innerHTML=`
+    <h2>📊 Resultados</h2>
+    Puntos de interés: ${total}<br>
+    Fallos totales: ${fallosTotales}<br>
+    Aciertos: ${acertados}<br><br>
+    🎯 Precisión: ${porcentaje}%
+  `;
+  e.style.display="block";
+}
+
+// =====================
+function clearMap(){
+  marcadores.forEach(m=>map.removeLayer(m));
+  marcadores=[];
+}
+
+function volverInicio(){
+  window.location.href="/Territorio/index.html";
+}
+</script>
+
+</body>
+</html>
