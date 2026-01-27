@@ -2,49 +2,94 @@
   "type": "FeatureCollection",
   "features": [
     {
-      "type":"Feature",
-      "properties":{"nombre":"Montañas del Fuego – Timanfaya"},
-      "geometry":{"type":"Point","coordinates":[29.010003, -13.734231]}
+      "type": "Feature",
+      "properties": {
+        "nombre": "Montañas del Fuego – Timanfaya"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-13.734231, 29.010003]
+      }
     },
     {
-      "type":"Feature",
-      "properties":{"nombre":"Jameos del Agua"},
-      "geometry":{"type":"Point","coordinates":[-13.4606,29.1756]}
+      "type": "Feature",
+      "properties": {
+        "nombre": "Jameos del Agua"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-13.4606, 29.1756]
+      }
     },
     {
-      "type":"Feature",
-      "properties":{"nombre":"Cueva de los Verdes"},
-      "geometry":{"type":"Point","coordinates":[-13.4595,29.1842]}
+      "type": "Feature",
+      "properties": {
+        "nombre": "Cueva de los Verdes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-13.4595, 29.1842]
+      }
     },
     {
-      "type":"Feature",
-      "properties":{"nombre":"Jardín de Cactus"},
-      "geometry":{"type":"Point","coordinates":[-13.4567,29.1661]}
+      "type": "Feature",
+      "properties": {
+        "nombre": "Jardín de Cactus"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-13.4567, 29.1661]
+      }
     },
     {
-      "type":"Feature",
-      "properties":{"nombre":"Mirador del Río"},
-      "geometry":{"type":"Point","coordinates":[-13.4764,29.3238]}
+      "type": "Feature",
+      "properties": {
+        "nombre": "Mirador del Río"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-13.4764, 29.3238]
+      }
     },
     {
-      "type":"Feature",
-      "properties":{"nombre":"Castillo de San José"},
-      "geometry":{"type":"Point","coordinates":[-13.5303,29.0502]}
+      "type": "Feature",
+      "properties": {
+        "nombre": "Castillo de San José"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-13.5303, 29.0502]
+      }
     },
     {
-      "type":"Feature",
-      "properties":{"nombre":"Casa Museo del Campesino"},
-      "geometry":{"type":"Point","coordinates":[-13.5968,29.0491]}
-    }
-   {
-      "type":"Feature",
-      "properties":{"nombre":"MIAC Lanzarote"},
-      "geometry":{"type":"Point","coordinates":[-13.5968,29.0491]}
-    }
-   {
-      "type":"Feature",
-      "properties":{"nombre":"Casa de Los Volcanes"},
-      "geometry":{"type":"Point","coordinates":[-13.5968,29.0491]}
+      "type": "Feature",
+      "properties": {
+        "nombre": "Casa Museo del Campesino"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-13.5968, 29.0491]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "MIAC Lanzarote"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-13.5075, 29.0903]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Casa de los Volcanes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-13.4600, 29.1750]
+      }
     }
   ]
 }
