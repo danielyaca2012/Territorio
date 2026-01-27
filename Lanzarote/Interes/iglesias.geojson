@@ -9,7 +9,7 @@
     { "type":"Feature","properties":{"nombre":"Iglesia de Guadalupe","municipio":"Teguise","tipo":"iglesia"},"geometry":{"type":"Point","coordinates":[0,0]}},
     { "type":"Feature","properties":{"nombre":"Iglesia de Santa Catalina","municipio":"Teguise","tipo":"iglesia"},"geometry":{"type":"Point","coordinates":[0,0]}},
     { "type":"Feature","properties":{"nombre":"•	Iglesia de San Miguel","municipio":"Teguise","tipo":"iglesia"},"geometry":{"type":"Point","coordinates":[0,0]}},
-    { "type":"Feature","properties":{"nombre":"Iglesia de San Marcial del Rubicón","municipio":"Arrecife","tipo":"iglesia"},"geometry":{"type":"Point","coordinates":[0,0]}},
+    { "type":"Feature","properties":{"nombre":"Iglesia de San Marcial del Rubicón","municipio":"Yaiza","tipo":"iglesia"},"geometry":{"type":"Point","coordinates":[0,0]}},
    
     { "type":"Feature","properties":{"nombre":"Iglesia de Nuestra Señora de Los Remedios","municipio":"Yaiza","tipo":"iglesia"},"geometry":{"type":"Point","coordinates":[0,0]}}
   ]
