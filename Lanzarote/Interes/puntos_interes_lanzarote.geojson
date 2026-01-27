@@ -8,17 +8,17 @@
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [-13.734231, 29.010003]
+        "coordinates": [-13.734184, 29.009967]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "nombre": "Jameos del Agua"
+        "nombre": "Jameos del Agua y Casa de los Volcanes"
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [-13.4606, 29.1756]
+        "coordinates": [-13.432148, 29.157486]
       }
     },
     {
@@ -28,7 +28,7 @@
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [-13.4595, 29.1842]
+        "coordinates": [-13.439350, 29.160432]
       }
     },
     {
@@ -38,7 +38,7 @@
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [-13.4567, 29.1661]
+        "coordinates": [-13.476332, 29.080516]
       }
     },
     {
@@ -48,17 +48,17 @@
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [-13.4764, 29.3238]
+        "coordinates": [-13.481168, 29.214546]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "nombre": "Castillo de San José"
+        "nombre": "Castillo de San José y MIAC Lanzarote"
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [-13.5303, 29.0502]
+        "coordinates": [-13.53322922568715, 28.9710156012731] 
       }
     },
     {
@@ -68,27 +68,7 @@
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [-13.5968, 29.0491]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "nombre": "MIAC Lanzarote"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [-13.5075, 29.0903]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "nombre": "Casa de los Volcanes"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [-13.4600, 29.1750]
+        "coordinates": [-13.6155062979775, 29.015992067782385] 
       }
     }
   ]
