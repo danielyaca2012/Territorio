@@ -1,0 +1,15 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    { "type":"Feature","properties":{"nombre":"Iglesia de San Ginés de Clermont","municipio":"Arrecife","tipo":"iglesia"},"geometry":{"type":"Point","coordinates":[0,0]}},
+    { "type":"Feature","properties":{"nombre":"Iglesia de San Bartolomé","municipio":"San Bartolomé","tipo":"iglesia"},"geometry":{"type":"Point","coordinates":[0,0]}},
+    { "type":"Feature","properties":{"nombre":"Iglesia de La Candelaria","municipio":"Tías","tipo":"iglesia"},"geometry":{"type":"Point","coordinates":[0,0]}},
+    { "type":"Feature","properties":{"nombre":"Iglesia de San Antonio","municipio":"Tías","tipo":"iglesia"},"geometry":{"type":"Point","coordinates":[0,0]}},
+    { "type":"Feature","properties":{"nombre":"Iglesia de San Roque","municipio":"Tinajo","tipo":"iglesia"},"geometry":{"type":"Point","coordinates":[0,0]}},
+    { "type":"Feature","properties":{"nombre":"Iglesia de Guadalupe","municipio":"Teguise","tipo":"iglesia"},"geometry":{"type":"Point","coordinates":[0,0]}},
+    { "type":"Feature","properties":{"nombre":"Iglesia de Santa Catalina","municipio":"Teguise","tipo":"iglesia"},"geometry":{"type":"Point","coordinates":[0,0]}},
+    { "type":"Feature","properties":{"nombre":"•	Iglesia de San Miguel","municipio":"Teguise","tipo":"iglesia"},"geometry":{"type":"Point","coordinates":[0,0]}},
+    { "type":"Feature","properties":{"nombre":"Iglesia de San Marcial del Rubicón","municipio":"Arrecife","tipo":"iglesia"},"geometry":{"type":"Point","coordinates":[0,0]}},
+   
+    { "type":"Feature","properties":{"nombre":"Iglesia de Nuestra Señora de Los Remedios","municipio":"Yaiza","tipo":"iglesia"},"geometry":{"type":"Point","coordinates":[0,0]}}
+  ]
