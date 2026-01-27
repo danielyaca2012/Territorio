@@ -1,0 +1,15 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Museo Internacional de Arte Contemporáneo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-13.5075, 29.0903]
+      }
+    }
+  ]
+}
