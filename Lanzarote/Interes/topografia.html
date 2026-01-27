@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8"/>
-<title>CACTs – Lanzarote</title>
+<title>Topografía – Lanzarote</title>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -115,7 +115,7 @@ setTimeout(()=>map.invalidateSize(),300);
 // =====================
 // CARGA GEOJSON
 // =====================
-fetch("puntos_interes_lanzarote.geojson")
+fetch("topografia.geojson")
   .then(r => r.json())
   .then(data => {
     puntos = data.features.map(f => ({
@@ -258,7 +258,7 @@ function clearMap(){
 }
 
 function volverInicio(){
-  window.location.href="/Territorio/index.html";
+  window.location.href="/Territorio/Lanzarote/Interes/interes_menu.html";
 }
 </script>
 
