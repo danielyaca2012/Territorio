@@ -12,7 +12,7 @@
     { "type": "Feature", "properties": { "nombre": "Ermita de San Leandro", "tipo": "ermita" }, "geometry": { "type": "Point", "coordinates": [-13.534745243915985 ,29.05662404088688 ] } },
     { "type": "Feature", "properties": { "nombre": "Ermita de la Veracruz", "tipo": "ermita" }, "geometry": { "type": "Point", "coordinates": [ -13.560245024397602 , 29.061442328655367] } }, 
     { "type": "Feature", "properties": { "nombre": "Ermita de San Juan Bautista", "tipo": "ermita" }, "geometry": { "type": "Point", "coordinates": [ -13.494712546468813, 29.145822289065944] } },
-    { "type": "Feature", "properties": { "nombre": "Ermita de la Virgen de los Volcanes o de los Dolores", "tipo": "ermita" }, "geometry": { "type": "Point", "coordinates": [-13.681653178064666 , 29.044018121410964} }, 
+    { "type": "Feature", "properties": { "nombre": "Ermita de la Virgen de los Volcanes o de los Dolores", "tipo": "ermita" }, "geometry": { "type": "Point", "coordinates": [-13.681653178064666 , 29.044018121410964] } }, 
     { "type": "Feature", "properties": { "nombre": "Ermita de las Nieves", "tipo": "ermita" }, "geometry": { "type": "Point", "coordinates": [ -13.52808870764458, 29.10650826840302] } }
   ]
 }
