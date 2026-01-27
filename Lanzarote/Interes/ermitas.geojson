@@ -1,7 +1,7 @@
 {
   "type": "FeatureCollection",
   "features": [
-    { "type": "Feature", "properties": { "nombre": "Ermita de los Dolores", "tipo": "ermita" }, "geometry": { "type": "Point", "coordinates": [29.04409459707434, -13.681690828421543] } },
+    { "type": "Feature", "properties": { "nombre": "Ermita de los Dolores", "tipo": "ermita" }, "geometry": { "type": "Point", "coordinates": [-13.681690828421543, 29.04409459707434] } },
     { "type": "Feature", "properties": { "nombre": "Ermita de Nuestra Señora de Regla", "tipo": "ermita" }, "geometry": { "type": "Point", "coordinates": [0,0] } },
     { "type": "Feature", "properties": { "nombre": "Ermita de San Rafael", "tipo": "ermita" }, "geometry": { "type": "Point", "coordinates": [0,0] } },
     { "type": "Feature", "properties": { "nombre": "Ermita de Nuestra Señora del Socorro", "tipo": "ermita" }, "geometry": { "type": "Point", "coordinates": [0,0] } },
