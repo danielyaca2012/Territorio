@@ -1,0 +1,18 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    { "type": "Feature", "properties": { "nombre": "Ermita de los Dolores", "tipo": "ermita" }, "geometry": { "type": "Point", "coordinates": [0,0] } },
+    { "type": "Feature", "properties": { "nombre": "Ermita de Nuestra Señora de Regla", "tipo": "ermita" }, "geometry": { "type": "Point", "coordinates": [0,0] } },
+    { "type": "Feature", "properties": { "nombre": "Ermita de San Rafael", "tipo": "ermita" }, "geometry": { "type": "Point", "coordinates": [0,0] } },
+    { "type": "Feature", "properties": { "nombre": "Ermita de Nuestra Señora del Socorro", "tipo": "ermita" }, "geometry": { "type": "Point", "coordinates": [0,0] } },
+    { "type": "Feature", "properties": { "nombre": "Ermita de San Juan Evangelista", "tipo": "ermita" }, "geometry": { "type": "Point", "coordinates": [0,0] } },
+    { "type": "Feature", "properties": { "nombre": "Ermita de San Sebastián", "tipo": "ermita" }, "geometry": { "type": "Point", "coordinates": [0,0] } },
+    { "type": "Feature", "properties": { "nombre": "Ermita de Nuestra Señora de Nazaret", "tipo": "ermita" }, "geometry": { "type": "Point", "coordinates": [0,0] } },
+    { "type": "Feature", "properties": { "nombre": "Ermita de Tao", "tipo": "ermita" }, "geometry": { "type": "Point", "coordinates": [0,0] } },
+    { "type": "Feature", "properties": { "nombre": "Ermita de San Leandro", "tipo": "ermita" }, "geometry": { "type": "Point", "coordinates": [0,0] } },
+    { "type": "Feature", "properties": { "nombre": "Ermita de la Veracruz", "tipo": "ermita" }, "geometry": { "type": "Point", "coordinates": [0,0] } },
+    { "type": "Feature", "properties": { "nombre": "Ermita de San Juan Bautista", "tipo": "ermita" }, "geometry": { "type": "Point", "coordinates": [0,0] } },
+    { "type": "Feature", "properties": { "nombre": "Ermita de la Virgen de los Volcanes", "tipo": "ermita" }, "geometry": { "type": "Point", "coordinates": [0,0] } },
+    { "type": "Feature", "properties": { "nombre": "Ermita de las Nieves", "tipo": "ermita" }, "geometry": { "type": "Point", "coordinates": [0,0] } }
+  ]
+}
