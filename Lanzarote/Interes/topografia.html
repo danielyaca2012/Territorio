@@ -25,7 +25,7 @@ html,body{
 }
 
 #map{
-  height:calc(100vh - 90px);
+  height:calc(100vh - 100px);
   width:100%;
 }
 
@@ -34,7 +34,6 @@ button{
   border-radius:6px;
   border:1px solid #999;
   cursor:pointer;
-  font-size:0.9rem;
   background:white;
 }
 
@@ -74,8 +73,10 @@ label{
 
   <label><input type="checkbox" id="chkMontanas" checked> ⛰ Montañas</label>
   <label><input type="checkbox" id="chkErmitas" checked> ⛪ Ermitas</label>
+  <label><input type="checkbox" id="chkIglesias" checked> 🏛 Iglesias</label>
+  <label><input type="checkbox" id="chkCastillos" checked> 🏰 Castillos</label>
   <label><input type="checkbox" id="chkPlayas" checked> 🏖 Playas</label>
-  <label><input type="checkbox" id="chkBarrancos" checked> 🌄 Barrancos / Valles</label>
+  <label><input type="checkbox" id="chkBarrancos" checked> 🌄 Barrancos</label>
 
   <span id="progreso">—/—</span>
   <span id="nucleo">—</span>
@@ -90,22 +91,16 @@ label{
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-// =====================
-// VARIABLES
-// =====================
 let map = L.map('map').setView([29.0,-13.6],10);
-let todosLosPuntos = [];
-let puntosActivos = [];
-let order = [];
-let index = 0;
-let marcadores = [];
-let fallosTotales = 0;
-let juegoTerminado = false;
-let modoRepaso = false;
+let todosLosPuntos=[];
+let puntosActivos=[];
+let order=[];
+let index=0;
+let marcadores=[];
+let fallosTotales=0;
+let juegoTerminado=false;
+let modoRepaso=false;
 
-// =====================
-// MAPA
-// =====================
 L.tileLayer(
   'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png'
 ).addTo(map);
@@ -116,15 +111,17 @@ L.tileLayer(
 Promise.all([
   fetch("topografia.geojson").then(r=>r.json()),
   fetch("ermitas.geojson").then(r=>r.json()),
+  fetch("iglesias.geojson").then(r=>r.json()),
+  fetch("castillos.geojson").then(r=>r.json()),
   fetch("playas.geojson").then(r=>r.json()),
   fetch("barrancos_valles.geojson").then(r=>r.json())
-]).then(([montanas,ermitas,playas,barrancos])=>{
-
+]).then(([montanas,ermitas,iglesias,castillos,playas,barrancos])=>{
   cargar(montanas,"montana");
   cargar(ermitas,"ermita");
+  cargar(iglesias,"iglesia");
+  cargar(castillos,"castillo");
   cargar(playas,"playa");
   cargar(barrancos,"barranco");
-
   actualizarFiltro();
 });
 
@@ -141,45 +138,28 @@ function cargar(data,tipo){
 }
 
 // =====================
-// FILTRO
-// =====================
 function actualizarFiltro(){
-  puntosActivos = todosLosPuntos.filter(p =>
+  puntosActivos=todosLosPuntos.filter(p=>
     (p.tipo==="montana" && chkMontanas.checked) ||
     (p.tipo==="ermita" && chkErmitas.checked) ||
+    (p.tipo==="iglesia" && chkIglesias.checked) ||
+    (p.tipo==="castillo" && chkCastillos.checked) ||
     (p.tipo==="playa" && chkPlayas.checked) ||
     (p.tipo==="barranco" && chkBarrancos.checked)
   );
 }
 
-// =====================
-// UTILIDADES
-// =====================
-function shuffle(a){
-  for(let i=a.length-1;i>0;i--){
-    const j=Math.floor(Math.random()*(i+1));
-    [a[i],a[j]]=[a[j],a[i]];
-  }
-  return a;
-}
-
-function mostrarMensaje(txt){
-  mensaje.textContent=txt;
-  mensaje.style.display="block";
-  setTimeout(()=>mensaje.style.display="none",700);
-}
-
-function colorTipo(tipo){
+function colorTipo(t){
   return {
     montana:"blue",
     ermita:"purple",
+    iglesia:"red",
+    castillo:"black",
     playa:"orange",
     barranco:"brown"
-  }[tipo] || "gray";
+  }[t] || "gray";
 }
 
-// =====================
-// BOTONES
 // =====================
 start.onclick=()=>{
   actualizarFiltro();
@@ -189,7 +169,6 @@ start.onclick=()=>{
   juegoTerminado=false;
   fallosTotales=0;
   index=0;
-
   todosLosPuntos.forEach(p=>p.acertado=false);
   fallos.textContent="Fallos: 0";
   estadisticas.style.display="none";
@@ -209,14 +188,17 @@ repaso.onclick=()=>{
   progreso.textContent="";
 };
 
-// =====================
-// JUEGO
-// =====================
+function shuffle(a){
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
 function nextRound(){
   clearMap();
-
   if(index>=order.length){
-    juegoTerminado=true;
     mostrarTodos(false);
     mostrarEstadisticas();
     return;
@@ -234,10 +216,8 @@ function nextRound(){
 
     m.on("click",()=>{
       if(juegoTerminado||modoRepaso) return;
-
       if(p.nombre===order[index].nombre){
         p.acertado=true;
-        mostrarMensaje("✔");
         index++;
         nextRound();
       }else{
@@ -251,7 +231,6 @@ function nextRound(){
   });
 }
 
-// =====================
 function mostrarTodos(permanente){
   puntosActivos.forEach(p=>{
     const m=L.circleMarker([p.lat,p.lng],{
@@ -260,32 +239,23 @@ function mostrarTodos(permanente){
       fillOpacity:0.6
     }).addTo(map);
 
-    m.bindTooltip(p.nombre,{
-  permanent: permanente,
-  direction: "top"
-});
-
+    m.bindTooltip(p.nombre,{permanent:permanente,direction:"top"});
     marcadores.push(m);
   });
 }
 
-// =====================
 function mostrarEstadisticas(){
   const total=puntosActivos.length;
   const aciertos=puntosActivos.filter(p=>p.acertado).length;
-  const porcentaje=Math.round((aciertos/total)*100);
-
   estadisticas.innerHTML=`
     <h2>📊 Resultados</h2>
     Elementos: ${total}<br>
     Fallos: ${fallosTotales}<br>
-    Aciertos: ${aciertos}<br><br>
-    🎯 Precisión: ${porcentaje}%
+    Aciertos: ${aciertos}
   `;
   estadisticas.style.display="block";
 }
 
-// =====================
 function clearMap(){
   marcadores.forEach(m=>map.removeLayer(m));
   marcadores=[];
