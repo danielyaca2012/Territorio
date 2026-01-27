@@ -260,7 +260,11 @@ function mostrarTodos(permanente){
       fillOpacity:0.6
     }).addTo(map);
 
-    m.bindTooltip(p.nombre,{permanent,direction:"top"});
+    m.bindTooltip(p.nombre,{
+  permanent: permanente,
+  direction: "top"
+});
+
     marcadores.push(m);
   });
 }
