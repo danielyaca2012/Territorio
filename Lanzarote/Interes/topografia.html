@@ -112,7 +112,7 @@ Promise.all([
   fetch("topografia.geojson").then(r=>r.json()),
   fetch("ermitas.geojson").then(r=>r.json()),
   fetch("iglesias.geojson").then(r=>r.json()),
-  //fetch("castillos.geojson").then(r=>r.json()),
+  fetch("castillos.geojson").then(r=>r.json()),
   fetch("playas.geojson").then(r=>r.json()),
   fetch("barrancos_valles.geojson").then(r=>r.json())
 ]).then(([montanas,ermitas,iglesias,castillos,playas,barrancos])=>{
