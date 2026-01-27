@@ -264,6 +264,29 @@ function clearMap(){
 function volverInicio(){
   location.href="/Territorio/Lanzarote/Interes/interes_menu.html";
 }
+
+
+  // =====================
+// ACTUALIZAR REPASO EN TIEMPO REAL
+// =====================
+[
+  chkMontanas,
+  chkErmitas,
+  chkIglesias,
+  chkCastillos,
+  chkPlayas,
+  chkBarrancos
+].forEach(chk=>{
+  chk.addEventListener("change",()=>{
+    actualizarFiltro();
+
+    if(modoRepaso){
+      clearMap();
+      mostrarTodos(true);
+    }
+  });
+});
+
 </script>
 
 </body>
