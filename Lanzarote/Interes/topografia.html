@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8"/>
-<title>Topografía – Lanzarote</title>
+<title>Topografía y Puntos de Interés – Lanzarote</title>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -25,7 +25,7 @@ html,body{
 }
 
 #map{
-  height:calc(100vh - 80px);
+  height:calc(100vh - 90px);
   width:100%;
 }
 
@@ -72,8 +72,10 @@ label{
   <button id="start">▶ Iniciar</button>
   <button id="repaso">📍 Repaso</button>
 
-  <label><input type="checkbox" id="chkMontanas" checked> 🏔 Montañas</label>
+  <label><input type="checkbox" id="chkMontanas" checked> ⛰ Montañas</label>
   <label><input type="checkbox" id="chkErmitas" checked> ⛪ Ermitas</label>
+  <label><input type="checkbox" id="chkPlayas" checked> 🏖 Playas</label>
+  <label><input type="checkbox" id="chkBarrancos" checked> 🌄 Barrancos / Valles</label>
 
   <span id="progreso">—/—</span>
   <span id="nucleo">—</span>
@@ -113,42 +115,40 @@ L.tileLayer(
 // =====================
 Promise.all([
   fetch("topografia.geojson").then(r=>r.json()),
-  fetch("ermitas.geojson").then(r=>r.json())
-]).then(([montanas,ermitas])=>{
+  fetch("ermitas.geojson").then(r=>r.json()),
+  fetch("playas.geojson").then(r=>r.json()),
+  fetch("barrancos_valles.geojson").then(r=>r.json())
+]).then(([montanas,ermitas,playas,barrancos])=>{
 
-  montanas.features.forEach(f=>{
-    todosLosPuntos.push({
-      nombre:f.properties.nombre,
-      lat:f.geometry.coordinates[1],
-      lng:f.geometry.coordinates[0],
-      tipo:"montana",
-      acertado:false
-    });
-  });
-
-  ermitas.features.forEach(f=>{
-    todosLosPuntos.push({
-      nombre:f.properties.nombre,
-      lat:f.geometry.coordinates[1],
-      lng:f.geometry.coordinates[0],
-      tipo:"ermita",
-      acertado:false
-    });
-  });
+  cargar(montanas,"montana");
+  cargar(ermitas,"ermita");
+  cargar(playas,"playa");
+  cargar(barrancos,"barranco");
 
   actualizarFiltro();
 });
+
+function cargar(data,tipo){
+  data.features.forEach(f=>{
+    todosLosPuntos.push({
+      nombre:f.properties.nombre,
+      lat:f.geometry.coordinates[1],
+      lng:f.geometry.coordinates[0],
+      tipo,
+      acertado:false
+    });
+  });
+}
 
 // =====================
 // FILTRO
 // =====================
 function actualizarFiltro(){
-  const usarMontanas=document.getElementById("chkMontanas").checked;
-  const usarErmitas=document.getElementById("chkErmitas").checked;
-
-  puntosActivos = todosLosPuntos.filter(p=>
-    (p.tipo==="montana" && usarMontanas) ||
-    (p.tipo==="ermita" && usarErmitas)
+  puntosActivos = todosLosPuntos.filter(p =>
+    (p.tipo==="montana" && chkMontanas.checked) ||
+    (p.tipo==="ermita" && chkErmitas.checked) ||
+    (p.tipo==="playa" && chkPlayas.checked) ||
+    (p.tipo==="barranco" && chkBarrancos.checked)
   );
 }
 
@@ -164,18 +164,26 @@ function shuffle(a){
 }
 
 function mostrarMensaje(txt){
-  const m=document.getElementById("mensaje");
-  m.textContent=txt;
-  m.style.display="block";
-  setTimeout(()=>m.style.display="none",700);
+  mensaje.textContent=txt;
+  mensaje.style.display="block";
+  setTimeout(()=>mensaje.style.display="none",700);
+}
+
+function colorTipo(tipo){
+  return {
+    montana:"blue",
+    ermita:"purple",
+    playa:"orange",
+    barranco:"brown"
+  }[tipo] || "gray";
 }
 
 // =====================
 // BOTONES
 // =====================
-document.getElementById("start").onclick=()=>{
+start.onclick=()=>{
   actualizarFiltro();
-  if(puntosActivos.length===0) return;
+  if(!puntosActivos.length) return;
 
   modoRepaso=false;
   juegoTerminado=false;
@@ -183,22 +191,22 @@ document.getElementById("start").onclick=()=>{
   index=0;
 
   todosLosPuntos.forEach(p=>p.acertado=false);
-  document.getElementById("fallos").textContent="Fallos: 0";
-  document.getElementById("estadisticas").style.display="none";
+  fallos.textContent="Fallos: 0";
+  estadisticas.style.display="none";
 
   clearMap();
-  order = shuffle([...puntosActivos]);
+  order=shuffle([...puntosActivos]);
   nextRound();
 };
 
-document.getElementById("repaso").onclick=()=>{
+repaso.onclick=()=>{
   actualizarFiltro();
   modoRepaso=true;
   juegoTerminado=true;
   clearMap();
   mostrarTodos(true);
-  document.getElementById("nucleo").textContent="Modo repaso";
-  document.getElementById("progreso").textContent="";
+  nucleo.textContent="Modo repaso";
+  progreso.textContent="";
 };
 
 // =====================
@@ -214,15 +222,13 @@ function nextRound(){
     return;
   }
 
-  document.getElementById("nucleo").textContent=order[index].nombre;
-  document.getElementById("progreso").textContent=`${index+1}/${order.length}`;
+  nucleo.textContent=order[index].nombre;
+  progreso.textContent=`${index+1}/${order.length}`;
 
   puntosActivos.forEach(p=>{
-    const color=p.tipo==="ermita"?"purple":"blue";
-
     const m=L.circleMarker([p.lat,p.lng],{
       radius:10,
-      color:p.acertado?"green":color,
+      color:p.acertado?"green":colorTipo(p.tipo),
       fillOpacity:0.6
     }).addTo(map);
 
@@ -237,8 +243,7 @@ function nextRound(){
       }else{
         fallosTotales++;
         m.setStyle({color:"red"});
-        document.getElementById("fallos").textContent=
-          `Fallos: ${fallosTotales}`;
+        fallos.textContent=`Fallos: ${fallosTotales}`;
       }
     });
 
@@ -249,15 +254,13 @@ function nextRound(){
 // =====================
 function mostrarTodos(permanente){
   puntosActivos.forEach(p=>{
-    const color=p.tipo==="ermita"?"purple":"blue";
-
     const m=L.circleMarker([p.lat,p.lng],{
       radius:10,
-      color:p.acertado?"green":color,
+      color:p.acertado?"green":colorTipo(p.tipo),
       fillOpacity:0.6
     }).addTo(map);
 
-    m.bindTooltip(p.nombre,{permanent, direction:"top"});
+    m.bindTooltip(p.nombre,{permanent,direction:"top"});
     marcadores.push(m);
   });
 }
@@ -265,18 +268,17 @@ function mostrarTodos(permanente){
 // =====================
 function mostrarEstadisticas(){
   const total=puntosActivos.length;
-  const acertados=puntosActivos.filter(p=>p.acertado).length;
-  const porcentaje=Math.round((acertados/total)*100);
+  const aciertos=puntosActivos.filter(p=>p.acertado).length;
+  const porcentaje=Math.round((aciertos/total)*100);
 
-  const e=document.getElementById("estadisticas");
-  e.innerHTML=`
+  estadisticas.innerHTML=`
     <h2>📊 Resultados</h2>
     Elementos: ${total}<br>
     Fallos: ${fallosTotales}<br>
-    Aciertos: ${acertados}<br><br>
+    Aciertos: ${aciertos}<br><br>
     🎯 Precisión: ${porcentaje}%
   `;
-  e.style.display="block";
+  estadisticas.style.display="block";
 }
 
 // =====================
@@ -286,7 +288,7 @@ function clearMap(){
 }
 
 function volverInicio(){
-  window.location.href="/Territorio/Lanzarote/Interes/interes_menu.html";
+  location.href="/Territorio/Lanzarote/Interes/interes_menu.html";
 }
 </script>
 
