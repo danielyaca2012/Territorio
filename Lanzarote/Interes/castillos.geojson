@@ -1,0 +1,8 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    { "type":"Feature","properties":{"nombre":"Castillo de San José","municipio":"Arrecife","tipo":"castillo"},"geometry":{"type":"Point","coordinates":[0,0]}},
+    { "type":"Feature","properties":{"nombre":"Castillo de San Gabriel","municipio":"Arrecife","tipo":"castillo"},"geometry":{"type":"Point","coordinates":[0,0]}},
+    { "type":"Feature","properties":{"nombre":"Castillo de Santa Bárbara","municipio":"Teguise","tipo":"castillo"},"geometry":{"type":"Point","coordinates":[0,0]}},
+    { "type":"Feature","properties":{"nombre":"Castillo de Las Coloradas.","municipio":"Yaiza","tipo":"castillo"},"geometry":{"type":"Point","coordinates":[0,0]}}
+  ]
