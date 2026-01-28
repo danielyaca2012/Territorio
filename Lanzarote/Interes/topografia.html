@@ -77,6 +77,8 @@ label{
   <label><input type="checkbox" id="chkCastillos" checked> 🏰 Castillos</label>
   <label><input type="checkbox" id="chkPlayas" checked> 🏖 Playas</label>
   <label><input type="checkbox" id="chkBarrancos" checked> 🌄 Barrancos</label>
+  <label><input type="checkbox" id="chkPoblaciones" checked> 🧑‍🤝‍🧑 Núcleos</label>
+
 
   <span id="progreso">—/—</span>
   <span id="nucleo">—</span>
@@ -114,16 +116,19 @@ Promise.all([
   fetch("iglesias.geojson").then(r=>r.json()),
   fetch("castillos.geojson").then(r=>r.json()),
   fetch("playas.geojson").then(r=>r.json()),
-  fetch("barrancos_valles.geojson").then(r=>r.json())
-]).then(([montanas,ermitas,iglesias,castillos,playas,barrancos])=>{
+  fetch("barrancos_valles.geojson").then(r=>r.json()),
+  fetch("poblaciones.geojson").then(r=>r.json())
+]).then(([montanas,ermitas,iglesias,castillos,playas,barrancos,poblaciones])=>{
   cargar(montanas,"montana");
   cargar(ermitas,"ermita");
   cargar(iglesias,"iglesia");
   cargar(castillos,"castillo");
   cargar(playas,"playa");
   cargar(barrancos,"barranco");
+  cargar(poblaciones,"poblacion");
   actualizarFiltro();
 });
+
 
 function cargar(data,tipo){
   data.features.forEach(f=>{
@@ -145,9 +150,11 @@ function actualizarFiltro(){
     (p.tipo==="iglesia" && chkIglesias.checked) ||
     (p.tipo==="castillo" && chkCastillos.checked) ||
     (p.tipo==="playa" && chkPlayas.checked) ||
-    (p.tipo==="barranco" && chkBarrancos.checked)
+    (p.tipo==="barranco" && chkBarrancos.checked) ||
+    (p.tipo==="poblacion" && chkPoblaciones.checked)
   );
 }
+
 
 function colorTipo(t){
   return {
@@ -156,9 +163,11 @@ function colorTipo(t){
     iglesia:"yellow",
     castillo:"black",
     playa:"lightblue",
-    barranco:"brown"
+    barranco:"brown",
+    poblacion:"silver"
   }[t] || "gray";
 }
+
 
 // =====================
 start.onclick=()=>{
@@ -275,17 +284,18 @@ function volverInicio(){
   chkIglesias,
   chkCastillos,
   chkPlayas,
-  chkBarrancos
+  chkBarrancos,
+  chkPoblaciones
 ].forEach(chk=>{
   chk.addEventListener("change",()=>{
     actualizarFiltro();
-
     if(modoRepaso){
       clearMap();
       mostrarTodos(true);
     }
   });
 });
+
 
 </script>
 
