@@ -1,9 +1,87 @@
 {
   "type": "FeatureCollection",
   "features": [
-    { "type":"Feature","properties":{"nombre":"Orzola","municipio":"Haría","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[-13.533285190107968, 28.971079928584743 ]}},
-    { "type":"Feature","properties":{"nombre":"Ye","municipio":"Haría","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[ -13.547643965427024, 28.956439007116757]}},
-    { "type":"Feature","properties":{"nombre":"Máguez","municipio":"Haría","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[-13.550181103600913, 29.058095451123183]}},
-    { "type":"Feature","properties":{"nombre":"Haría","municipio":"Haría","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[-13.810794670375687, 28.855917292663243]}}
+
+    { "type":"Feature","properties":{"nombre":"Tinajo","municipio":"Tinajo","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[ -13.676654618520502, 29.06543797685093]}},
+    { "type":"Feature","properties":{"nombre":"Mancha Blanca-Tinguatón","municipio":"Tinajo","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[ -13.68627598054114, 29.03772804352612]}},
+    { "type":"Feature","properties":{"nombre":"La Vegueta - Yuco","municipio":"Tinajo","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[ -13.649157488970483, 29.05128430801373]}},
+    { "type":"Feature","properties":{"nombre":"El Cuchillo","municipio":"Tinajo","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[ -13.663971781244518, 29.082355885082336]}},
+    { "type":"Feature","properties":{"nombre":"La Santa","municipio":"Tinajo","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[ -13.666431512196969, 29.10759857468108]}},
+
+
+
+    { "type":"Feature","properties":{"nombre":"Guime","municipio":"San Bartolomé","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[ -13.613586110350026, 28.97464485319145]}},
+    { "type":"Feature","properties":{"nombre":"El Islote","municipio":"San Bartolomé","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[ -13.631669065387234, 29.015916074742435]}},
+    { "type":"Feature","properties":{"nombre":"Montaña Blanca","municipio":"San Bartolomé","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[ -13.637067209949223, 28.987127494571514]}},
+    { "type":"Feature","properties":{"nombre":"Playa Honda","municipio":"San Bartolomé","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[ -13.590890948490621, 28.953903269665282]}},
+    { "type":"Feature","properties":{"nombre":"San Bartolomé","municipio":"San Bartolomé","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[ -13.610998830254664, 29.00033541668684]}},
+
+
+    { "type":"Feature","properties":{"nombre":"La Asomada","municipio":"Tías","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[ -13.691778140273716, 28.959880876818943]}},
+    { "type":"Feature","properties":{"nombre":"Conil","municipio":"Tías","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[ -13.667104963993564, 28.96844514075918]}},
+    { "type":"Feature","properties":{"nombre":"Mácher","municipio":"Tías","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[ -13.683589344346018, 28.94830601433779]}},
+    { "type":"Feature","properties":{"nombre":"Masdache","municipio":"Tías","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[ -13.654631803131613, 28.996992374445576]}},
+    { "type":"Feature","properties":{"nombre":"Puerto del Carmen","municipio":"Tías","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[ -13.664690008639958, 28.923291781959307]}},
+    { "type":"Feature","properties":{"nombre":"Tías","municipio":"Tías","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[ -13.652138029848588, 28.953669773002936]}},
+    { "type":"Feature","properties":{"nombre":"Vega de Tegoyo","municipio":"Tías","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[ -13.68146847286715, 28.973630845842596]}},
+
+
+    { "type":"Feature","properties":{"nombre":" Las Breñas ","municipio":"Yaiza","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[ -13.808204212228818, 28.92279679606838 ]}},
+    { "type":"Feature","properties":{"nombre":" Las Casitas ","municipio":"Yaiza","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[ -13.749881119845666, 28.931071392989303 ]}},
+    { "type":"Feature","properties":{"nombre":" Cortijo Viejo ","municipio":"Yaiza","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[ -13.710162335001488, 28.924350972486128 ]}},
+    { "type":"Feature","properties":{"nombre":" La Degollada ","municipio":"Yaiza","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[ -13.781354279208056, 28.931201158652502 ]}},
+    { "type":"Feature","properties":{"nombre":" Femés ","municipio":"Yaiza","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[ -13.7779789199559, 28.91396608506596 ]}},
+    { "type":"Feature","properties":{"nombre":" La Geria ","municipio":"Yaiza","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[ -13.714190636712921, 28.968593487286817 ]}},
+    { "type":"Feature","properties":{"nombre":" El Golfo ","municipio":"Yaiza","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[ -13.830425975096107, 28.982288857082636 ]}},
+    { "type":"Feature","properties":{"nombre":" La Hoya ","municipio":"Yaiza","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[ -13.814046172871844, 28.939227360173803 ]}},
+    { "type":"Feature","properties":{"nombre":" Maciot ","municipio":"Yaiza","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[ -13.789541325858268, 28.911331760566224 ]}},
+    { "type":"Feature","properties":{"nombre":" Playa Blanca ","municipio":"Yaiza","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[ -13.842858667592482, 28.865343548316503 ]}},
+    { "type":"Feature","properties":{"nombre":" Playa Quemada ","municipio":"Yaiza","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[ -13.732910571236662, 28.908144095366918 ]}},
+    { "type":"Feature","properties":{"nombre":" Puerto Calero ","municipio":"Yaiza","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[ -13.705474333881751, 28.918356216579127 ]}},
+    { "type":"Feature","properties":{"nombre":" Uga ","municipio":"Yaiza","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[ -13.744449866584258, 28.949774212287274 ]}},
+    { "type":"Feature","properties":{"nombre":" Yaiza ","municipio":"Yaiza","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[ -13.767980618918665, 28.955761520338783 ]}},
+
+
+    { "type":"Feature","properties":{"nombre":" La Concha ","municipio":"Arrecife","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[ -13.583829396390092, 28.955136371569786 ]}},
+    { "type":"Feature","properties":{"nombre":" El Cable ","municipio":"Arrecife","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[ -13.57211594398663, 28.956676404267142 ]}},
+
+
+
+
+    { "type":"Feature","properties":{"nombre":"Los Ancones","municipio":"Teguise","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[ -13.473910403737552, 29.01719866926007]}},
+    { "type":"Feature","properties":{"nombre":"Caleta de Sebo","municipio":"Teguise","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[  -13.503154828439735, 29.231843572179088]}}, 
+    { "type":"Feature","properties":{"nombre":"Costa Teguise","municipio":"Teguise","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[ -13.49079750027453 , 28.999346509108094]}},
+    { "type":"Feature","properties":{"nombre":"Las Caletas","municipio":"Teguise","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[  -13.513125365672668, 28.982082616334772]}},
+    { "type":"Feature","properties":{"nombre":"Tahiche","municipio":"Teguise","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[  -13.54473918184869, 29.013427283490845]}},
+    { "type":"Feature","properties":{"nombre":"Los Valles","municipio":"Teguise","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[ -13.5271630962576, 29.08664421970418]}},
+    { "type":"Feature","properties":{"nombre":"Guatiza","municipio":"Teguise","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[ -13.478252627657096, 29.074672669244247]}},
+    { "type":"Feature","properties":{"nombre":"Los Cocoteros","municipio":"Teguise","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[  -13.460600115025844, 29.064601922451235]}},
+    { "type":"Feature","properties":{"nombre":"Las Cabreras","municipio":"Teguise","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[  -13.547144315914599, 29.029670187555244]}},
+    { "type":"Feature","properties":{"nombre":"Caleta de Famara","municipio":"Teguise","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[ -13.565662330938538, 29.11856367995085]}},
+    { "type":"Feature","properties":{"nombre":"Las Laderas","municipio":"Teguise","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[  -13.565597722872093, 29.086910533168894]}},
+    { "type":"Feature","properties":{"nombre":"Nazaret","municipio":"Teguise","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[  -13.556262299368207, 29.04203157975145]}},
+    { "type":"Feature","properties":{"nombre":"Teseguite","municipio":"Teguise","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[  -13.530796865469744, 29.055458980546714]}},
+    { "type":"Feature","properties":{"nombre":"El Mojón","municipio":"Teguise","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[  -13.51720197774795, 29.0665996015488]}},
+    { "type":"Feature","properties":{"nombre":"Teguise","municipio":"Teguise","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[ -13.559728538863883, 29.059758106225473]}},
+    { "type":"Feature","properties":{"nombre":"Caleta de Caballo","municipio":"Teguise","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[  -13.639545381428468, 29.116673480141927]}},
+    { "type":"Feature","properties":{"nombre":"Mozaga","municipio":"Teguise","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[  -13.61438375083462, 29.021936105984935]}},
+    { "type":"Feature","properties":{"nombre":"Tao","municipio":"Teguise","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[  -13.62362408517807, 29.039260965797947]}},
+    { "type":"Feature","properties":{"nombre":"Tiagua","municipio":"Teguise","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[ -13.632667112935168, 29.05528437723033]}},
+    { "type":"Feature","properties":{"nombre":"Muñique","municipio":"Teguise","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[  -13.635155462702553, 29.07183575103967]}},
+    { "type":"Feature","properties":{"nombre":"Soo","municipio":"Teguise","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[  -13.620086166949486, 29.09889560998449]}},
+    { "type":"Feature","properties":{"nombre":"Tomaren","municipio":"Teguise","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[  -13.624845271409656, 29.02471924569076]}},
+   
+
+
+    { "type":"Feature","properties":{"nombre":"Orzola","municipio":"Haría","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[-13.453670, 29.221657 ]}},
+    { "type":"Feature","properties":{"nombre":"Ye","municipio":"Haría","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[ -13.479418, 29.195615]}},
+    { "type":"Feature","properties":{"nombre":"Máguez","municipio":"Haría","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[-13.49478, 29.15978]}},
+    { "type":"Feature","properties":{"nombre":"Arrieta","municipio":"Haría","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[-13.46221, 29.13152]}},
+    { "type":"Feature","properties":{"nombre":"Tabayesco","municipio":"Haría","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[-13.48026, 29.12740]}},
+    { "type":"Feature","properties":{"nombre":"Charco del Palo","municipio":"Haría","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[-13.451940716658953, 29.08359876724658]}},
+    { "type":"Feature","properties":{"nombre":"Guinate","municipio":"Haría","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[ -13.494940831432821, 29.180808980533616]}},
+    { "type":"Feature","properties":{"nombre":"Mala","municipio":"Haría","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[-13.467482082229614, 29.097490722646622]}},
+    { "type":"Feature","properties":{"nombre":"Punta Mujeres","municipio":"Haría","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[-13.447704556370844, 29.14490450700265]}},
+    { "type":"Feature","properties":{"nombre":"Haría","municipio":"Haría","tipo":"nucleo"},"geometry":{"type":"Point","coordinates":[-13.49909, 29.14638]}}
   ]
 }
