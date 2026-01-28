@@ -8,7 +8,7 @@
     { "type":"Feature","properties":{"nombre":"Barranco La Casita","municipio":"Yaiza","tipo":"barranco"},"geometry":{"type":"Point","coordinates":[ -13.763431542332285, 28.89563044876294]}},
     { "type":"Feature","properties":{"nombre":"Barranco de La Higuera (Higueral) y El Fraile","municipio":"Yaiza","tipo":"barranco"},"geometry":{"type":"Point","coordinates":[ -13.756210394503478, 28.9097535439506]}},
     { "type":"Feature","properties":{"nombre":"Barranco del Valle","municipio":"Yaiza","tipo":"barranco"},"geometry":{"type":"Point","coordinates":[ -13.734257942227213, 28.911000287467758]}},
-    { "type":"Feature","properties":{"nombre":"Barranco del Agua","municipio":"Yaiza","tipo":"barranco"},"geometry":{"type":"Point","coordinates":[ -13.72296917319755, 28.934573167845475}},
+    { "type":"Feature","properties":{"nombre":"Barranco del Agua","municipio":"Yaiza","tipo":"barranco"},"geometry":{"type":"Point","coordinates":[ -13.72296917319755, 28.934573167845475]}},
     { "type":"Feature","properties":{"nombre":"Barranco del Barquillo","municipio":"Yaiza","tipo":"barranco"},"geometry":{"type":"Point","coordinates":[ -13.70794403883254, 28.931037929162446]}},
    
     { "type":"Feature","properties":{"nombre":"Barranco de la Pila","municipio":"Tías / Yaiza","tipo":"barranco"},"geometry":{"type":"Point","coordinates":[ -13.704738150763841, 28.929441251283624]}},
