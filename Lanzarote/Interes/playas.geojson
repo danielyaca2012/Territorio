@@ -1,7 +1,7 @@
 {
   "type": "FeatureCollection",
   "features": [
-    { "type":"Feature","properties":{"nombre":"El Reducto"},"geometry":{"type":"Point","coordinates":[0,0]}},
+    { "type":"Feature","properties":{"nombre":"El Reducto"},"geometry":{"type":"Point","coordinates":[-13.560212925179798,28.957873275208758]}},
     { "type":"Feature","properties":{"nombre":"El Castillo"},"geometry":{"type":"Point","coordinates":[0,0]}},
     { "type":"Feature","properties":{"nombre":"El Cable"},"geometry":{"type":"Point","coordinates":[0,0]}},
     { "type":"Feature","properties":{"nombre":"La Concha"},"geometry":{"type":"Point","coordinates":[0,0]}},
