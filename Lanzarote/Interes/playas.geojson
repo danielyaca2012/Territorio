@@ -49,7 +49,7 @@
     { "type":"Feature","properties":{"nombre":"Charco de los Clicos o Lago Verde"},"geometry":{"type":"Point","coordinates":[-13.828656068665797, 28.97623106564618]}},
     { "type":"Feature","properties":{"nombre":"El Golfo"},"geometry":{"type":"Point","coordinates":[-13.829643812138487, 28.979057480224384]}},
     { "type":"Feature","properties":{"nombre":"El Paso"},"geometry":{"type":"Point","coordinates":[-13.830470753145061, 28.997357971855337]}},
-    { "type":"Feature","properties":{"nombre":"Teneza"},"geometry":{"type":"Point","coordinates":[-13.81556999314121, 29.031444967334675]}},
+    { "type":"Feature","properties":{"nombre":"El Cochino"},"geometry":{"type":"Point","coordinates":[-13.81556999314121, 29.031444967334675]}},
     { "type":"Feature","properties":{"nombre":"La Madera"},"geometry":{"type":"Point","coordinates":[-13.774670824403705, 29.06209901491978]}},
     { "type":"Feature","properties":{"nombre":"Las Malvas"},"geometry":{"type":"Point","coordinates":[-13.76716796619163, 29.063859282311622]}},
 
