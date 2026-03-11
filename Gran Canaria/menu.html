@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Municipios – Lanzarote</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+  html, body {
+    margin: 0;
+    height: 100%;
+    font-family: Arial, Helvetica, sans-serif;
+    background: linear-gradient(135deg, #0b7, #0a5);
+    color: #042;
+  }
+  .boton-volver {
+  margin-top: 16px;
+}
+  .pantalla {
+    height: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  h1 {
+    margin-bottom: 25px;
+    font-size: 2rem;
+    text-align: center;
+  }
+
+  .menu {
+    display: grid;
+    gap: 15px;
+    width: 100%;
+    max-width: 360px;
+  }
+
+  button {
+    padding: 15px;
+    font-size: 1.1rem;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    background: white;
+    color: #042;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+
+  button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+  }
+
+  footer {
+    margin-top: auto;
+    font-size: 0.8rem;
+    opacity: 0.8;
+  }
+</style>
+</head>
+<body>
+
+<div class="pantalla">
+  <h1>🏘️ Municipios de Lanzarote</h1>
+
+  <div class="menu">
+    <button onclick="location.href='/Territorio/Gran Canaria/Municipios/Agaete'">Agaete</button>
+    <button onclick="location.href='/Territorio/Gran Canaria/Municipios/Agüimes'">Agüimes</button>
+    <button onclick="location.href='/Territorio/Gran Canaria/Municipios/Artenera'">Artenera</button>
+    <button onclick="location.href='/Territorio/Gran Canaria/Municipios/Arucas'">Arucas</button>
+    <button onclick="location.href='/Territorio/Gran Canaria/Municipios/Firgas'">Firgas</button>
+    <button onclick="location.href='/Territorio/Gran Canaria/Municipios/Gáldar'">Gáldar</button>
+    <button onclick="location.href='/Territorio/Gran Canaria/Municipios/Ingenio'">Ingenio</button>
+    <button onclick="location.href='/Territorio/Gran Canaria/Municipios/La Aldea de San Nicolás'">La Aldea de San Nicolás</button>
+    <button onclick="location.href='/Territorio/Gran Canaria/Municipios/Las Palmas de Gran Canaria'">Las Palmas de Gran Canaria</button>
+    <button onclick="location.href='/Territorio/Gran Canaria/Municipios/Mogán'">Mogán</button>
+    <button onclick="location.href='/Territorio/Gran Canaria/Municipios/Moya'">Moya</button>
+    <button onclick="location.href='/Territorio/Gran Canaria/Municipios/San Bartolomé de Tirajana'">San Bartolomé de Tirajana</button>
+    <button onclick="location.href='/Territorio/Gran Canaria/Municipios/Santa Brígida'">Santa Brígida</button>
+    <button onclick="location.href='/Territorio/Gran Canaria/Municipios/Santa Lucía de Tirajana'">Santa Lucía de Tirajana</button>
+    <button onclick="location.href='/Territorio/Gran Canaria/Municipios/Santa María de Guía de Gran Canaria'">Santa María de Guía de Gran Canaria</button>
+    <button onclick="location.href='/Territorio/Gran Canaria/Municipios/Tejeda'">Tejeda</button>
+    <button onclick="location.href='/Territorio/Gran Canaria/Municipios/Telde'">Telde</button>
+    <button onclick="location.href='/Territorio/Gran Canaria/Municipios/Teror'">Teror</button>
+    <button onclick="location.href='/Territorio/Gran Canaria/Municipios/Valleseco'">Valleseco</button>
+    <button onclick="location.href='/Territorio/Gran Canaria/Municipios/Valsequillo'">Valsequillo</button>
+    <button onclick="location.href='/Territorio/Gran Canaria/Municipios/Vega de San Mateo'">Vega de San Mateo</button>
+  </div>
+
+  <button class="boton-volver" onclick="location.href='/Territorio/index.html'">
+  ⬅ Volver
+</button>
+
+
+  <footer>
+    Selecciona un municipio para jugar
+  </footer>
+</div>
+
+</body>
+</html>
