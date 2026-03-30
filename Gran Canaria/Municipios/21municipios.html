@@ -44,6 +44,7 @@
 
 <div id="top">
   <button id="start">Iniciar</button>
+  <button id="repaso">Repaso</button>
   <span id="progreso">—/—</span>
   <span id="nucleo">—</span>
   <span id="fallos">Fallos: 0</span>
@@ -135,6 +136,28 @@ document.getElementById("start").onclick = () => {
   fallosActual = 0;
   document.getElementById("fallos").textContent = `Fallos: ${fallosTotales}`;
   nextRound();
+};
+
+document.getElementById("repaso").onclick = () => {
+  clearMap();
+  document.getElementById("nucleo").textContent = "Modo repaso";
+  document.getElementById("progreso").textContent = "-/-";
+
+  municipios.forEach(municipio => {
+    const circle = L.circle([municipio.lat, municipio.lng], {
+      radius: municipio.umbral,
+      color: 'blue',
+      fillOpacity: 0.2
+    }).addTo(map);
+
+    // Mostrar nombre SIEMPRE
+    circle.bindTooltip(municipio.name, {
+      permanent: true,
+      direction: "top"
+    });
+
+    zonas.push(circle);
+  });
 };
 
 // Preparar siguiente municipio
