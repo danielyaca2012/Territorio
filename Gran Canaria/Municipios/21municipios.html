@@ -59,19 +59,34 @@
 // Municipios de Lanzarote
 // =====================
 const municipios = [
-  {name:"Arrecife", lat:28.970255, lng:-13.550294, umbral:1000},
-  {name:"Tías", lat:28.949528, lng:-13.657411, umbral:1000},
-  {name:"San Bartolomé", lat:29.003800, lng:-13.612675, umbral:1000},
-  {name:"Teguise", lat:29.065968, lng:-13.562211, umbral:1000},
-  {name:"Haría", lat:29.144766, lng:-13.500181, umbral:1000},
-  {name:"Tinajo", lat:29.071484, lng:-13.676797, umbral:1000},
-  {name:"Yaiza", lat:28.952550, lng:-13.769423, umbral:1000}
+  {name:"Agaete", lat:28.10085, lng:-15.69573, umbral:1000},
+  {name:"Gáldar", lat:28.14437, lng:-15.65100, umbral:1000},
+  {name:"Santa María de Guía", lat:28.13917, lng:-15.63278, umbral:1000},
+  {name:"Arucas", lat:28.11972, lng:-15.52426, umbral:1000},
+  {name:"Firgas", lat:28.10600, lng:-15.56278, umbral:1000},
+  {name:"Moya", lat:28.11056, lng:-15.58278, umbral:1000},
+  {name:"Teror", lat:28.06056, lng:-15.54639, umbral:1000},
+  {name:"Valleseco", lat:28.04389, lng:-15.57389, umbral:1000},
+  {name:"Artenara", lat:28.02000, lng:-15.64639, umbral:1000},
+  {name:"Tejeda", lat:27.99500, lng:-15.61500, umbral:1000},
+  {name:"San Mateo", lat:28.01083, lng:-15.53250, umbral:1000},
+  {name:"Valsequillo", lat:27.99139, lng:-15.49778, umbral:1000},
+  {name:"Las Palmas de Gran Canaria", lat:28.12355, lng:-15.43626, umbral:1000},
+  {name:"Telde", lat:28.00371, lng:-15.41343, umbral:1000},
+  {name:"Ingenio", lat:27.91855, lng:-15.43494, umbral:1000},
+  {name:"Agüimes", lat:27.90539, lng:-15.44609, umbral:1000},
+  {name:"Santa Lucía de Tirajana", lat:27.91278, lng:-15.54028, umbral:1000},
+  {name:"Santa Brígida", lat:28.033874791803807, lng:-15.498531334115938, umbral:1000},
+  {name:"San Bartolomé de Tirajana", lat:27.92428, lng:-15.57300, umbral:1000},
+  {name:"Mogán", lat:27.88370, lng:-15.72398, umbral:1000},
+  {name:"La Aldea de San Nicolás", lat:27.98333, lng:-15.78139, umbral:1000},
+  {name:"Vega de San Mateo", lat:28.01083, lng:-15.53250, umbral:1000}
 ];
 
 // =====================
 // Inicialización del mapa
 // =====================
-let map = L.map('map').setView([28.963,-13.541], 11);
+let map = L.map('map').setView([27.98741774248388, -15.59796808721328], 11);
 
 L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png', {
   attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>',
