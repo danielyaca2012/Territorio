@@ -129,10 +129,10 @@ function tipoCarretera(ref){
 
     const n = parseInt(ref.replace("LP-",""),10);
 
-    if([1,2,3,4,5,20].includes(n))
+    if([1,2,3,4,5,20,21].includes(n))
         return "primaria";
 
-    if(n>=21 && n<3022)
+    if(n>=22 && n<3022)
         return "secundaria";
 
     return "error";
