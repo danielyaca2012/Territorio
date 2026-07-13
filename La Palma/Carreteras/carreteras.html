@@ -283,7 +283,7 @@ function nextRound(){
     return;
   }
 
-  document.getElementById("carretera").textContent = order[index].ref + " — " + order[index].nombre;
+  document.getElementById("carretera").textContent = order[index].ref;
   document.getElementById("progreso").textContent = `${index+1}/${order.length}`;
 }
 
