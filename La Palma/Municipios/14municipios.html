@@ -172,9 +172,10 @@ function configurarFeature(f,layer){
 
             const color=(fallosActual===0)?"green":"orange";
 
-            layer.setStyle({
-                color,
-                fillOpacity:0.45
+              layer.setStyle({
+              color: color,
+              fillColor: color,
+              fillOpacity:0.55
             });
 
             f.properties.colorAcertado=color;
