@@ -122,49 +122,48 @@ let fallados=[];
 let juegoIniciado=false;
 
 fetch("nucleos.geojson")
-.then(r=>r.json())
-.then(data=>{
+.then(r => r.json())
+.then(data => {
 
-const grupos={};
+    const grupos = {};
 
-L.geoJSON(data,{
-const capa = L.geoJSON(data,{
+    const capa = L.geoJSON(data, {
 
-style:{
-    color:"blue",
-    weight:2,
-    fillColor:"#6da8ff",
-    fillOpacity:0.35
-},
+        style: {
+            color: "blue",
+            weight: 2,
+            fillColor: "#6da8ff",
+            fillOpacity: 0.35
+        },
 
-onEachFeature:(feature,layer)=>{
+        onEachFeature: (feature, layer) => {
 
-    const nombre=feature.properties.ENTIDAD;
+            const nombre = feature.properties.ENTIDAD;
 
-    if(!nombre || nombre==="DISEMINADO") return;
+            if (!nombre || nombre === "DISEMINADO") return;
 
-    if(!grupos[nombre]){
+            if (!grupos[nombre]) {
 
-        grupos[nombre]={
-            ref:nombre,
-            layer:[],
-            colorAcertado:null,
-            activa:true
-        };
+                grupos[nombre] = {
+                    ref: nombre,
+                    layer: [],
+                    colorAcertado: null,
+                    activa: true
+                };
 
-        nucleos.push(grupos[nombre]);
-    }
+                nucleos.push(grupos[nombre]);
+            }
 
-    grupos[nombre].layer.push(layer);
+            grupos[nombre].layer.push(layer);
 
-    layer.on("click",()=>manejarClick(grupos[nombre]));
-}
+            layer.on("click", () => manejarClick(grupos[nombre]));
+        }
 
-}).addTo(map);
+    }).addTo(map);
 
-map.fitBounds(capa.getBounds());
+    map.fitBounds(capa.getBounds());
 
-order=shuffle(nucleos);
+    order = shuffle([...nucleos]);
 
 });
 
@@ -397,17 +396,10 @@ nucleos.forEach(n=>{
 n.layer.forEach(l=>{
 
 l.bindTooltip(n.ref,{
-
-permanent:true,
-
-direction:"center"
-
+    sticky:true
 });
-
 });
-
 });
-
 }
 function shuffle(a){
 
