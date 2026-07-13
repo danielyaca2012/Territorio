@@ -146,6 +146,12 @@ fetch("carreteraslapalma.geojson")
     L.geoJSON(data, {
       style: { color:"blue", weight:5 },
       onEachFeature: (feature, layer) => {
+
+        if (
+        !feature.properties.NOMENCLATU ||
+        !feature.properties.NOMENCLATU.startsWith("LP-")
+        ) return;
+        
         const obj = {
           ref: feature.properties.NOMENCLATU,
           nombre: feature.properties.DENOMINACI,
